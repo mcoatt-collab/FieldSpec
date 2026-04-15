@@ -15,6 +15,7 @@ export interface SignupResult {
 export interface LoginResult {
   success: boolean;
   token?: string;
+  userId?: string;
   error?: string;
 }
 
@@ -167,7 +168,7 @@ export async function login(
 
     const jwtResult = signJWT({ userId: user.id, email: user.email });
 
-    return { success: true, token: jwtResult.token };
+    return { success: true, token: jwtResult.token, userId: user.id };
   } catch (error) {
     console.error("Login error:", error);
     return { success: false, error: "Login failed" };

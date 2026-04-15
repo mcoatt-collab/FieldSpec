@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Brand from "@/components/Brand";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "⬡" },
@@ -29,9 +30,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen">
       <aside className="w-64 flex-shrink-0 flex flex-col bg-surface border-r border-outline-variant">
         <div className="p-lg border-b border-outline-variant">
-          <h1 className="text-primary text-title-large">
-            FieldSpec
-          </h1>
+          <Brand size="md" />
         </div>
 
         <nav className="flex-1 flex flex-col p-md gap-xs">

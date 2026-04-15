@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { getUserIdFromRequest } from "@/lib/auth/get-user";
+import { getValidatedUserId } from "@/lib/auth/get-user";
 
 const createImageSchema = z.object({
   projectId: z.string().uuid("Invalid project ID"),
@@ -11,7 +11,7 @@ const createImageSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getValidatedUserId(request);
     if (!userId) {
       return NextResponse.json(
         { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getValidatedUserId(request);
     if (!userId) {
       return NextResponse.json(
         { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
@@ -102,6 +102,8 @@ export async function GET(request: NextRequest) {
         thumbnailUrl: true,
         category: true,
         notes: true,
+        gpsLat: true,
+        gpsLng: true,
         createdAt: true,
       },
       orderBy: { createdAt: "desc" },

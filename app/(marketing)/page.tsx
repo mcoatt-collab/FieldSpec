@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { tokens } from "@/lib/design-tokens";
+import Brand from "@/components/Brand";
 
 export default function MarketingPage() {
   const features = [
@@ -70,12 +71,7 @@ export default function MarketingPage() {
         top: 0,
         zIndex: 100,
       }}>
-        <h1 style={{
-          ...tokens.typography.titleLarge,
-          color: tokens.colors.primary,
-        }}>
-          FieldSpec
-        </h1>
+        <Brand size="md" />
         <div style={{ display: "flex", gap: tokens.spacing.lg, alignItems: "center" }}>
           <Link
             href="#features"
@@ -509,13 +505,7 @@ export default function MarketingPage() {
           gap: tokens.spacing.xl,
         }}>
           <div>
-            <h4 style={{
-              ...tokens.typography.titleMedium,
-              color: tokens.colors.onSurface,
-              marginBottom: tokens.spacing.md,
-            }}>
-              FieldSpec
-            </h4>
+            <Brand size="md" className="mb-md" />
             <p style={{
               ...tokens.typography.bodySmall,
               color: tokens.colors.onSurfaceVariant,

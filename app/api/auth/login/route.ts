@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = NextResponse.json(
-      { data: { token: loginResult.token } },
+      { data: { token: loginResult.token, userId: loginResult.userId } },
       { status: 200 }
     );
 

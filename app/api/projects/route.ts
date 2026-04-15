@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { getUserIdFromRequest } from "@/lib/auth/get-user";
+import { getValidatedUserId } from "@/lib/auth/get-user";
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
+  clientId: z.string().uuid("Invalid client ID").optional().nullable(),
 });
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getValidatedUserId(request);
+    
     if (!userId) {
       return NextResponse.json(
-        { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
+        { error: { message: "Unauthorized - no user found", code: "UNAUTHORIZED" } },
         { status: 401 }
       );
     }
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("GET projects error:", error);
     return NextResponse.json(
-      { error: { message: "Internal server error", code: "INTERNAL_ERROR" } },
+      { error: { message: error instanceof Error ? error.message : "Internal server error", code: "INTERNAL_ERROR" } },
       { status: 500 }
     );
   }
@@ -41,10 +43,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = getUserIdFromRequest(request);
+    const userId = await getValidatedUserId(request);
+    
     if (!userId) {
       return NextResponse.json(
-        { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
+        { error: { message: "Unauthorized - no user found", code: "UNAUTHORIZED" } },
         { status: 401 }
       );
     }
@@ -59,12 +62,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name } = result.data;
+    const { name, clientId } = result.data;
+
+    let finalClientId: string | undefined = clientId || undefined;
+
+    if (finalClientId) {
+      const client = await prisma.client.findFirst({
+        where: { id: finalClientId, userId },
+      });
+      if (!client) {
+        return NextResponse.json(
+          { error: { message: "Client not found or access denied", code: "NOT_FOUND" } },
+          { status: 404 }
+        );
+      }
+    }
 
     const project = await prisma.project.create({
       data: {
         userId,
         name,
+        clientId: finalClientId,
       },
       select: {
         id: true,
@@ -78,7 +96,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("POST projects error:", error);
     return NextResponse.json(
-      { error: { message: "Internal server error", code: "INTERNAL_ERROR" } },
+      { error: { message: error instanceof Error ? error.message : "Internal server error", code: "INTERNAL_ERROR" } },
       { status: 500 }
     );
   }

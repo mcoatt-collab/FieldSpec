@@ -7,7 +7,7 @@ import { signJWT } from "../lib/auth/jwt";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../services/email/email.service";
 import { TokenType } from "../lib/generated/prisma/client";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/flyspec";
+const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/fieldspec";
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });

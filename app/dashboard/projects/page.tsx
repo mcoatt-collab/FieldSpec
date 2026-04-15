@@ -6,24 +6,36 @@ import { tokens } from "@/lib/design-tokens";
 interface Project {
   id: string;
   name: string;
-  companyName?: string;
   status: string;
   photoCount: number;
   createdAt: string;
 }
 
+interface Client {
+  id: string;
+  name: string;
+  company: string | null;
+}
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const [clientId, setClientId] = useState("");
 
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (showForm) {
+      fetchClients();
+    }
+  }, [showForm]);
 
   async function fetchProjects() {
     try {
@@ -39,6 +51,18 @@ export default function ProjectsPage() {
     }
   }
 
+  async function fetchClients() {
+    try {
+      const res = await fetch("/api/clients");
+      const data = await res.json();
+      if (res.ok && data.data) {
+        setClients(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch clients:", err);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -48,19 +72,20 @@ export default function ProjectsPage() {
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, companyName }),
+        body: JSON.stringify({ name, clientId: clientId || null }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error?.message || "Failed to create project");
+        setError(data.error?.message || `Failed to create project (${res.status})`);
         setCreating(false);
         return;
       }
 
       setProjects([data.data, ...projects]);
       setName("");
+      setClientId("");
       setShowForm(false);
       setCreating(false);
     } catch (err) {
@@ -178,12 +203,11 @@ export default function ProjectsPage() {
                   color: tokens.colors.onSurfaceVariant,
                 }}
               >
-                Company Name <span style={{ color: tokens.colors.onSurfaceVariant }}>(optional)</span>
+                Link to Client <span style={{ color: tokens.colors.onSurfaceVariant }}>(optional)</span>
               </label>
-              <input
-                type="text"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+              <select
+                value={clientId}
+                onChange={(e) => setClientId(e.target.value)}
                 style={{
                   width: "100%",
                   boxSizing: "border-box",
@@ -194,7 +218,21 @@ export default function ProjectsPage() {
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                 }}
-              />
+              >
+                <option value="">No client linked</option>
+                {clients.map(client => (
+                  <option key={client.id} value={client.id}>
+                    {client.name}{client.company ? ` (${client.company})` : ""}
+                  </option>
+                ))}
+              </select>
+              <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.xs }}>
+                To create a project for a new client,{" "}
+                <a href="/dashboard/clients" style={{ color: tokens.colors.primary, textDecoration: "underline" }}>
+                  create the client first
+                </a>
+                .
+              </p>
             </div>
 
             {error && (
@@ -234,7 +272,7 @@ export default function ProjectsPage() {
                 onClick={() => {
                   setShowForm(false);
                   setName("");
-                  setCompanyName("");
+                  setClientId("");
                   setError("");
                 }}
                 style={{

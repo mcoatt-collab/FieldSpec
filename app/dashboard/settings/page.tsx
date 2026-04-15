@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { tokens } from "@/lib/design-tokens";
 
 interface User {
   name: string;
-  companyName?: string;
+  companyName?: string | null;
   email: string;
 }
 
@@ -17,12 +17,11 @@ export default function SettingsPage() {
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [initialValues, setInitialValues] = useState({ name: "", companyName: "" });
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const hasChanges = name !== initialValues.name || companyName !== initialValues.companyName;
 
-  async function fetchUser() {
+  const fetchUser = useCallback(async () => {
     try {
       const res = await fetch("/api/users/me");
       const data = await res.json();
@@ -30,16 +29,27 @@ export default function SettingsPage() {
         setUser(data.data);
         setName(data.data.name || "");
         setCompanyName(data.data.companyName || "");
+        setInitialValues({
+          name: data.data.name || "",
+          companyName: data.data.companyName || "",
+        });
       }
     } catch (err) {
       console.error("Failed to fetch user:", err);
+      setError("Failed to load settings");
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!hasChanges) return;
+
     setError("");
     setSuccess(false);
     setSaving(true);
@@ -59,6 +69,7 @@ export default function SettingsPage() {
         return;
       }
 
+      setInitialValues({ name, companyName });
       setSaving(false);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -70,12 +81,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          padding: tokens.spacing.lg,
-          maxWidth: "1200px",
-        }}
-      >
+      <div style={{ padding: tokens.spacing.lg, maxWidth: "600px" }}>
         <div
           style={{
             padding: tokens.spacing.xl,
@@ -91,17 +97,8 @@ export default function SettingsPage() {
   }
 
   return (
-    <div
-      style={{
-        padding: tokens.spacing.lg,
-        maxWidth: "600px",
-      }}
-    >
-      <div
-        style={{
-          marginBottom: tokens.spacing.xl,
-        }}
-      >
+    <div style={{ padding: tokens.spacing.lg, maxWidth: "600px" }}>
+      <div style={{ marginBottom: tokens.spacing.xl }}>
         <h2
           style={{
             ...tokens.typography.headlineMedium,
@@ -159,7 +156,7 @@ export default function SettingsPage() {
             />
           </div>
 
-          <div style={{ marginBottom: tokens.spacing.lg }}>
+          <div style={{ marginBottom: tokens.spacing.md }}>
             <label
               style={{
                 display: "block",
@@ -183,6 +180,36 @@ export default function SettingsPage() {
                 backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyLarge,
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: tokens.spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: tokens.spacing.xs,
+                ...tokens.typography.labelMedium,
+                color: tokens.colors.onSurfaceVariant,
+              }}
+            >
+              Email <span style={{ color: tokens.colors.onSurfaceVariant }}>(read-only)</span>
+            </label>
+            <input
+              type="email"
+              value={user?.email || ""}
+              readOnly
+              disabled
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: tokens.spacing.md,
+                border: `1px solid ${tokens.colors.outlineVariant}`,
+                borderRadius: tokens.radius.md,
+                backgroundColor: tokens.colors.surfaceVariant,
+                color: tokens.colors.onSurfaceVariant,
+                ...tokens.typography.bodyLarge,
+                cursor: "not-allowed",
               }}
             />
           </div>
@@ -219,19 +246,20 @@ export default function SettingsPage() {
 
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || !hasChanges}
             style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
+              backgroundColor: hasChanges ? tokens.colors.primary : tokens.colors.surfaceVariant,
+              color: hasChanges ? tokens.colors.onPrimary : tokens.colors.onSurfaceVariant,
               border: "none",
               borderRadius: tokens.radius.md,
-              cursor: saving ? "not-allowed" : "pointer",
+              cursor: saving || !hasChanges ? "not-allowed" : "pointer",
               opacity: saving ? 0.7 : 1,
               ...tokens.typography.labelLarge,
+              transition: "background-color 0.2s, color 0.2s",
             }}
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? "Saving..." : hasChanges ? "Save Changes" : "No Changes"}
           </button>
         </form>
       </div>
