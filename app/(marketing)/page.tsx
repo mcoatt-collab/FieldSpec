@@ -82,6 +82,79 @@ export default function MarketingPage() {
           .btn-text { text-decoration: none; transition: color 0.3s ease; }
           .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
           .social-icon:hover { color: ${tokens.colors.primary} !important; }
+
+          /* Responsive adjustments for ≤1366px screens */
+          @media (max-width: 1366px) {
+            .hero-section {
+              padding-top: 10vh !important;
+            }
+            .hero-content {
+              max-width: 90vw;
+            }
+            .hero-title {
+              font-size: calc(var(--sys-typescale-display-large-fontsize) * 0.9) !important; /* 54px */
+            }
+            .hero-subcopy {
+              font-size: 18px !important;
+              max-width: 90vw;
+            }
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-outline {
+              font-size: calc(var(--sys-typescale-label-large-fontsize) * 1) !important; /* 14px */
+              padding: ${tokens.spacing.md} ${tokens.spacing.xl} !important;
+            }
+          }
+
+          /* Scale up for large screens (≥1920px) */
+          @media (min-width: 1920px) {
+            .hero-title {
+              font-size: calc(var(--sys-typescale-display-large-fontsize) * 1.5) !important; /* 90px */
+            }
+            .hero-subcopy {
+              font-size: 28px !important;
+            }
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-outline {
+              font-size: calc(var(--sys-typescale-label-large-fontsize) * 1.5) !important; /* 21px */
+              padding: ${tokens.spacing.lg} ${tokens.spacing.xxl} !important;
+            }
+          }
+
+          /* Further adjustments for mobile */
+          @media (max-width: 768px) {
+            .hero-title {
+              font-size: calc(var(--sys-typescale-display-large-fontsize) * 0.7) !important; /* 42px */
+            }
+            .hero-subcopy {
+              font-size: 16px !important;
+            }
+            .hero-buttons {
+              flex-direction: column;
+              align-items: center;
+            }
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-outline {
+              width: 100%;
+              max-width: 300px;
+              font-size: calc(var(--sys-typescale-label-large-fontsize) * 0.9) !important; /* ~13px */
+              padding: ${tokens.spacing.sm} ${tokens.spacing.lg} !important;
+            }
+          }
+
+          /* Extra small devices (≤480px) */
+          @media (max-width: 480px) {
+            .hero-title {
+              font-size: calc(var(--sys-typescale-display-large-fontsize) * 0.6) !important; /* 36px */
+            }
+            .hero-subcopy {
+              font-size: 14px !important;
+            }
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-outline {
+              font-size: calc(var(--sys-typescale-label-large-fontsize) * 0.8) !important; /* ~11px */
+              padding: ${tokens.spacing.xs} ${tokens.spacing.md} !important;
+            }
+          }
         `}</style>
         <Brand size="md" />
         <div style={{ display: "flex", gap: tokens.spacing.xl, alignItems: "center", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
@@ -113,61 +186,121 @@ export default function MarketingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+      <section className="hero-section" style={{
+        padding: '0',
         textAlign: "center",
-        backgroundColor: tokens.colors.surface,
         position: "relative",
         overflow: "hidden",
+        minHeight: 'calc(100vh - 80px)',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        paddingTop: '5vh',
       }}>
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(ellipse at center, ${tokens.colors.primaryContainer}30 0%, transparent 70%)`,
-          pointerEvents: "none",
-        }} />
-        <div style={{ position: "relative", maxWidth: "800px", margin: "0 auto" }}>
-          <h1 style={{
+        {/* Video Background */}
+        <div style={{ 
+          position: 'absolute',
+          top: '-10px',
+          left: '-10px',
+          right: '-10px',
+          bottom: '-10px',
+          zIndex: 0,
+        }}>
+          <div style={{ 
+            position: 'relative', 
+            width: '100%', 
+            height: '100%',
+            overflow: 'hidden',
+          }}>
+            <iframe
+              allow="autoplay; fullscreen"
+              allowFullScreen
+              height="100%"
+              src="https://streamable.com/e/lbw4qo?autoplay=1&loop=1&muted=1"
+              width="100%"
+              style={{ 
+                border: 'none', 
+                width: '100%', 
+                height: '100%', 
+                position: 'absolute', 
+                left: '0px', 
+                top: '0px',
+                objectFit: 'cover',
+                minWidth: '100%',
+                minHeight: '100%',
+                display: 'block',
+                transform: 'scale(1.1)',
+              }}
+              title="FieldSpec Demo Video"
+            />
+            {/* Dark overlay for text readability */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5))',
+              pointerEvents: 'none',
+            }} />
+          </div>
+        </div>
+        
+        {/* Content Overlay */}
+        <div className="hero-content" style={{ 
+          position: 'relative', 
+          zIndex: 1,
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0',
+          width: '100%',
+        }}>
+          <h1 className="hero-title" style={{
             ...tokens.typography.displayLarge,
-            color: tokens.colors.onSurface,
-            marginBottom: tokens.spacing.lg,
+            fontSize: 'calc(var(--sys-typescale-display-large-fontsize) * 1)',
+            color: tokens.colors.onPrimary,
+            marginBottom: tokens.spacing.xl,
             lineHeight: 1.1,
+            textShadow: '0 2px 8px rgba(0,0,0,0.3)',
           }}>
-            Turn Drone Images into<br />
-            <span style={{ color: tokens.colors.primary }}>Professional Reports in Minutes</span>
+            Turn Drone Images into <span style={{ color: tokens.colors.primaryContainer }}>Professional Reports in Minutes</span>
           </h1>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            maxWidth: "600px",
-            margin: `0 auto ${tokens.spacing.xl}`,
-            fontSize: "18px",
-            lineHeight: 1.6,
-          }}>
+           <p className="hero-subcopy" style={{
+             ...tokens.typography.bodyLarge,
+             color: tokens.colors.onPrimary,
+             maxWidth: '1200px',
+             margin: `0 auto ${tokens.spacing.xxl}`,
+              fontSize: '20px',
+             lineHeight: 1.6,
+             textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+             opacity: 0.9,
+           }}>
             Upload your drone images. Let AI analyze them. Export structured reports ready for stakeholders. No manual work required.
           </p>
-          <div style={{ display: "flex", gap: tokens.spacing.md, justifyContent: "center", flexWrap: "wrap" }}>
+           <div className="hero-buttons" style={{ display: "flex", gap: tokens.spacing.md, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/signup" className="btn-primary" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+              padding: `${tokens.spacing.lg} ${tokens.spacing.xxl}`,
               backgroundColor: tokens.colors.primary,
               color: tokens.colors.onPrimary,
               textDecoration: "none",
               borderRadius: tokens.radius.md,
-              ...tokens.typography.labelLarge,
+               ...tokens.typography.labelLarge,
+               fontSize: 'calc(var(--sys-typescale-label-large-fontsize) * 1)',
+               boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
             }}>
               Get Started
             </Link>
             <Link href="/login" className="btn-outline" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: "transparent",
-              color: tokens.colors.onSurface,
+              padding: `${tokens.spacing.lg} ${tokens.spacing.xxl}`,
+              backgroundColor: 'rgba(255,255,255,0.15)',
+              color: tokens.colors.onPrimary,
               textDecoration: "none",
               borderRadius: tokens.radius.md,
-              border: `1px solid ${tokens.colors.outline}`,
-              ...tokens.typography.labelLarge,
+              border: `1px solid rgba(255,255,255,0.3)`,
+               ...tokens.typography.labelLarge,
+               fontSize: 'calc(var(--sys-typescale-label-large-fontsize) * 1)',
+               backdropFilter: 'blur(10px)',
             }}>
               Log In
             </Link>

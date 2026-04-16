@@ -1,5 +1,6 @@
+import "dotenv/config";
 import { Worker, Job } from "bullmq";
-import { redis } from "@/lib/redis";
+import { redis, connectRedis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { generateCaptionWithRetry, calculateConfidenceScore } from "@/lib/ai";
 
@@ -248,6 +249,7 @@ async function processAIJob(job: Job<AIJobData, void, string>) {
 }
 
 export async function startAIWorker() {
+  await connectRedis();
   const worker = new Worker(AI_JOB_QUEUE, processAIJob, {
     connection: redis,
     concurrency: 2,
@@ -264,3 +266,6 @@ export async function startAIWorker() {
   console.log("[AI Worker] Started processing AI jobs");
   return worker;
 }
+
+// Start the worker when this file is executed directly
+startAIWorker().catch(console.error);
