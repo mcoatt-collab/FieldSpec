@@ -60,188 +60,640 @@ export default function MarketingPage() {
   return (
     <main style={{ flex: 1 }}>
       {/* Navigation */}
-      <nav style={{
-        padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-        borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: tokens.colors.surface,
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}>
-        <style>{`
-          .nav-link:hover { color: ${tokens.colors.primary} !important; }
-          .nav-link { text-decoration: none; transition: color 0.3s ease; }
-          .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
-          .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-          .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
-          .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
-          .btn-text:hover { color: ${tokens.colors.primary} !important; }
-          .btn-text { text-decoration: none; transition: color 0.3s ease; }
-          .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
-          .social-icon:hover { color: ${tokens.colors.primary} !important; }
-        `}</style>
-        <Brand size="md" />
-        <div style={{ display: "flex", gap: tokens.spacing.xl, alignItems: "center", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
-          <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            Features
-          </Link>
-          <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            How It Works
-          </Link>
-          <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            Use Cases
-          </Link>
-        </div>
-        <div style={{ display: "flex", gap: tokens.spacing.md, alignItems: "center" }}>
-          <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface }}>
-            Log In
-          </Link>
-          <Link href="/signup" className="btn-primary" style={{
-            padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-            backgroundColor: tokens.colors.primary,
-            color: tokens.colors.onPrimary,
-            textDecoration: "none",
-            borderRadius: tokens.radius.md,
-            ...tokens.typography.labelLarge,
-          }}>
-            Get Started
-          </Link>
-        </div>
-      </nav>
+       <nav style={{
+         padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
+         borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+         display: "flex",
+         justifyContent: "space-between",
+         alignItems: "center",
+         backgroundColor: tokens.colors.surface,
+         position: "sticky",
+         top: 0,
+         zIndex: 100,
+       }}>
+         <style>{`
+           .nav-link:hover { color: ${tokens.colors.primary} !important; }
+           .nav-link { text-decoration: none; transition: color 0.3s ease; }
+           .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
+           .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
+           .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
+           .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
+           .btn-text:hover { color: ${tokens.colors.primary} !important; }
+           .btn-text { text-decoration: none; transition: color 0.3s ease; }
+           .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
+           .social-icon:hover { color: ${tokens.colors.primary} !important; }
+           /* Hamburger menu styles */
+           .hamburger-menu {
+             display: flex;
+             flex-direction: column;
+             justify-content: space-around;
+             width: 30px;
+             height: 24px;
+             background: transparent;
+             border: none;
+             cursor: pointer;
+             padding: 0;
+             z-index: 101;
+           }
+           .hamburger-menu span {
+             width: 100%;
+             height: 3px;
+             background: ${tokens.colors.onSurface};
+             border-radius: 2px;
+             transition: all 0.3s ease;
+           }
+           .hamburger-menu span:nth-child(1) { transform-origin: 0% 0%; }
+           .hamburger-menu span:nth-child(2) { opacity: 1; }
+           .hamburger-menu span:nth-child(3) { transform-origin: 0% 100%; }
+           #menu-toggle:checked ~ .hamburger-menu span:nth-child(1) {
+             transform: rotate(45deg) translate(1px, -1px);
+           }
+           #menu-toggle:checked ~ .hamburger-menu span:nth-child(2) {
+             opacity: 0;
+           }
+           #menu-toggle:checked ~ .hamburger-menu span:nth-child(3) {
+             transform: rotate(-45deg) translate(1px, 1px);
+           }
+            /* Dropdown menu */
+            .dropdown-menu {
+              position: absolute;
+              top: 100%;
+              left: 0;
+              width: 100%;
+              background: ${tokens.colors.surface};
+              border-bottom: 1px solid ${tokens.colors.outlineVariant};
+              box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+              padding: ${tokens.spacing.lg};
+              display: flex;
+              flex-direction: column;
+              gap: ${tokens.spacing.md};
+              z-index: 99;
+              opacity: 0;
+              visibility: hidden;
+              max-height: 0;
+              overflow: hidden;
+              transition: opacity 0.3s ease, visibility 0.3s ease, max-height 0.3s ease;
+            }
+            #menu-toggle:checked ~ .dropdown-menu {
+              opacity: 1;
+              visibility: visible;
+              max-height: 500px;
+            }
+            .dropdown-link {
+              color: ${tokens.colors.onSurfaceVariant};
+              text-decoration: none;
+              padding: ${tokens.spacing.sm} 0;
+              transition: color 0.3s ease;
+            }
+            .dropdown-link:hover {
+              color: ${tokens.colors.primary} !important;
+            }
+           .dropdown-actions {
+             display: flex;
+             flex-direction: column;
+             gap: ${tokens.spacing.sm};
+             margin-top: ${tokens.spacing.md};
+           }
+           .dropdown-actions .btn-text,
+           .dropdown-actions .btn-primary {
+             width: 100%;
+             text-align: center;
+           }
+         `}</style>
+         <Brand size="md" />
+         <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />
+          <label htmlFor="menu-toggle" className="hamburger-menu" style={{ marginLeft: "auto" }}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </label>
+         <div className="dropdown-menu">
+            <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
+              Features
+            </Link>
+            <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
+              How It Works
+            </Link>
+            <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
+              Use Cases
+            </Link>
+           <div className="dropdown-actions">
+             <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface }}>
+               Log In
+             </Link>
+             <Link href="/signup" className="btn-primary" style={{
+               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+               backgroundColor: tokens.colors.primary,
+               color: tokens.colors.onPrimary,
+               textDecoration: "none",
+               borderRadius: tokens.radius.md,
+               ...tokens.typography.labelLarge,
+             }}>
+               Get Started
+             </Link>
+           </div>
+         </div>
+       </nav>
 
       {/* Hero Section */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        textAlign: "center",
-        backgroundColor: tokens.colors.surface,
+      <section className="hero-section" style={{
         position: "relative",
         overflow: "hidden",
+        height: "100vh",
+        minHeight: "768px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "transparent",
+        textAlign: "center",
       }}>
+        {/* Video Background */}
+        <div className="hero-video-container">
+          <iframe
+            className="hero-video"
+            src="https://streamable.com/e/lbw4qo?autoplay=1&loop=1&muted=1"
+            title="Promotional video background"
+            allow="autoplay; encrypted-media; fullscreen"
+            allowFullScreen
+            loading="eager"
+            aria-hidden="true"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
+          />
+        </div>
+        {/* Image Background for Mobile */}
+        <div className="hero-image-container">
+          <img
+            className="hero-image"
+            src="https://i.postimg.cc/fLq17NNx/agriculture-healthy-food-(1).jpg"
+            alt="Drone surveying healthy crops"
+            loading="eager"
+          />
+        </div>
+        {/* Dark gradient overlay */}
         <div style={{
           position: "absolute",
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(ellipse at center, ${tokens.colors.primaryContainer}30 0%, transparent 70%)`,
-          pointerEvents: "none",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%)",
+          zIndex: 1,
         }} />
-        <div style={{ position: "relative", maxWidth: "800px", margin: "0 auto" }}>
-          <h1 style={{
-            ...tokens.typography.displayLarge,
-            color: tokens.colors.onSurface,
-            marginBottom: tokens.spacing.lg,
+        
+        {/* Content */}
+        <div className="hero-content" style={{
+          position: "relative",
+          zIndex: 2,
+          maxWidth: "1200px",
+          width: "100%",
+          padding: "0 24px",
+          marginTop: "-10vh",
+        }}>
+          <h1 className="hero-title" style={{
+            fontFamily: tokens.typography.displayLarge.fontFamily,
+            fontSize: "clamp(3rem, 8vw, 6rem)",
+            fontWeight: 500,
+            color: "var(--ref-neutral-neutral100)",
+            marginBottom: "clamp(1.5rem, 4vw, 2.5rem)",
             lineHeight: 1.1,
+            textShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}>
             Turn Drone Images into<br />
-            <span style={{ color: tokens.colors.primary }}>Professional Reports in Minutes</span>
+             <span style={{ color: tokens.colors.primary }}>Professional Reports in Minutes</span>
           </h1>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            maxWidth: "600px",
-            margin: `0 auto ${tokens.spacing.xl}`,
-            fontSize: "18px",
+          <p className="hero-subcopy" style={{
+            fontFamily: tokens.typography.bodyLarge.fontFamily,
+            fontSize: "clamp(1.25rem, 2.5vw, 2rem)",
+            fontWeight: 400,
+            color: "rgba(255,255,255,0.9)",
+            maxWidth: "800px",
+            margin: "0 auto",
+            marginBottom: "clamp(2rem, 5vw, 3rem)",
             lineHeight: 1.6,
+            textShadow: "0 1px 5px rgba(0,0,0,0.2)",
           }}>
             Upload your drone images. Let AI analyze them. Export structured reports ready for stakeholders. No manual work required.
           </p>
-          <div style={{ display: "flex", gap: tokens.spacing.md, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/signup" className="btn-primary" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              ...tokens.typography.labelLarge,
-            }}>
+          <div className="hero-buttons" style={{
+            display: "flex",
+            gap: "clamp(1rem, 2vw, 1.5rem)",
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}>
+            <Link href="/signup" className="hero-primary-btn">
               Get Started
             </Link>
-            <Link href="/login" className="btn-outline" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: "transparent",
-              color: tokens.colors.onSurface,
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              border: `1px solid ${tokens.colors.outline}`,
-              ...tokens.typography.labelLarge,
-            }}>
+            <Link href="/login" className="hero-outline-btn">
               Log In
             </Link>
           </div>
         </div>
+        
+        {/* Responsive CSS */}
+        <style dangerouslySetInnerHTML={{ __html: `
+            .hero-video-container {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              overflow: hidden;
+              z-index: 0;
+              background-color: #000000; /* Fallback background */
+            }
+            .hero-video {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              min-width: 100%;
+              min-height: 100%;
+              width: auto;
+              height: auto;
+              transform: translate(-50%, -50%) scale(1.1); /* Slight zoom for better coverage */
+              object-fit: cover;
+              object-position: center center;
+              background-color: #000000;
+              border: none;
+              margin: 0;
+              padding: 0;
+              opacity: 0.3;
+               pointer-events: none;
+             }
+             /* Image background */
+             .hero-image-container {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               overflow: hidden;
+               z-index: 0;
+               background-color: #000000;
+               display: none;
+             }
+              .hero-image {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                min-width: 100%;
+                min-height: 100%;
+                width: auto;
+                height: auto;
+                transform: translate(-50%, -50%) scale(1.1);
+                object-fit: cover;
+                object-position: center center;
+                opacity: 0.3;
+              }
+           .hero-primary-btn {
+             padding: clamp(1rem, 2vw, 1.25rem) clamp(2rem, 4vw, 3rem);
+             background-color: var(--sys-primary);
+             color: var(--ref-neutral-neutral100);
+             text-decoration: none;
+             border-radius: var(--sys-radius-md);
+             font-family: var(--sys-typescale-label-large-fontfamily);
+             font-size: clamp(1rem, 1.5vw, 1.25rem);
+             font-weight: 600;
+             border: none;
+             cursor: pointer;
+             transition: background-color 0.2s;
+             box-shadow: 0 4px 12px rgba(49, 95, 155, 0.3);
+             display: inline-block;
+           }
+           .hero-primary-btn:hover {
+             background-color: var(--ref-primary-primary30);
+           }
+          .hero-outline-btn {
+            padding: clamp(1rem, 2vw, 1.25rem) clamp(2rem, 4vw, 3rem);
+            background-color: transparent;
+            color: var(--ref-neutral-neutral100);
+            text-decoration: none;
+            border-radius: var(--sys-radius-md);
+            font-family: var(--sys-typescale-label-large-fontfamily);
+            font-size: clamp(1rem, 1.5vw, 1.25rem);
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+          }
+          .hero-outline-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: var(--ref-neutral-neutral100);
+          }
+          .hero-section {
+            /* Responsive height adjustments */
+          }
+          @media (max-width: 1366px) {
+            .hero-section {
+              min-height: 700px;
+            }
+            .hero-content {
+              margin-top: -8vh;
+            }
+          }
+          @media (max-width: 1024px) {
+            .hero-section {
+              min-height: 650px;
+            }
+            .hero-title {
+              font-size: clamp(2.5rem, 7vw, 4.5rem) !important;
+            }
+            .hero-subcopy {
+              font-size: clamp(1.125rem, 2vw, 1.75rem) !important;
+            }
+          }
+           @media (max-width: 768px) {
+             .hero-section {
+               min-height: 600px;
+             }
+             .hero-content {
+               margin-top: -5vh;
+               padding: 0 20px;
+             }
+             .hero-buttons {
+               flex-direction: column;
+               align-items: center;
+             }
+             .hero-buttons .hero-primary-btn,
+             .hero-buttons .hero-outline-btn {
+               width: 100%;
+               max-width: 300px;
+               text-align: center;
+             }
+              /* Tablet video optimization */
+              .hero-video {
+                 transform: translate(-50%, -50%) scale(1.35);
+              }
+              /* Show image, hide video on mobile/tablet */
+              .hero-video-container {
+                display: none;
+              }
+              .hero-image-container {
+                display: block;
+              }
+            }
+           @media (max-width: 480px) {
+             .hero-section {
+               min-height: 550px;
+             }
+             .hero-title {
+               font-size: clamp(2rem, 6vw, 3rem) !important;
+             }
+             .hero-subcopy {
+               font-size: clamp(1rem, 1.8vw, 1.5rem) !important;
+             }
+             /* Mobile video optimization */
+             .hero-video {
+                transform: translate(-50%, -50%) scale(1.6); /* Increased zoom to eliminate black bars */
+             }
+           }
+            @media (min-width: 1920px) {
+              .hero-section {
+                min-height: 900px;
+              }
+              .hero-content {
+                margin-top: -12vh;
+              }
+              /* Large screen video optimization */
+              .hero-video {
+                transform: translate(-50%, -50%) scale(1.05); /* Less zoom on large screens */
+              }
+            }
+            /* Landscape orientation optimizations */
+            @media (max-width: 768px) and (orientation: landscape) {
+              .hero-video {
+                transform: translate(-50%, -50%) scale(1.6); /* Increased zoom for landscape */
+              }
+              .hero-section {
+                min-height: 500px; /* Reduced height for landscape */
+              }
+            }
+            @media (max-width: 480px) and (orientation: landscape) {
+              .hero-section {
+                min-height: 400px; /* Even smaller for mobile landscape */
+              }
+            }
+            /* Accessibility: reduced motion preference */
+            @media (prefers-reduced-motion: reduce) {
+              .hero-video {
+                transform: translate(-50%, -50%) scale(1); /* Remove zoom animation */
+              }
+            }
+         `}} />
       </section>
 
       {/* Problem → Solution Section */}
       <section style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
+        backgroundColor: "var(--sys-surface-roles-surface)",
       }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: tokens.spacing.xl }}>
-            {/* Problem */}
-            <div style={{
-              padding: tokens.spacing.xl,
-              backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.lg,
-              borderLeft: `4px solid ${tokens.colors.error}`,
+        <style dangerouslySetInnerHTML={{ __html: `
+
+          @media (max-width: 900px) {
+            .problem-solution-grid {
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+              gap: 24px !important;
+            }
+          }
+          @media (max-width: 640px) {
+            .problem-solution-grid {
+              grid-template-columns: 1fr !important;
+            }
+            .problem-solution-card {
+              padding: 32px 24px !important;
+            }
+            .problem-solution-title {
+              font-size: 24px !important;
+            }
+            .problem-solution-item {
+              font-size: 15px !important;
+              gap: 10px !important;
+            }
+            .problem-solution-dot {
+              width: 16px !important;
+              height: 16px !important;
+            }
+          }
+          @media (max-width: 480px) {
+            .problem-solution-card {
+              padding: 24px 20px !important;
+            }
+            .problem-solution-title {
+              font-size: 22px !important;
+            }
+          }
+        `}} />
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2 style={{
+             ...tokens.typography.displaySmall,
+             color: "var(--ref-primary-primary40)",
+             textAlign: "center",
+            marginBottom: tokens.spacing.xl,
+          }}>
+            From Manual Hassle to Automated Insight
+          </h2>
+          <p style={{
+             ...tokens.typography.bodyLarge,
+             color: "var(--ref-neutral-neutral40)",
+             textAlign: "center",
+            maxWidth: "800px",
+            margin: "0 auto",
+            marginBottom: tokens.spacing.xxl,
+          }}>
+            Traditional drone data processing is time‑consuming and error‑prone. FieldSpec transforms raw images into actionable intelligence.
+          </p>
+          
+          <div className="problem-solution-grid" style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", 
+            gap: "32px",
+            alignItems: "stretch",
+          }}>
+            {/* Problem Card */}
+            <div className="problem-solution-card" style={{
+              padding: "40px 32px",
+              backgroundColor: "var(--ref-neutral-neutral98)",
+              borderRadius: "20px",
+              border: "1px solid var(--ref-neutral-neutral92)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              overflow: "hidden",
             }}>
-              <h3 style={{
-                ...tokens.typography.titleLarge,
-                color: tokens.colors.error,
-                marginBottom: tokens.spacing.lg,
-              }}>
-                The Problem
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: tokens.spacing.md }}>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Manual report writing is slow and inconsistent</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Drone data is hard to structure and analyze</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Insights vary between team members</span>
-                </li>
-              </ul>
+              <div style={{
+                position: "absolute",
+                top: "24px",
+                left: "24px",
+                width: "8px",
+                height: "8px",
+                backgroundColor: "var(--ref-key-accent-key-color)",
+                borderRadius: "50%",
+              }} />
+               <h3 className="problem-solution-title" style={{
+                 fontFamily: "var(--sys-typescale-title-large-fontfamily)",
+                 fontSize: "var(--sys-typescale-headline-medium-fontsize)",
+                 fontWeight: 600,
+                 color: "var(--ref-neutral-neutral40)",
+                 marginBottom: "24px",
+                 marginTop: "8px",
+               }}>
+                 The Problem
+               </h3>
+              <div style={{ flex: 1 }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Manual report writing is slow, inconsistent, and prone to human error</span>
+                  </li>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Drone data remains unstructured, making analysis and comparison difficult</span>
+                  </li>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Insights vary between team members, reducing decision‑making confidence</span>
+                  </li>
+                </ul>
+              </div>
+              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--ref-neutral-neutral92)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ display: "flex", gap: "4px" }}>
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "var(--ref-key-accent-key-color)" : "var(--ref-neutral-neutral87)" }} />
+                    ))}
+                  </div>
+                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "var(--ref-neutral-neutral40)" }}>3 major pain points</span>
+                </div>
+              </div>
             </div>
 
-            {/* Solution */}
-            <div style={{
-              padding: tokens.spacing.xl,
-              backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.lg,
-              borderLeft: `4px solid ${tokens.colors.primary}`,
+            {/* Solution Card */}
+            <div className="problem-solution-card" style={{
+              padding: "40px 32px",
+              backgroundColor: "var(--ref-neutral-neutral98)",
+              borderRadius: "20px",
+              border: "1px solid var(--ref-neutral-neutral92)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              overflow: "hidden",
             }}>
-              <h3 style={{
-                ...tokens.typography.titleLarge,
-                color: tokens.colors.primary,
-                marginBottom: tokens.spacing.lg,
-              }}>
-                The Solution
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: tokens.spacing.md }}>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>AI automates analysis for consistent insights</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Structured data from every image automatically</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Professional reports ready in minutes</span>
-                </li>
-              </ul>
+              <div style={{
+                position: "absolute",
+                top: "24px",
+                left: "24px",
+                width: "8px",
+                height: "8px",
+                backgroundColor: "var(--ref-key-accent-key-color)",
+                borderRadius: "50%",
+              }} />
+               <h3 className="problem-solution-title" style={{
+                 fontFamily: "var(--sys-typescale-title-large-fontfamily)",
+                 fontSize: "var(--sys-typescale-headline-medium-fontsize)",
+                 fontWeight: 600,
+                 color: "var(--ref-neutral-neutral40)",
+                 marginBottom: "24px",
+                 marginTop: "8px",
+               }}>
+                 The Solution
+               </h3>
+              <div style={{ flex: 1 }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>AI‑powered analysis delivers consistent, accurate insights in minutes</span>
+                  </li>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Automatic structuring of drone data into searchable, comparable formats</span>
+                  </li>
+                  <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+                    <div style={{ flexShrink: 0, marginTop: "4px" }}>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      </div>
+                    </div>
+                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Professional reports generated automatically, ready for stakeholders</span>
+                  </li>
+                </ul>
+              </div>
+              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--ref-neutral-neutral92)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div style={{ display: "flex", gap: "4px" }}>
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "var(--ref-key-accent-key-color)" : "var(--ref-neutral-neutral87)" }} />
+                    ))}
+                  </div>
+                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "var(--ref-neutral-neutral40)" }}>3 key benefits</span>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 

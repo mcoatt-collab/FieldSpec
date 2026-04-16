@@ -23,6 +23,7 @@ export const tokens = {
     surfaceContainerLow: "var(--sys-surface-roles-surface-container-low)",
     surfaceContainer: "var(--sys-surface-roles-surface-container)",
     surfaceContainerHigh: "var(--sys-surface-roles-surface-container-high)",
+    surfaceVariant: "var(--sys-surface-roles-surface-variant)",
     onSurfaceVariant: "var(--sys-surface-roles-on-surface-variant)",
     outline: "var(--sys-outline-roles-outline)",
     outlineVariant: "var(--sys-outline-roles-outline-variant)",
