@@ -6,6 +6,7 @@ import Link from "next/link";
 import Brand from "@/components/Brand";
 import { tokens } from "@/lib/design-tokens";
 import IdleLogoutProvider from "@/components/auth/IdleLogoutProvider";
+import Skeleton from "@/components/ui/Skeleton";
 import "./layout.css";
 
 const navItems = [
@@ -28,12 +29,20 @@ export default function DashboardLayout({
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [userName, setUserName] = useState("User");
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Handle progress bar on navigation
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
+
   useEffect(() => {
     async function fetchUser() {
+      setIsLoadingUser(true);
       try {
         const res = await fetch("/api/auth/me");
         if (res.ok) {
@@ -48,6 +57,8 @@ export default function DashboardLayout({
         }
       } catch (err) {
         console.error("Failed to fetch user:", err);
+      } finally {
+        setIsLoadingUser(false);
       }
     }
     fetchUser();
@@ -150,18 +161,24 @@ export default function DashboardLayout({
               ref={avatarButtonRef}
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center justify-center rounded-full transition-all duration-200 hover:scale-105"
+              disabled={isLoadingUser}
               style={{
                 width: "40px",
                 height: "40px",
-                backgroundColor: tokens.colors.primaryContainer,
+                backgroundColor: isLoadingUser ? "transparent" : tokens.colors.primaryContainer,
                 color: tokens.colors.onPrimaryContainer,
                 border: "none",
-                cursor: "pointer",
+                cursor: isLoadingUser ? "default" : "pointer",
                 ...tokens.typography.labelLarge,
+                position: "relative",
               }}
               aria-label="Account menu"
             >
-              {getInitials(userName)}
+              {isLoadingUser ? (
+                <Skeleton circle width={40} height={40} />
+              ) : (
+                getInitials(userName)
+              )}
             </button>
 
             {/* Dropdown Menu - Material 3 Style */}
@@ -256,6 +273,9 @@ export default function DashboardLayout({
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => {
+                      if (item.href !== pathname) setIsNavigating(true);
+                    }}
                     className={`flex items-center rounded-md no-underline transition-all duration-200 ${
                       isActive
                         ? "bg-secondary-container text-on-secondary-container"
@@ -279,14 +299,35 @@ export default function DashboardLayout({
           </aside>
 
           <main
-            className="flex-1 overflow-y-auto"
+            className="flex-1 overflow-y-auto relative"
             style={{ 
               backgroundColor: tokens.colors.surface,
               padding: "8px",
               marginTop: "16px"
             }}
           >
+            {/* Top Progress Bar */}
+            {isNavigating && (
+              <div 
+                className="absolute top-0 left-0 right-0 h-[3px] z-50 overflow-hidden"
+                style={{ backgroundColor: tokens.colors.surfaceVariant }}
+              >
+                <div 
+                  className="h-full bg-primary"
+                  style={{ 
+                    animation: "loading-bar 2s infinite ease-in-out",
+                    width: "40%"
+                  }}
+                />
+              </div>
+            )}
             {children}
+            <style jsx>{`
+              @keyframes loading-bar {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(250%); }
+              }
+            `}</style>
           </main>
         </div>
 

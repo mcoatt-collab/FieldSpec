@@ -34,14 +34,34 @@ export async function GET(request: NextRequest) {
         status: true,
         photoCount: true,
         createdAt: true,
+        _count: {
+          select: { images: true },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    // Save to cache
-    await setCache(userId, "projects", projects);
+    // Self-healing: Ensure photoCount is in sync with actual image count
+    const reconciledProjects = await Promise.all(
+      projects.map(async (p) => {
+        const actualCount = p._count.images;
+        if (p.photoCount !== actualCount) {
+          console.log(`[Self-Healing] Rectifying Project ${p.id}: ${p.photoCount} -> ${actualCount}`);
+          // Update the database core record
+          await prisma.project.update({
+            where: { id: p.id },
+            data: { photoCount: actualCount },
+          });
+          return { ...p, photoCount: actualCount };
+        }
+        return p;
+      })
+    );
 
-    return NextResponse.json({ data: projects }, { status: 200 });
+    // Save to cache
+    await setCache(userId, "projects", reconciledProjects);
+
+    return NextResponse.json({ data: reconciledProjects }, { status: 200 });
   } catch (error) {
     console.error("GET projects error:", error);
     return NextResponse.json(

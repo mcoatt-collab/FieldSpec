@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserIdFromRequest } from "@/lib/auth/get-user";
 import { prisma } from "@/lib/prisma";
+import { getCache, setCache } from "@/lib/cache";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,6 +14,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Try cache
+    const cachedUser = await getCache(userId, "user");
+    if (cachedUser) {
+      return NextResponse.json({ data: cachedUser, _cached: true }, { status: 200 });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -23,6 +30,11 @@ export async function GET(request: NextRequest) {
         createdAt: true,
       },
     });
+
+    if (user) {
+      // Cache for 1 hour (3600s)
+      await setCache(userId, "user", user, "all", 3600);
+    }
 
     if (!user) {
       return NextResponse.json(
