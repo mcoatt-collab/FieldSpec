@@ -81,7 +81,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen relative">
+    <div className="flex flex-col min-h-screen relative">
       {/* Light Overlay - covers entire screen when dropdown or modal is open */}
       {(showDropdown || showLogoutModal) && (
         <div
@@ -101,154 +101,158 @@ export default function DashboardLayout({
         />
       )}
 
-      <aside
-        className="w-64 flex-shrink-0 flex flex-col"
+      {/* Header with Avatar */}
+      <header
+        className="flex items-center justify-between"
         style={{
+          padding: "12px 32px",
           backgroundColor: tokens.colors.surfaceContainerLow,
-          borderRight: `1px solid ${tokens.colors.outlineVariant}`,
+          borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+          zIndex: 50,
         }}
       >
-        <div
-          className="p-lg"
-          style={{ borderBottom: `1px solid ${tokens.colors.outlineVariant}` }}
-        >
-          <Brand size="md" />
-        </div>
+        <Brand size="md" />
+        
+        <div className="relative" ref={dropdownRef}>
+          {/* Material 3 Avatar Button */}
+          <button
+            ref={avatarButtonRef}
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center justify-center rounded-full transition-all duration-200 hover:scale-105"
+            style={{
+              width: "40px",
+              height: "40px",
+              backgroundColor: tokens.colors.primaryContainer,
+              color: tokens.colors.onPrimaryContainer,
+              border: "none",
+              cursor: "pointer",
+              ...tokens.typography.labelLarge,
+            }}
+            aria-label="Account menu"
+          >
+            {getInitials(userName)}
+          </button>
 
-        <nav className="flex-1 flex flex-col p-md gap-xs">
-          {navItems.map((item) => {
-            const isActive = item.href === pathname;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-md p-md rounded-full no-underline transition-all duration-200 ${
-                  isActive
-                    ? "bg-secondary-container text-on-secondary-container"
-                    : "text-on-surface-variant hover:bg-secondary-container/50"
-                }`}
-                style={{
-                  ...tokens.typography.labelLarge,
-                }}
-              >
-                <span className="material-icons" style={{ fontSize: "24px" }}>
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      <div className="flex-1 flex flex-col">
-        {/* Header with Avatar */}
-        <header
-          className="h-16 flex items-center justify-end px-lg"
-          style={{
-            backgroundColor: tokens.colors.surfaceContainerLow,
-            borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
-            zIndex: 50,
-          }}
-        >
-          <div className="relative" ref={dropdownRef}>
-            {/* Material 3 Avatar Button */}
-            <button
-              ref={avatarButtonRef}
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center justify-center rounded-full transition-all duration-200 hover:scale-105"
+          {/* Dropdown Menu - Material 3 Style */}
+          {showDropdown && (
+            <div
+              className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden"
               style={{
-                width: "40px",
-                height: "40px",
-                backgroundColor: tokens.colors.primaryContainer,
-                color: tokens.colors.onPrimaryContainer,
-                border: "none",
-                cursor: "pointer",
-                ...tokens.typography.labelLarge,
+                backgroundColor: tokens.colors.surfaceContainerHigh,
+                boxShadow: tokens.elevation.level2,
+                minWidth: "200px",
+                zIndex: 100,
               }}
-              aria-label="Account menu"
             >
-              {getInitials(userName)}
-            </button>
-
-            {/* Dropdown Menu - Material 3 Style */}
-            {showDropdown && (
+              {/* User Info Section */}
               <div
-                className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden"
+                className="px-md py-md"
                 style={{
-                  backgroundColor: tokens.colors.surfaceContainerHigh,
-                  boxShadow: tokens.elevation.level2,
-                  minWidth: "200px",
-                  zIndex: 100,
+                  borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
                 }}
               >
-                {/* User Info Section */}
-                <div
-                  className="px-md py-md"
+                <p
+                  className="truncate"
                   style={{
-                    borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+                    ...tokens.typography.labelLarge,
+                    color: tokens.colors.onSurface,
                   }}
                 >
-                  <p
-                    className="truncate"
-                    style={{
-                      ...tokens.typography.labelLarge,
-                      color: tokens.colors.onSurface,
-                    }}
-                  >
-                    {userName}
-                  </p>
-                  <p
-                    className="truncate"
-                    style={{
-                      ...tokens.typography.labelSmall,
-                      color: tokens.colors.onSurfaceVariant,
-                    }}
-                  >
-                    Signed in
-                  </p>
-                </div>
-
-                {/* Menu Items */}
-                <div className="py-sm">
-                  <button
-                    onClick={() => {
-                      setShowDropdown(false);
-                      setShowLogoutModal(true);
-                    }}
-                    className="flex items-center gap-md w-full px-md py-sm text-left transition-colors"
-                    style={{
-                      color: tokens.colors.error,
-                      border: "none",
-                      background: "transparent",
-                      cursor: "pointer",
-                      ...tokens.typography.labelLarge,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        tokens.colors.errorContainer;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                    }}
-                  >
-                    <span
-                      className="material-icons"
-                      style={{ fontSize: "20px" }}
-                    >
-                      logout
-                    </span>
-                    Logout
-                  </button>
-                </div>
+                  {userName}
+                </p>
+                <p
+                  className="truncate"
+                  style={{
+                    ...tokens.typography.labelSmall,
+                    color: tokens.colors.onSurfaceVariant,
+                  }}
+                >
+                  Signed in
+                </p>
               </div>
-            )}
-          </div>
-        </header>
+
+              {/* Menu Items */}
+              <div className="py-sm">
+                <button
+                  onClick={() => {
+                    setShowDropdown(false);
+                    setShowLogoutModal(true);
+                  }}
+                  className="flex items-center gap-md w-full px-md py-sm text-left transition-colors"
+                  style={{
+                    color: tokens.colors.error,
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    ...tokens.typography.labelLarge,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      tokens.colors.errorContainer;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <span
+                    className="material-icons"
+                    style={{ fontSize: "20px" }}
+                  >
+                    logout
+                  </span>
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div className="flex-1 flex overflow-hidden px-lg">
+        <aside
+          className="flex-shrink-0 flex flex-col"
+          style={{
+            width: "calc(280px)",
+            backgroundColor: tokens.colors.surfaceContainerLow,
+            borderRight: `1px solid ${tokens.colors.outlineVariant}`,
+          }}
+        >
+          <nav className="flex-1 flex flex-col p-sm gap-xs mt-md">
+            {navItems.map((item) => {
+              const isActive = item.href === pathname;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center rounded-md no-underline transition-all duration-200 ${
+                    isActive
+                      ? "bg-secondary-container text-on-secondary-container"
+                      : "text-on-surface-variant hover:bg-secondary-container/50"
+                  }`}
+                  style={{
+                    ...tokens.typography.labelLarge,
+                    padding: "12px",
+                    gap: "calc(0.25rem * 3)",
+                    fontSize: "16px",
+                  }}
+                >
+                  <span className="material-icons" style={{ fontSize: "20px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
 
         <main
           className="flex-1 overflow-y-auto"
-          style={{ backgroundColor: tokens.colors.surface }}
+          style={{ 
+            backgroundColor: tokens.colors.surface,
+            padding: "8px",
+            marginTop: "16px"
+          }}
         >
           {children}
         </main>

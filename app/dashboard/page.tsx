@@ -2,9 +2,9 @@
 
 export default function DashboardPage() {
   return (
-    <div className="p-lg max-w-[1200px]">
+    <div className="max-w-[1200px]">
       <div className="mb-xl">
-        <h2 className="text-on-surface text-headline-medium">
+        <h2 className="text-on-surface text-headline-small">
           Dashboard
         </h2>
         <p className="text-on-surface-variant mt-xs text-body-medium">

@@ -73,7 +73,7 @@ export default function ClientsPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: tokens.spacing.lg, maxWidth: "1200px" }}>
+      <div style={{ maxWidth: "1200px" }}>
         <div style={{ padding: tokens.spacing.xl, textAlign: "center", color: tokens.colors.onSurfaceVariant, ...tokens.typography.bodyLarge }}>
           Loading...
         </div>
@@ -82,7 +82,7 @@ export default function ClientsPage() {
   }
 
   return (
-    <div style={{ padding: tokens.spacing.lg, maxWidth: "1200px" }}>
+    <div style={{ maxWidth: "1200px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: tokens.spacing.xl, flexWrap: "wrap", gap: tokens.spacing.md }}>
         <div>
           <h2 style={{ ...tokens.typography.headlineMedium, color: tokens.colors.onSurface }}>

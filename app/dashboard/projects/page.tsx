@@ -105,7 +105,6 @@ export default function ProjectsPage() {
   return (
     <div
       style={{
-        padding: tokens.spacing.lg,
         maxWidth: "1000px",
       }}
     >
