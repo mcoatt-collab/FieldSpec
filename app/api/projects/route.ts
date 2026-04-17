@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+import { getCache, setCache, invalidateResourceCache } from "@/lib/cache";
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -19,6 +20,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Try to get from cache first
+    const cachedProjects = await getCache(userId, "projects");
+    if (cachedProjects) {
+      return NextResponse.json({ data: cachedProjects, _cached: true }, { status: 200 });
+    }
+
     const projects = await prisma.project.findMany({
       where: { userId },
       select: {
@@ -30,6 +37,9 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { createdAt: "desc" },
     });
+
+    // Save to cache
+    await setCache(userId, "projects", projects);
 
     return NextResponse.json({ data: projects }, { status: 200 });
   } catch (error) {
@@ -91,6 +101,9 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     });
+
+    // Invalidate cache
+    await invalidateResourceCache(userId, "projects");
 
     return NextResponse.json({ data: project }, { status: 201 });
   } catch (error) {
