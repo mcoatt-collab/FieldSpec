@@ -1,17 +1,70 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fieldspec-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://flyspec:flyspec_password@postgres:5432/flyspec
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - MAPBOX_TOKEN=${MAPBOX_TOKEN}
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
   postgres:
     image: postgres:16-alpine
-    container_name: flyspec-db
+    container_name: fieldspec-db
     environment:
       POSTGRES_USER: flyspec
-      POSTGRES_PASSWORD: flyspec_dev_password
+      POSTGRES_PASSWORD: flyspec_password
       POSTGRES_DB: flyspec
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: fieldspec-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fieldspec-worker
+    command: npm run worker:ai
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://flyspec:flyspec_password@postgres:5432/flyspec
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine

@@ -6,8 +6,10 @@ import { generateToken, hashToken } from "../lib/auth/token";
 import { signJWT } from "../lib/auth/jwt";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../services/email/email.service";
 
-const TOKEN_TYPE_EMAIL_VERIFICATION = "email_verification";
-const TOKEN_TYPE_PASSWORD_RESET = "password_reset";
+const TokenType = {
+  email_verification: "email_verification",
+  password_reset: "password_reset",
+} as const;
 
 const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/fieldspec";
 const pool = new pg.Pool({ connectionString });
@@ -49,7 +51,7 @@ async function testSignup() {
     data: {
       userId: user.id,
       tokenHash: tokenData.hash,
-      type: TOKEN_TYPE_EMAIL_VERIFICATION,
+      type: TokenType.email_verification,
       expiresAt: tokenData.expiresAt,
     },
   });
@@ -64,7 +66,7 @@ async function testEmailVerification(userId: string, tokenHash: string) {
   const authToken = await prisma.authToken.findFirst({
     where: {
       tokenHash,
-      type: TOKEN_TYPE_EMAIL_VERIFICATION,
+      type: TokenType.email_verification,
       isUsed: false,
     },
     include: { user: true },
@@ -143,7 +145,7 @@ async function testForgotPassword(email: string) {
     data: {
       userId: user.id,
       tokenHash: tokenData.hash,
-      type: TOKEN_TYPE_PASSWORD_RESET,
+      type: TokenType.password_reset,
       expiresAt: tokenData.expiresAt,
     },
   });
@@ -159,7 +161,7 @@ async function testResetPassword(tokenRaw: string, newPassword: string) {
   const authToken = await prisma.authToken.findFirst({
     where: {
       tokenHash,
-      type: TOKEN_TYPE_PASSWORD_RESET,
+      type: TokenType.password_reset,
       isUsed: false,
     },
     include: { user: true },
@@ -236,7 +238,7 @@ async function main() {
       data: {
         userId: user.id,
         tokenHash: resetToken.hash,
-        type: TOKEN_TYPE_PASSWORD_RESET,
+        type: TokenType.password_reset,
         expiresAt: resetToken.expiresAt,
       },
     });

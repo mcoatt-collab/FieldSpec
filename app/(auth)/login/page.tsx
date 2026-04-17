@@ -8,7 +8,6 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -41,12 +40,9 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-[400px] p-lg bg-surface rounded-md">
-      <h1 className="text-center mb-xs text-on-surface tracking-normal" style={{ fontSize: "28px", fontWeight: "600", lineHeight: "36px" }}>
+      <h1 className="text-center mb-lg text-on-surface text-headline-medium tracking-normal">
         Welcome Back
       </h1>
-      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
-        Sign in to your account
-      </p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-md">
@@ -58,57 +54,34 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-primary text-body-medium"
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
           />
         </div>
 
         <div className="mb-lg">
-          <div className="flex justify-between mb-xs">
-            <label className="text-on-surface text-label-medium">
-              Password <span className="text-primary">*</span>
-            </label>
-            <Link href="/forgot-password" className="text-primary text-label-small" style={{ textDecoration: "none" }}>
-              Forgot Password?
-            </Link>
-          </div>
-          <div 
-            className="flex items-center border border-outline rounded-sm"
-            style={{ 
-              borderColor: "var(--sys-outline)",
-              transition: "border-color 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-outline)";
-            }}
-          >
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="flex-1 box-border px-md py-sm border-none text-on-surface focus:outline-none text-body-medium bg-transparent"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="px-sm py-sm cursor-pointer flex items-center justify-center bg-transparent border-none"
-              style={{ color: "var(--sys-outline)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--sys-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--sys-outline)";
-              }}
-            >
-              <span className="material-icons" style={{ fontSize: "16px" }}>
-                {showPassword ? "visibility_off" : "visibility"}
-              </span>
-            </button>
-          </div>
+          <label className="block mb-xs text-on-surface text-label-medium">
+            Password <span className="text-primary">*</span>
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+          />
         </div>
+
+        <style jsx>{`
+          input {
+            transition: box-shadow 0.2s ease;
+          }
+          input:focus {
+            box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.08);
+          }
+          input:disabled {
+            box-shadow: none;
+          }
+        `}</style>
 
         {error && (
           <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
@@ -119,33 +92,17 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
-          style={{ transition: "background-color 0.2s ease, transform 0.2s ease", border: "none", textDecoration: "none" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-add-on-primary-fixed)";
-            e.currentTarget.style.color = "var(--sys-primary)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-primary)";
-            e.currentTarget.style.color = "var(--sys-on-primary)";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.outline = "none";
-          }}
+          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
+          style={{ padding: "16px" }}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
-      <div className="my-md flex items-center">
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+      <div className="mt-md mb-xs flex items-center">
+        <div className="flex-1 h-px bg-outline"></div>
         <span className="px-sm text-on-surface-variant text-label-medium">or</span>
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+        <div className="flex-1 h-px bg-outline"></div>
       </div>
 
       <button
@@ -163,9 +120,8 @@ export default function LoginPage() {
       </button>
 
       <div className="mt-md text-center text-on-surface-variant text-body-small">
-        Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-primary" style={{ textDecoration: "none" }}>
-          Sign up
+        <Link href="/signup" className="text-primary">
+          Don&apos;t have an account? Sign up
         </Link>
       </div>
     </div>

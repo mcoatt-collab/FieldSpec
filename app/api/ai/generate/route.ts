@@ -232,8 +232,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const untaggedImages = project.images.filter(img => !img.category || img.category === "general");
-    const imagesWithNotes = project.images.filter(img => img.notes);
+    const untaggedImages = project.images.filter((img: { category: string | null }) => !img.category || img.category === "general");
+    const imagesWithNotes = project.images.filter((img: { notes: string | null }) => img.notes);
 
     const isLargeProject = project.images.length > LARGE_PROJECT_THRESHOLD;
 
