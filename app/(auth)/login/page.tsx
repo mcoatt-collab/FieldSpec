@@ -10,6 +10,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [focused, setFocused] = useState({ email: false, password: false });
+
+  const emailError = touched.email && !email ? "Email is required" : "";
+  const passwordError = touched.password && !password ? "Password is required" : "";
+  
+  const showEmailBorder = emailError && !focused.email;
+  const showPasswordBorder = passwordError && !focused.password;
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (e.target.value) {
+      setTouched({ ...touched, email: false });
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (e.target.value) {
+      setTouched({ ...touched, password: false });
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,7 +62,32 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-[400px] p-lg bg-surface rounded-md">
-      <h1 className="text-center mb-lg text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)" }}>
+      <style jsx>{`
+        input {
+          transition: box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        input:focus {
+          box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.08);
+        }
+        input:disabled {
+          box-shadow: none;
+        }
+        input:not(:placeholder-shown):not(:focus) {
+          background-color: var(--sys-primary-container);
+          color: var(--sys-on-primary-container);
+        }
+        button[type="submit"]:hover:not(:disabled) {
+          background-color: var(--sys-primary-container);
+          color: var(--sys-on-primary-container);
+        }
+        button[type="submit"]:active:not(:disabled) {
+          background-color: var(--sys-primary-container);
+          color: var(--sys-on-primary-container);
+          box-shadow: none;
+          transform: translateY(1px);
+        }
+      `}</style>
+      <h1 className="text-center mb-lg text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
         Welcome Back
       </h1>
 
@@ -52,11 +99,18 @@ export default function LoginPage() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
+            onFocus={() => setFocused({ ...focused, email: true })}
+            onBlur={() => { setFocused({ ...focused, email: false }); setTouched({ ...touched, email: true }); }}
             required
             placeholder=" "
+            autoComplete="off"
             className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            style={showEmailBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
+          {emailError && (
+            <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{emailError}</p>
+          )}
         </div>
 
         <div className="mb-lg">
@@ -66,28 +120,21 @@ export default function LoginPage() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
+            onFocus={() => setFocused({ ...focused, password: true })}
+            onBlur={() => { setFocused({ ...focused, password: false }); setTouched({ ...touched, password: true }); }}
             required
             placeholder=" "
+            autoComplete="off"
             className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            style={showPasswordBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
+          {passwordError && (
+            <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{passwordError}</p>
+          )}
         </div>
 
-        <style jsx>{`
-          input {
-            transition: box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-          }
-          input:focus {
-            box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.08);
-          }
-          input:disabled {
-            box-shadow: none;
-          }
-          input:not(:placeholder-shown):not(:focus) {
-            background-color: var(--sys-primary-container);
-            color: var(--sys-on-primary-container);
-          }
-        `}</style>
+
 
         {error && (
           <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
@@ -98,14 +145,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
-          style={{ padding: "16px" }}
+          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large transition-all duration-200"
+          style={{ padding: "12px 16px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
         >
+
           {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
-      <div className="mt-md mb-xs flex items-center">
+      <div className="mt-sm mb-sm flex items-center">
         <div className="flex-1 h-px bg-outline"></div>
         <span className="px-sm text-on-surface-variant text-label-medium">or</span>
         <div className="flex-1 h-px bg-outline"></div>
@@ -114,7 +162,8 @@ export default function LoginPage() {
       <button
         type="button"
         onClick={() => window.location.href = "/api/auth/oauth/google"}
-        className="w-full flex items-center justify-center gap-sm py-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors"
+        className="w-full flex items-center justify-center gap-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors cursor-pointer"
+        style={{ paddingTop: "10px", paddingBottom: "10px" }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
