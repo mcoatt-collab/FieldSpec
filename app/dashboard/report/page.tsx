@@ -571,7 +571,7 @@ export default function ReportPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: tokens.spacing.lg, maxWidth: "1200px" }}>
+      <div style={{ maxWidth: "1200px" }}>
         <div
           style={{
             padding: tokens.spacing.xl,
@@ -587,7 +587,7 @@ export default function ReportPage() {
   }
 
   return (
-    <div style={{ padding: tokens.spacing.lg, maxWidth: "1200px" }}>
+    <div style={{ maxWidth: "1200px" }}>
       <div style={{ marginBottom: tokens.spacing.xl }}>
         <h2
           style={{

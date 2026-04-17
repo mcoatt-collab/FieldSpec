@@ -270,7 +270,6 @@ export default function UploadPage() {
     return (
       <div
         style={{
-          padding: tokens.spacing.lg,
           maxWidth: "1200px",
         }}
       >
@@ -291,7 +290,6 @@ export default function UploadPage() {
   return (
     <div
       style={{
-        padding: tokens.spacing.lg,
         maxWidth: "1200px",
       }}
     >
