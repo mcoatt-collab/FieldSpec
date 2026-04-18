@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+import { getCache, setCache, invalidateResourceCache } from "@/lib/cache";
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -19,6 +20,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Try to get from cache first
+    const cachedProjects = await getCache(userId, "projects");
+    if (cachedProjects) {
+      return NextResponse.json({ data: cachedProjects, _cached: true }, { status: 200 });
+    }
+
     const projects = await prisma.project.findMany({
       where: { userId },
       select: {
@@ -27,11 +34,34 @@ export async function GET(request: NextRequest) {
         status: true,
         photoCount: true,
         createdAt: true,
+        _count: {
+          select: { images: true },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ data: projects }, { status: 200 });
+    // Self-healing: Ensure photoCount is in sync with actual image count
+    const reconciledProjects = await Promise.all(
+      projects.map(async (p) => {
+        const actualCount = p._count.images;
+        if (p.photoCount !== actualCount) {
+          console.log(`[Self-Healing] Rectifying Project ${p.id}: ${p.photoCount} -> ${actualCount}`);
+          // Update the database core record
+          await prisma.project.update({
+            where: { id: p.id },
+            data: { photoCount: actualCount },
+          });
+          return { ...p, photoCount: actualCount };
+        }
+        return p;
+      })
+    );
+
+    // Save to cache
+    await setCache(userId, "projects", reconciledProjects);
+
+    return NextResponse.json({ data: reconciledProjects }, { status: 200 });
   } catch (error) {
     console.error("GET projects error:", error);
     return NextResponse.json(
@@ -91,6 +121,9 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     });
+
+    // Invalidate cache
+    await invalidateResourceCache(userId, "projects");
 
     return NextResponse.json({ data: project }, { status: 201 });
   } catch (error) {

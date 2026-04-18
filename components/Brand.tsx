@@ -23,6 +23,7 @@ export default function Brand({ className = "", size = "md" }: BrandProps) {
         height={currentSize.img}
         className="object-contain"
         style={{ border: "none" }}
+        priority
       />
       <span className={`text-primary font-bold ${currentSize.text}`}>
         FieldSpec
