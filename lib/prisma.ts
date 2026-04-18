@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSQLite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import Database from "better-sqlite3";
 
 const globalForPrisma = globalThis as unknown as {
@@ -8,8 +8,7 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env["DATABASE_URL"] || "./dev.db";
-  const client = new Database(connectionString);
-  const adapter = new PrismaBetterSQLite3(client);
+  const adapter = new PrismaBetterSqlite3({ url: connectionString });
   return new PrismaClient({ adapter });
 }
 
