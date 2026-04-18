@@ -32,7 +32,9 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         .btn-text { text-decoration: none; transition: color 0.3s ease; }
         .social-icon { color: rgba(255, 255, 255, 0.8); transition: color 0.3s ease; }
         .social-icon:hover { color: #FFFFFF !important; }
-        .desktop-nav { display: flex; align-items: center; margin-left: auto; }
+        .desktop-nav { display: flex; align-items: center; gap: ${tokens.spacing.xl}; }
+        .nav-center { display: flex; alignItems: center; gap: ${tokens.spacing.xl}; flex: 1; justify-content: center; }
+        .nav-actions { display: flex; align-items: center; gap: ${tokens.spacing.md}; }
         .hamburger-menu { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 101; }
         .hamburger-menu span { width: 100%; height: 3px; background: #FFFFFF; border-radius: 2px; transition: all 0.3s ease; }
         .hamburger-menu span:nth-child(1) { transform-origin: 0% 0%; }
@@ -54,43 +56,47 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         <Brand size="md" variant="white" />
       </Link>
       
-      {/* Desktop Navigation */}
+      {/* Desktop Navigation - Centered */}
       <div className="desktop-nav">
-        <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginRight: tokens.spacing.lg }}>
-          Features
-        </Link>
-        <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginRight: tokens.spacing.lg }}>
-          How It Works
-        </Link>
-        <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginRight: tokens.spacing.lg }}>
-          Use Cases
-        </Link>
-        <Link 
-          href="/login" 
-          className="btn-text" 
-          onMouseEnter={() => onPrefetch("/login")}
-          onTouchStart={() => onPrefetch("/login")}
-          style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginRight: tokens.spacing.md }}
-        >
-          Log In
-        </Link>
-        <Link 
-          href="/signup" 
-          className="btn-primary" 
-          onMouseEnter={() => onPrefetch("/signup")}
-          onTouchStart={() => onPrefetch("/signup")}
-          style={{
-            padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-            backgroundColor: "#FFFFFF",
-            color: "#31579b",
-            textDecoration: "none",
-            borderRadius: tokens.radius.md,
-            ...tokens.typography.labelLarge,
-            fontWeight: "600",
-          }}
-        >
-          Get Started
-        </Link>
+        <div className="nav-center">
+          <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            Features
+          </Link>
+          <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            How It Works
+          </Link>
+          <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            Use Cases
+          </Link>
+        </div>
+        <div className="nav-actions">
+          <Link 
+            href="/login" 
+            className="btn-text" 
+            onMouseEnter={() => onPrefetch("/login")}
+            onTouchStart={() => onPrefetch("/login")}
+            style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}
+          >
+            Log In
+          </Link>
+          <Link 
+            href="/signup" 
+            className="btn-primary" 
+            onMouseEnter={() => onPrefetch("/signup")}
+            onTouchStart={() => onPrefetch("/signup")}
+            style={{
+              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              backgroundColor: "#FFFFFF",
+              color: "#31579b",
+              textDecoration: "none",
+              borderRadius: tokens.radius.md,
+              ...tokens.typography.labelLarge,
+              fontWeight: "600",
+            }}
+          >
+            Get Started
+          </Link>
+        </div>
       </div>
 
       <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />

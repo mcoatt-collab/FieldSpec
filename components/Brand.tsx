@@ -16,7 +16,7 @@ export default function Brand({ className = "", size = "md", variant = "blue" }:
   };
 
   const currentSize = sizes[size] || sizes.md;
-  const logoSrc = variant === "white" ? "/logo-white.png" : "/logo-blue.png";
+  const logoSrc = variant === "white" ? "/logo-white.png" : variant === "blue" ? "/logo-blue.png" : "/logo.png";
 
   return (
     <div className={`flex items-center ${className}`}>
