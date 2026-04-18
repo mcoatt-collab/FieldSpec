@@ -8,6 +8,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +27,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error?.message || "Login failed");
+        setError("Invalid email or password. If you don't have an account, please create one.");
         setLoading(false);
         return;
       }
@@ -49,45 +50,45 @@ export default function LoginPage() {
           <label className="block mb-xs text-on-surface text-label-medium">
             Email <span className="text-primary">*</span>
           </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder=" "
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
-          />
+          <div className="relative flex items-center">
+            <span className="material-icons absolute left-[12px] text-on-surface-variant" style={{ fontSize: "16px" }}>mail</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder=" "
+              className="w-full box-border pl-[36px] pr-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            />
+          </div>
         </div>
 
         <div className="mb-lg">
           <label className="block mb-xs text-on-surface text-label-medium">
             Password <span className="text-primary">*</span>
           </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder=" "
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
-          />
+          <div className="relative flex items-center">
+            <span className="material-icons absolute left-[12px] text-on-surface-variant" style={{ fontSize: "16px" }}>lock</span>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder=" "
+              className="w-full box-border pl-[36px] pr-[36px] py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-[8px] p-xs text-on-surface-variant hover:text-on-surface cursor-pointer bg-transparent border-none"
+              tabIndex={-1}
+            >
+              <span className="material-icons" style={{ fontSize: "18px" }}>
+                {showPassword ? "visibility" : "visibility_off"}
+              </span>
+            </button>
+          </div>
         </div>
-
-        <style jsx>{`
-          input {
-            transition: box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-          }
-          input:focus {
-            box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.08);
-          }
-          input:disabled {
-            box-shadow: none;
-          }
-          input:not(:placeholder-shown):not(:focus) {
-            background-color: var(--sys-primary-container);
-            color: var(--sys-on-primary-container);
-          }
-        `}</style>
 
         {error && (
           <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
