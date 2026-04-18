@@ -8,6 +8,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
@@ -15,7 +16,7 @@ export default function LoginPage() {
 
   const emailError = touched.email && !email ? "Email is required" : "";
   const passwordError = touched.password && !password ? "Password is required" : "";
-  
+
   const showEmailBorder = touched.email && !email;
   const showPasswordBorder = touched.password && !password;
 
@@ -37,7 +38,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setTouched({ email: true, password: true });
-    
+
     if (!email || !password) {
       return;
     }
@@ -54,7 +55,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError("Incorrect email address or password. Please try again.");
+        setError("Invalid email or password. If you don't have an account, please create one.");
         setLoading(false);
         return;
       }
@@ -93,18 +94,20 @@ export default function LoginPage() {
           transform: translateY(1px);
         }
       `}</style>
-      <h1 className="text-center text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)" }}>
-        Sign In
+      <h1 className="text-center mb-1 text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
+        Welcome Back
       </h1>
-      <p className="text-center text-on-surface-variant text-body-medium" style={{ marginTop: "-32px" }}>
+      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
         Welcome back to FieldSpec
       </p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-md">
-          <label className="block mb-xs text-on-surface text-label-medium">
-            Email <span className="text-primary">*</span>
-          </label>
+          <div className="flex justify-between items-center mb-xs">
+            <label className="text-on-surface text-label-medium">
+              Email <span className="text-primary">*</span>
+            </label>
+          </div>
           <input
             type="email"
             value={email}
@@ -114,7 +117,7 @@ export default function LoginPage() {
             required
             placeholder=" "
             autoComplete="off"
-            className="w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
             style={showEmailBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
           {emailError && (
@@ -140,31 +143,31 @@ export default function LoginPage() {
             required
             placeholder=" "
             autoComplete="off"
-            className="w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
             style={showPasswordBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
           {passwordError && (
             <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{passwordError}</p>
           )}
         </div>
+  {
+    error && (
+      <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
+        {error}
+      </div>
+    )
+  }
 
+  <button
+    type="submit"
+    disabled={loading}
+    className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large transition-all duration-200 hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] -mt-1"
+    style={{ padding: "12px 16px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
+  >
 
-        {error && (
-          <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
-            {error}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large transition-all duration-200 hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] -mt-1"
-          style={{ padding: "12px 16px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
-        >
-
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
+    {loading ? "Signing in..." : "Sign In"}
+  </button>
+      </form >
 
       <div className="mt-sm mb-sm flex items-center">
         <div className="flex-1 h-px bg-outline"></div>
@@ -193,6 +196,6 @@ export default function LoginPage() {
           Sign up
         </Link>
       </div>
-    </div>
+    </div >
   );
 }
