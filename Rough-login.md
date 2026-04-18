@@ -30,3 +30,7 @@ if the user leaves the email field empty and clicks the sign in button, an error
 if the user enters an invalid email address and clicks the sign in button, an error message should be displayed beneath the email field that says "enter a valid email address" this error should use the error color from the design-tokens.css file and the input border should also use the error color from the design-tokens.css file.
 
 the or along with the dividers should be at the middle of the continue with google button and the sign in button
+
+add the forgot password link to the opposite side of the password label text
+
+add a pressed state to the sign in button

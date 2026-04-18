@@ -9,72 +9,13 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  function validateEmail(email: string) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  function validateField(field: string, value: string) {
-    const errors: { name?: string; email?: string; password?: string } = {};
-    
-    if (field === "name" || field === "all") {
-      if (!value.trim()) {
-        errors.name = "This field is required";
-      }
-    }
-    if (field === "email" || field === "all") {
-      if (!value.trim()) {
-        errors.email = "This field is required";
-      } else if (!validateEmail(value)) {
-        errors.email = "Enter a valid email address";
-      }
-    }
-    if (field === "password" || field === "all") {
-      if (!value) {
-        errors.password = "This field is required";
-      } else if (value.length < 8 || !/[A-Z]/.test(value) || !/[0-9]/.test(value) || !/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-        errors.password = "Please meet all password requirements";
-      }
-    }
-    
-    return errors;
-  }
-
-  function handleBlur(field: string) {
-    const fieldValue = field === "name" ? name : field === "email" ? email : password;
-    const errors = validateField(field, fieldValue);
-    setFieldErrors((prev) => ({ ...prev, ...errors }));
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    
-    const errors = validateField("all", "");
-    if (name) errors.name = undefined;
-    if (email) {
-      if (!validateEmail(email)) {
-        errors.email = "Enter a valid email address";
-      } else {
-        errors.email = undefined;
-      }
-    }
-    if (password) errors.password = undefined;
-    
-    setFieldErrors(errors);
-    
-    const hasErrors = Object.values(errors).some(e => e);
-    if (hasErrors) {
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -103,18 +44,8 @@ export default function SignupPage() {
     return (
       <div className="w-full max-w-[400px] p-lg bg-surface rounded-md">
         <div className="text-center">
-          <div 
-            className="mb-md rounded-full inline-flex items-center justify-center"
-            style={{ 
-              width: "64px", 
-              height: "64px", 
-              backgroundColor: "var(--sys-primary)",
-              color: "var(--sys-on-primary)",
-            }}
-          >
-            <span className="material-icons" style={{ fontSize: "32px" }}>check</span>
-          </div>
-          <h1 className="text-center mb-xs text-on-surface tracking-normal" style={{ fontSize: "28px", fontWeight: "600", lineHeight: "36px" }}>
+          <div className="mb-md text-4xl">✓</div>
+          <h1 className="text-center mb-xs text-on-surface text-headline-medium tracking-normal">
             Check Your Email
           </h1>
           <p className="text-center mb-lg text-on-surface-variant text-body-medium">
@@ -133,7 +64,7 @@ export default function SignupPage() {
 
   return (
     <div className="w-full max-w-[400px] p-lg bg-surface rounded-md">
-      <h1 className="text-center mb-xs text-on-surface tracking-normal" style={{ fontSize: "28px", fontWeight: "600", lineHeight: "36px" }}>
+      <h1 className="text-center mb-xs text-on-surface text-headline-medium tracking-normal">
         Create Account
       </h1>
       <p className="text-center mb-lg text-on-surface-variant text-body-medium">
@@ -147,32 +78,11 @@ export default function SignupPage() {
           </label>
           <input
             type="text"
-            autoComplete="new-password"
-            data-form-type="other"
             value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (e.target.value.trim()) {
-                setFieldErrors((prev) => ({ ...prev, name: undefined }));
-              }
-            }}
-            onBlur={() => handleBlur("name")}
-            className="w-full box-border px-md py-sm border rounded-sm text-on-surface focus:outline-primary text-body-medium bg-transparent"
-            style={{ 
-              borderColor: fieldErrors.name ? "var(--sys-error)" : "var(--sys-outline)",
-              transition: "border-color 0.2s ease",
-              backgroundColor: "transparent",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = fieldErrors.name ? "var(--sys-error)" : "var(--sys-outline)";
-            }}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-primary text-body-medium"
           />
-          {fieldErrors.name && (
-            <p className="mt-xs text-error text-label-small">{fieldErrors.name}</p>
-          )}
         </div>
 
         <div className="mb-md">
@@ -181,103 +91,25 @@ export default function SignupPage() {
           </label>
           <input
             type="email"
-            autoComplete="new-email"
-            data-form-type="other"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (e.target.value.trim() && validateEmail(e.target.value)) {
-                setFieldErrors((prev) => ({ ...prev, email: undefined }));
-              }
-            }}
-            onBlur={() => handleBlur("email")}
-            className="w-full box-border px-md py-sm border rounded-sm text-on-surface focus:outline-primary text-body-medium bg-transparent"
-            style={{ 
-              borderColor: fieldErrors.email ? "var(--sys-error)" : "var(--sys-outline)",
-              transition: "border-color 0.2s ease",
-              backgroundColor: "transparent",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = fieldErrors.email ? "var(--sys-error)" : "var(--sys-outline)";
-            }}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-primary text-body-medium"
           />
-          {fieldErrors.email && (
-            <p className="mt-xs text-error text-label-small">{fieldErrors.email}</p>
-          )}
         </div>
 
-        <div className="mb-md">
+        <div className="mb-lg">
           <label className="block mb-xs text-on-surface text-label-medium">
             Password <span className="text-primary">*</span>
           </label>
-          <div 
-            className="flex items-center border rounded-sm"
-            style={{ 
-              borderColor: fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)",
-              transition: "border-color 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)";
-            }}
-          >
-            <input
-              type={showPassword ? "text" : "password"}
-              autoComplete="new-password"
-              data-form-type="other"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (e.target.value) {
-                  setFieldErrors((prev) => ({ ...prev, password: undefined }));
-                }
-              }}
-              onFocus={() => setIsPasswordFocused(true)}
-              onBlur={() => {
-                setIsPasswordFocused(false);
-                handleBlur("password");
-              }}
-              minLength={8}
-              className="flex-1 box-border px-md py-sm border-none text-on-surface focus:outline-none text-body-medium bg-transparent"
-              style={{ 
-                transition: "border-color 0.2s ease",
-                backgroundColor: "transparent",
-                outline: "none",
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="px-sm py-sm cursor-pointer flex items-center justify-center bg-transparent border-none"
-              style={{ color: fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--sys-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)";
-              }}
-            >
-              <span className="material-icons" style={{ fontSize: "16px" }}>
-                {showPassword ? "visibility_off" : "visibility"}
-              </span>
-            </button>
-          </div>
-          {fieldErrors.password && (
-            <p className="mt-xs text-error text-label-small">{fieldErrors.password}</p>
-          )}
-          {isPasswordFocused && (
-            <div className="mt-xs text-on-surface-variant text-label-small flex flex-col gap-1">
-              {password.length < 8 && <span>• Must be at least 8 characters</span>}
-              {!/[A-Z]/.test(password) && <span>• Must contain at least an uppercase letter</span>}
-              {!/[0-9]/.test(password) && <span>• Must contain at least one number</span>}
-              {!/[!@#$%^&*(),.?":{}|<>]/.test(password) && <span>• Must include a special character</span>}
-            </div>
-          )}
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-primary text-body-medium"
+          />
         </div>
 
         {error && (
@@ -289,43 +121,23 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
-          style={{ transition: "background-color 0.2s ease, transform 0.2s ease", border: "none", textDecoration: "none" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-add-on-primary-fixed)";
-            e.currentTarget.style.color = "var(--sys-primary)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-primary)";
-            e.currentTarget.style.color = "var(--sys-on-primary)";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.outline = "none";
-          }}
+          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] transition-all duration-200"
         >
           {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
 
-      <div className="my-md flex items-center">
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+      <div className="mt-sm mb-sm flex items-center">
+        <div className="flex-1 h-px bg-outline"></div>
         <span className="px-sm text-on-surface-variant text-label-medium">or</span>
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+        <div className="flex-1 h-px bg-outline"></div>
       </div>
 
-<button
-          type="button"
-          onClick={() => window.location.href = "/api/auth/oauth/google"}
-          className="w-full flex items-center justify-center gap-sm py-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors"
-          style={{ transition: "background-color 0.2s ease, transform 0.2s ease", outline: "none", boxShadow: "none" }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
-          onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-        >
+      <button
+        type="button"
+        onClick={() => window.location.href = "/api/auth/oauth/google"}
+        className="w-full flex items-center justify-center gap-sm py-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -335,9 +147,9 @@ export default function SignupPage() {
         <span className="text-on-surface text-label-large">Sign up with Google</span>
       </button>
 
-      <div className="mt-md text-center text-on-surface-variant text-body-small">
+      <div className="mt-[20px] text-center text-on-surface-variant text-body-medium">
         Already have an account?{" "}
-        <Link href="/login" className="text-primary" style={{ textDecoration: "none" }}>
+        <Link href="/login" className="text-primary">
           Sign in
         </Link>
       </div>

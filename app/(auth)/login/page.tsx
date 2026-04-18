@@ -16,8 +16,8 @@ export default function LoginPage() {
   const emailError = touched.email && !email ? "Email is required" : "";
   const passwordError = touched.password && !password ? "Password is required" : "";
   
-  const showEmailBorder = emailError && !focused.email;
-  const showPasswordBorder = passwordError && !focused.password;
+  const showEmailBorder = touched.email && !email;
+  const showPasswordBorder = touched.password && !password;
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -36,6 +36,12 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setTouched({ email: true, password: true });
+    
+    if (!email || !password) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -87,9 +93,12 @@ export default function LoginPage() {
           transform: translateY(1px);
         }
       `}</style>
-      <h1 className="text-center mb-lg text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
+      <h1 className="text-center mb-1 text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
         Welcome Back
       </h1>
+      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
+        Welcome back to FieldSpec
+      </p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-md">
@@ -114,9 +123,14 @@ export default function LoginPage() {
         </div>
 
         <div className="mb-lg">
-          <label className="block mb-xs text-on-surface text-label-medium">
-            Password <span className="text-primary">*</span>
-          </label>
+          <div className="flex justify-between items-center mb-xs">
+            <label className="text-on-surface text-label-medium">
+              Password <span className="text-primary">*</span>
+            </label>
+            <Link href="/forgot-password" className="text-primary text-body-small no-underline hover:underline active:underline transition-all duration-200 cursor-pointer">
+              Forgot password?
+            </Link>
+          </div>
           <input
             type="password"
             value={password}
@@ -135,7 +149,6 @@ export default function LoginPage() {
         </div>
 
 
-
         {error && (
           <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
             {error}
@@ -145,7 +158,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large transition-all duration-200"
+          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large transition-all duration-200 hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] -mt-1"
           style={{ padding: "12px 16px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
         >
 
@@ -174,9 +187,10 @@ export default function LoginPage() {
         <span className="text-on-surface text-label-large">Continue with Google</span>
       </button>
 
-      <div className="mt-md text-center text-on-surface-variant text-body-small">
-        <Link href="/signup" className="text-primary">
-          Don&apos;t have an account? Sign up
+      <div className="mt-[20px] text-center text-on-surface-variant text-body-medium">
+        Don&apos;t have an account?{" "}
+        <Link href="/signup" className="text-primary no-underline hover:underline active:underline transition-all duration-200">
+          Sign up
         </Link>
       </div>
     </div>
