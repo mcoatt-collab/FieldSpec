@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { tokens } from "@/lib/design-tokens";
-import Skeleton from "@/components/ui/Skeleton";
 
 interface Project {
   id: string;
@@ -295,28 +294,13 @@ export default function ProjectsPage() {
       {loading ? (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: tokens.spacing.md,
+            padding: tokens.spacing.xl,
+            textAlign: "center",
+            ...tokens.typography.bodyLarge,
+            color: tokens.colors.onSurfaceVariant,
           }}
         >
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              style={{
-                padding: tokens.spacing.lg,
-                backgroundColor: tokens.colors.surface,
-                borderRadius: tokens.radius.lg,
-                boxShadow: tokens.elevation.level1,
-                border: `1px solid ${tokens.colors.outlineVariant}`,
-              }}
-            >
-              <Skeleton width="70%" height="24px" />
-              <div style={{ marginTop: tokens.spacing.sm }}>
-                <Skeleton width="40%" height="16px" />
-              </div>
-            </div>
-          ))}
+          Loading...
         </div>
       ) : projects.length === 0 ? (
         <div

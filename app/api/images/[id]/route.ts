@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
-import { invalidateResourceCache } from "@/lib/cache";
 
 const updateImageSchema = z.object({
   category: z.string().optional(),
@@ -69,9 +68,6 @@ export async function PATCH(
         createdAt: true,
       },
     });
- 
-    // Invalidate images cache
-    await invalidateResourceCache(userId, "images");
 
     return NextResponse.json({ data: updatedImage }, { status: 200 });
   } catch (error) {
@@ -111,16 +107,6 @@ export async function DELETE(
     }
 
     await prisma.image.delete({ where: { id: imageId } });
- 
-    // Decrement photo count on the project
-    await prisma.project.update({
-      where: { id: image.projectId },
-      data: { photoCount: { decrement: 1 } },
-    });
-
-    // Invalidate caches
-    await invalidateResourceCache(userId, "images");
-    await invalidateResourceCache(userId, "projects"); // Dashboard stats changed
 
     return NextResponse.json({ data: { deleted: true } }, { status: 200 });
   } catch (error) {

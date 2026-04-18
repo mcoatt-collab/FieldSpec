@@ -22,16 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
-
-    if (!cloudName || !uploadPreset) {
-      console.error("Missing Cloudinary configuration: CLOUDINARY_CLOUD_NAME or CLOUDINARY_UPLOAD_PRESET");
-      return NextResponse.json(
-        { error: { message: "Cloudinary is not fully configured on the server.", code: "CONFIG_ERROR" } },
-        { status: 500 }
-      );
-    }
-
+    const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || "fieldspec";
     const folder = `fieldspec/${userId}`;
 
     return NextResponse.json({

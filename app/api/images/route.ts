@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
-import { getCache, setCache, invalidateResourceCache } from "@/lib/cache";
 
 const createImageSchema = z.object({
   projectId: z.string().uuid("Invalid project ID"),
@@ -64,10 +63,6 @@ export async function POST(request: NextRequest) {
       data: { photoCount: { increment: 1 } },
     });
 
-    // Invalidate cache
-    await invalidateResourceCache(userId, "images");
-    await invalidateResourceCache(userId, "projects"); // Photo count changed
-
     return NextResponse.json({ data: image }, { status: 201 });
   } catch (error) {
     console.error("POST images error:", error);
@@ -91,13 +86,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get("projectId");
 
-    // Try cache
-    const cacheId = projectId || "all";
-    const cachedImages = await getCache(userId, "images", cacheId);
-    if (cachedImages) {
-      return NextResponse.json({ data: cachedImages, _cached: true }, { status: 200 });
-    }
-
     const where: { project: { userId: string; id?: string } } = {
       project: { userId },
     };
@@ -120,9 +108,6 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { createdAt: "desc" },
     });
-
-    // Save to cache
-    await setCache(userId, "images", images, cacheId);
 
     return NextResponse.json({ data: images }, { status: 200 });
   } catch (error) {

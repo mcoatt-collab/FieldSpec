@@ -1,15 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import Skeleton from "@/components/ui/Skeleton";
-import { tokens } from "@/lib/design-tokens";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ projects: 0, images: 0, reports: 0 });
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
-      setIsLoading(true);
       try {
         const res = await fetch("/api/projects");
         if (res.ok) {
@@ -23,8 +19,6 @@ export default function DashboardPage() {
         }
       } catch (err) {
         console.error("Failed to fetch dashboard stats", err);
-      } finally {
-        setIsLoading(false);
       }
     }
     fetchStats();
@@ -46,45 +40,27 @@ export default function DashboardPage() {
           <p className="text-on-surface-variant text-title-small">
             Total Projects
           </p>
-          <div className="mt-md">
-            {isLoading ? (
-              <Skeleton width="60px" height="32px" />
-            ) : (
-              <p className="text-on-surface text-title-large">
-                {stats.projects}
-              </p>
-            )}
-          </div>
+          <p className="text-on-surface mt-md text-title-large">
+            {stats.projects}
+          </p>
         </div>
 
-        <div className="p-md mb-md bg-surface rounded-md border border-outline-variant">
+        <div className="p-md mb-md bg-surface rounded-md          border border-outline-variant">
           <p className="text-on-surface-variant text-title-small">
             Total Images
           </p>
-          <div className="mt-md">
-            {isLoading ? (
-              <Skeleton width="60px" height="32px" />
-            ) : (
-              <p className="text-on-surface text-title-large">
-                {stats.images}
-              </p>
-            )}
-          </div>
+          <p className="text-on-surface mt-md text-title-large">
+            {stats.images}
+          </p>
         </div>
 
-        <div className="p-md mb-md bg-surface rounded-md border border-outline-variant">
+        <div className="p-md mb-md bg-surface rounded-md          border border-outline-variant">
           <p className="text-on-surface-variant text-title-small">
             Reports Generated
           </p>
-          <div className="mt-md">
-            {isLoading ? (
-              <Skeleton width="60px" height="32px" />
-            ) : (
-              <p className="text-on-surface text-title-large">
-                {stats.reports}
-              </p>
-            )}
-          </div>
+          <p className="text-on-surface mt-md text-title-large">
+            {stats.reports}
+          </p>
         </div>
       </div>
     </div>

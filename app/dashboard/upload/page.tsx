@@ -359,7 +359,7 @@ export default function UploadPage() {
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
               style={{
-                padding: tokens.spacing.sm,
+                padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.md,
                 backgroundColor: tokens.colors.surface,
@@ -393,11 +393,12 @@ export default function UploadPage() {
               display: "block",
               padding: tokens.spacing.xl,
               backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.md,
+              borderRadius: tokens.radius.lg,
+              boxShadow: tokens.elevation.level1,
               textAlign: "center",
               cursor: uploading ? "not-allowed" : "pointer",
               opacity: uploading ? 0.7 : 1,
-              border: `1px dashed ${tokens.colors.outline}`,
+              border: `2px dashed ${tokens.colors.outline}`,
               marginBottom: tokens.spacing.lg,
             }}
           >
@@ -441,7 +442,7 @@ export default function UploadPage() {
                 key={cat.value}
                 onClick={() => setFilter(cat.value)}
                 style={{
-                  padding: "6px 12px",
+                  padding: `${tokens.spacing.xs} ${tokens.spacing.md}`,
                   backgroundColor: filter === cat.value ? tokens.colors.primary : tokens.colors.surface,
                   color: filter === cat.value ? tokens.colors.onPrimary : tokens.colors.onSurface,
                   border: `1px solid ${tokens.colors.outline}`,
@@ -464,15 +465,15 @@ export default function UploadPage() {
               }}
             >
               {filteredImages.map((image) => (
-                  <div
-                    key={image.id}
-                    style={{
-                      borderRadius: tokens.radius.md,
-                      overflow: "hidden",
-                      backgroundColor: tokens.colors.surface,
-                      border: `1px solid ${tokens.colors.outlineVariant}`,
-                    }}
-                  >
+                <div
+                  key={image.id}
+                  style={{
+                    borderRadius: tokens.radius.lg,
+                    overflow: "hidden",
+                    boxShadow: tokens.elevation.level1,
+                    backgroundColor: tokens.colors.surface,
+                  }}
+                >
                   <div style={{ position: "relative" }}>
                     <img
                       src={image.thumbnailUrl}
@@ -516,7 +517,7 @@ export default function UploadPage() {
                       onChange={(e) => handleCategoryChange(image.id, e.target.value)}
                       style={{
                         width: "100%",
-                        padding: tokens.spacing.sm,
+                        padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
                         border: `1px solid ${tokens.colors.outline}`,
                         borderRadius: tokens.radius.sm,
                         backgroundColor: getCategoryColor(image.category),
