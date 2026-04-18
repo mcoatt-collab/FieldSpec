@@ -65,34 +65,48 @@ export default function MarketingPage() {
   return (
     <main style={{ flex: 1 }}>
       {/* Navigation */}
-       <nav style={{
-         padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-         borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
-         display: "flex",
-         justifyContent: "space-between",
-         alignItems: "center",
-         backgroundColor: tokens.colors.surface,
-         position: "sticky",
-         top: 0,
-         zIndex: 100,
-       }}>
-         <style>{`
-           .nav-link:hover { color: ${tokens.colors.primary} !important; }
-           .nav-link { text-decoration: none; transition: color 0.3s ease; }
-           .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
-           .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-           .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
-           .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
-           .btn-text:hover { color: ${tokens.colors.primary} !important; }
-           .btn-text { text-decoration: none; transition: color 0.3s ease; }
-            .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
-            .social-icon:hover { color: ${tokens.colors.primary} !important; }
-            /* Desktop navigation */
-            .desktop-nav {
-              display: flex;
-              align-items: center;
-              margin-left: auto;
-            }
+      <nav style={{
+        padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
+        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#31579b",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+      }}>
+        <style>{`
+            .nav-link:hover { color: rgba(255, 255, 255, 0.7) !important; }
+            .nav-link { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; }
+            .btn-primary:hover { background-color: rgba(255, 255, 255, 0.9) !important; }
+            .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
+            .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+            .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: #FFFFFF !important; }
+            .btn-text:hover { color: rgba(255, 255, 255, 0.7) !important; }
+            .btn-text { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; }
+             .social-icon { color: rgba(255, 255, 255, 0.8); transition: color 0.3s ease; }
+             .social-icon:hover { color: #FFFFFF !important; }
+             /* Desktop navigation - Brand left, nav-center centered, nav-right right */
+             .desktop-nav {
+               display: flex;
+               flex: 1;
+               justify-content: space-between;
+               align-items: center;
+             }
+             .nav-center {
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               flex: 1;
+               gap: ${tokens.spacing.lg};
+             }
+             .nav-right {
+               display: flex;
+               align-items: center;
+               gap: ${tokens.spacing.md};
+               margin-left: auto;
+             }
             /* Hamburger menu styles */
            .hamburger-menu {
              display: flex;
@@ -109,7 +123,7 @@ export default function MarketingPage() {
            .hamburger-menu span {
              width: 100%;
              height: 3px;
-             background: ${tokens.colors.onSurface};
+             background: #FFFFFF;
              border-radius: 2px;
              transition: all 0.3s ease;
            }
@@ -131,9 +145,9 @@ export default function MarketingPage() {
               top: 100%;
               left: 0;
               width: 100%;
-              background: ${tokens.colors.surface};
-              border-bottom: 1px solid ${tokens.colors.outlineVariant};
-              box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+              background: #31579b;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              box-shadow: 0 8px 16px rgba(0,0,0,0.2);
               padding: ${tokens.spacing.lg};
               display: flex;
               flex-direction: column;
@@ -151,13 +165,13 @@ export default function MarketingPage() {
               max-height: 500px;
             }
             .dropdown-link {
-              color: ${tokens.colors.onSurfaceVariant};
+              color: #FFFFFF;
               text-decoration: none;
               padding: ${tokens.spacing.sm} 0;
               transition: color 0.3s ease;
             }
             .dropdown-link:hover {
-              color: ${tokens.colors.primary} !important;
+              color: rgba(255, 255, 255, 0.7) !important;
             }
            .dropdown-actions {
              display: flex;
@@ -185,83 +199,91 @@ export default function MarketingPage() {
               }
             }
           `}</style>
-          <Brand size="md" />
-          {/* Desktop Navigation */}
-          <div className="desktop-nav">
-            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant, marginRight: tokens.spacing.lg }}>
+        <Brand size="md" variant="white" />
+        {/* Desktop Navigation */}
+        <div className="desktop-nav">
+          <div className="nav-center">
+            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
               Features
             </Link>
-            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant, marginRight: tokens.spacing.lg }}>
+            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
               How It Works
             </Link>
-            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant, marginRight: tokens.spacing.lg }}>
+            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
               Use Cases
             </Link>
-            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginRight: tokens.spacing.md }}>
+          </div>
+          <div className="nav-right">
+            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
               Log In
             </Link>
             <Link href="/signup" className="btn-primary" style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
+              backgroundColor: "#FFFFFF",
+              color: "#31579b",
               textDecoration: "none",
               borderRadius: tokens.radius.md,
               ...tokens.typography.labelLarge,
+              fontWeight: "600",
             }}>
               Get Started
             </Link>
           </div>
-          <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />
-           <label htmlFor="menu-toggle" className="hamburger-menu" style={{ marginLeft: "auto" }}>
-             <span></span>
-             <span></span>
-             <span></span>
-           </label>
-         <div className="dropdown-menu">
-            <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-              Features
+        </div>
+        <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />
+        <label htmlFor="menu-toggle" className="hamburger-menu" style={{ marginLeft: "auto" }}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        <div className="dropdown-menu">
+          <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            Features
+          </Link>
+          <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            How It Works
+          </Link>
+          <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            Use Cases
+          </Link>
+          <div className="dropdown-actions">
+            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+              Log In
             </Link>
-            <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-              How It Works
+            <Link href="/signup" className="btn-primary final-cta-btn" style={{
+              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              backgroundColor: "#FFFFFF",
+              color: "#31579b",
+              textDecoration: "none",
+              borderRadius: tokens.radius.md,
+              ...tokens.typography.labelLarge,
+              fontWeight: "600",
+            }}>
+              Get Started
             </Link>
-            <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-              Use Cases
-            </Link>
-           <div className="dropdown-actions">
-             <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface }}>
-               Log In
-             </Link>
-             <Link href="/signup" className="btn-primary" style={{
-               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-               backgroundColor: tokens.colors.primary,
-               color: tokens.colors.onPrimary,
-               textDecoration: "none",
-               borderRadius: tokens.radius.md,
-               ...tokens.typography.labelLarge,
-             }}>
-               Get Started
-             </Link>
-           </div>
-         </div>
-       </nav>
+          </div>
+        </div>
+      </nav>
 
       {/* Hero Section */}
       <section className="hero-section" style={{
         position: "relative",
-        overflow: "hidden",
+        width: "100%",
         height: "100vh",
-        minHeight: "768px",
+        minHeight: "700px",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "transparent",
         textAlign: "center",
+        zIndex: 1,
+        animation: "heroFadeIn 1s ease-out forwards",
       }}>
         {/* Video Background */}
         <div className="hero-video-container">
           <iframe
             className="hero-video"
-            src="https://streamable.com/e/lbw4qo?autoplay=1&loop=1&muted=1"
+            src="https://streamable.com/e/lbw4qo?autoplay=1&loop=1&muted=1&controls=0"
             title="Promotional video background"
             allow="autoplay; encrypted-media; fullscreen"
             allowFullScreen
@@ -279,383 +301,302 @@ export default function MarketingPage() {
             loading="eager"
           />
         </div>
-         {/* Light gradient overlay */}
-         <div style={{
-           position: "absolute",
-           top: 0,
-           left: 0,
-           width: "100%",
-           height: "100%",
-           background: "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%)",
-           zIndex: 1,
-         }} />
-        
+
         {/* Content */}
         <div className="hero-content" style={{
           position: "relative",
           zIndex: 2,
-          maxWidth: "1200px",
+          maxWidth: "1000px",
           width: "100%",
-          padding: "0 24px",
-          marginTop: "-10vh",
+          padding: `0 ${tokens.spacing.lg}`,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          animation: "contentSlideUp 1.2s ease-out forwards",
+          opacity: 0,
+          animationDelay: "0.2s",
         }}>
           <h1 className="hero-title" style={{
             fontFamily: tokens.typography.displayLarge.fontFamily,
-            fontSize: "clamp(3rem, 8vw, 6rem)",
-            fontWeight: 500,
-            color: "var(--ref-neutral-neutral100)",
-            marginBottom: "clamp(1.5rem, 4vw, 2.5rem)",
+            fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+            fontWeight: 600,
+            color: "#FFFFFF",
+            marginBottom: tokens.spacing.lg,
             lineHeight: 1.1,
-            textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+            letterSpacing: "-0.02em",
+            textShadow: "0 4px 12px rgba(0,0,0,0.5)",
           }}>
             Turn Drone Images into<br />
-             <span style={{ color: tokens.colors.primary }}>Professional Reports in Minutes</span>
+            <span style={{ color: "#FFFFFF" }}>Professional Reports in Minutes</span>
           </h1>
           <p className="hero-subcopy" style={{
             fontFamily: tokens.typography.bodyLarge.fontFamily,
-            fontSize: "clamp(1.25rem, 2.5vw, 2rem)",
+            fontSize: "clamp(1.125rem, 2vw, 1.5rem)",
             fontWeight: 400,
-            color: "rgba(255,255,255,0.9)",
-            maxWidth: "800px",
-            margin: "0 auto",
-            marginBottom: "clamp(2rem, 5vw, 3rem)",
-            lineHeight: 1.6,
-            textShadow: "0 1px 5px rgba(0,0,0,0.2)",
+            color: "#FFFFFF",
+            maxWidth: "700px",
+            marginBottom: tokens.spacing.xl,
+            lineHeight: 1.5,
+            textShadow: "0 2px 8px rgba(0,0,0,0.6)",
           }}>
             Upload your drone images. Let AI analyze them. Export structured reports ready for stakeholders. No manual work required.
           </p>
           <div className="hero-buttons" style={{
             display: "flex",
-            gap: "clamp(1rem, 2vw, 1.5rem)",
+            gap: tokens.spacing.md,
             justifyContent: "center",
             flexWrap: "wrap",
           }}>
-            <Link href="/signup" className="hero-primary-btn">
+            <Link href="/signup" className="hero-btn-primary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
               Get Started
             </Link>
-            <Link href="/login" className="hero-outline-btn">
-              Log In
+            <Link href="/login" className="hero-btn-secondary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+              Request Demo
             </Link>
           </div>
         </div>
-        
-        {/* Responsive CSS */}
-        <style dangerouslySetInnerHTML={{ __html: `
-            .hero-video-container {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              overflow: hidden;
-              z-index: 0;
-              background-color: #000000; /* Fallback background */
-            }
-            .hero-video {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              min-width: 100%;
-              min-height: 100%;
-              width: auto;
-              height: auto;
-              transform: translate(-50%, -50%) scale(1.1); /* Slight zoom for better coverage */
-              object-fit: cover;
-              object-position: center center;
-               background-color: #000000;
-               border: none;
-               margin: 0;
-               padding: 0;
-               opacity: 1;
-                pointer-events: none;
-             }
-             /* Image background */
-             .hero-image-container {
-               position: absolute;
-               top: 0;
-               left: 0;
-               width: 100%;
-               height: 100%;
-               overflow: hidden;
-               z-index: 0;
-               background-color: #000000;
-               display: none;
-             }
-              .hero-image {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                min-width: 100%;
-                min-height: 100%;
-                width: auto;
-                height: auto;
-                transform: translate(-50%, -50%) scale(1.1);
-                 object-fit: cover;
-                 object-position: center center;
-                 opacity: 1;
-               }
-           .hero-primary-btn {
-             padding: clamp(1rem, 2vw, 1.25rem) clamp(2rem, 4vw, 3rem);
-             background-color: var(--sys-primary);
-             color: var(--ref-neutral-neutral100);
-             text-decoration: none;
-             border-radius: var(--sys-radius-md);
-             font-family: var(--sys-typescale-label-large-fontfamily);
-             font-size: clamp(1rem, 1.5vw, 1.25rem);
-             font-weight: 600;
-             border: none;
-             cursor: pointer;
-             transition: background-color 0.2s;
-             box-shadow: 0 4px 12px rgba(49, 95, 155, 0.3);
-             display: inline-block;
-           }
-           .hero-primary-btn:hover {
-             background-color: var(--ref-primary-primary30);
-           }
-          .hero-outline-btn {
-            padding: clamp(1rem, 2vw, 1.25rem) clamp(2rem, 4vw, 3rem);
+
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          @keyframes heroFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes contentSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          .hero-video-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            background-color: #000;
+          }
+          .hero-video {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%) scale(1.1);
+            object-fit: cover;
+            object-position: center center;
+            border: none;
+            pointer-events: none;
+          }
+          .hero-image-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            background-color: #000;
+            display: none;
+          }
+          .hero-image {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+          }
+
+          /* Token-Based Primary Button */
+          .hero-btn-primary {
+            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
+            background-color: var(--sys-primary);
+            color: var(--sys-on-primary);
+            text-decoration: none;
+            border-radius: var(--sys-radius-md);
+            font-family: var(--sys-typescale-label-large-fontfamily);
+            font-size: var(--sys-typescale-label-large-fontsize);
+            font-weight: 500;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .hero-btn-primary:hover {
+            background-color: var(--ref-primary-primary30);
+            transform: translateY(-2px);
+            box-shadow: var(--sys-elevation-8dp) !important;
+          }
+
+          /* Token-Based Secondary Button */
+          .hero-btn-secondary {
+            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
             color: var(--ref-neutral-neutral100);
             text-decoration: none;
             border-radius: var(--sys-radius-md);
             font-family: var(--sys-typescale-label-large-fontfamily);
-            font-size: clamp(1rem, 1.5vw, 1.25rem);
-            font-weight: 600;
-            border: 2px solid rgba(255,255,255,0.8);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-block;
+            font-size: var(--sys-typescale-label-large-fontsize);
+            font-weight: 500;
+            border: 2px solid var(--ref-neutral-neutral100);
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
           }
-          .hero-outline-btn:hover {
-            background-color: rgba(255,255,255,0.1);
-            border-color: var(--ref-neutral-neutral100);
+          .hero-btn-secondary:hover {
+            background-color: var(--ref-neutral-neutral100);
+            color: var(--ref-primary-primary30);
           }
-          .hero-section {
-            /* Responsive height adjustments */
-          }
-          @media (max-width: 1366px) {
-            .hero-section {
-              min-height: 700px;
-            }
-            .hero-content {
-              margin-top: -8vh;
-            }
-          }
+
+          /* Responsive Adjustments */
           @media (max-width: 1024px) {
             .hero-section {
-              min-height: 650px;
-            }
-            .hero-title {
-              font-size: clamp(2.5rem, 7vw, 4.5rem) !important;
-            }
-            .hero-subcopy {
-              font-size: clamp(1.125rem, 2vw, 1.75rem) !important;
+              height: 90vh;
+              min-height: 600px;
             }
           }
-           @media (max-width: 768px) {
-             .hero-section {
-               min-height: 600px;
-             }
-             .hero-content {
-               margin-top: -5vh;
-               padding: 0 20px;
-             }
-             .hero-buttons {
-               flex-direction: column;
-               align-items: center;
-             }
-             .hero-buttons .hero-primary-btn,
-             .hero-buttons .hero-outline-btn {
-               width: 100%;
-               max-width: 300px;
-               text-align: center;
-             }
-              /* Tablet video optimization */
-              .hero-video {
-                 transform: translate(-50%, -50%) scale(1.35);
-              }
-              /* Show image, hide video on mobile/tablet */
-              .hero-video-container {
-                display: none;
-              }
-              .hero-image-container {
-                display: block;
-              }
+          @media (max-width: 768px) {
+            .hero-section {
+              height: 100vh;
+              min-height: 600px;
             }
-           @media (max-width: 480px) {
-             .hero-section {
-               min-height: 550px;
-             }
-             .hero-title {
-               font-size: clamp(2rem, 6vw, 3rem) !important;
-             }
-             .hero-subcopy {
-               font-size: clamp(1rem, 1.8vw, 1.5rem) !important;
-             }
-             /* Mobile video optimization */
-             .hero-video {
-                transform: translate(-50%, -50%) scale(1.6); /* Increased zoom to eliminate black bars */
-             }
-           }
-            @media (min-width: 1920px) {
-              .hero-section {
-                min-height: 900px;
-              }
-              .hero-content {
-                margin-top: -12vh;
-              }
-              /* Large screen video optimization */
-              .hero-video {
-                transform: translate(-50%, -50%) scale(1.05); /* Less zoom on large screens */
-              }
-            }
-            /* Landscape orientation optimizations */
-            @media (max-width: 768px) and (orientation: landscape) {
-              .hero-video {
-                transform: translate(-50%, -50%) scale(1.6); /* Increased zoom for landscape */
-              }
-              .hero-section {
-                min-height: 500px; /* Reduced height for landscape */
-              }
-            }
-            @media (max-width: 480px) and (orientation: landscape) {
-              .hero-section {
-                min-height: 400px; /* Even smaller for mobile landscape */
-              }
-            }
-            /* Accessibility: reduced motion preference */
-            @media (prefers-reduced-motion: reduce) {
-              .hero-video {
-                transform: translate(-50%, -50%) scale(1); /* Remove zoom animation */
-              }
-            }
-         `}} />
+            .hero-video-container { display: none; }
+            .hero-image-container { display: block; }
+            
+            .hero-buttons { flex-direction: column; width: 100%; }
+            .hero-buttons > a { width: 100%; max-width: none; }
+          }
+        `}} />
       </section>
 
       {/* Problem → Solution Section */}
       <section style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: "var(--sys-surface-roles-surface)",
+        backgroundColor: "#0f172a",
       }}>
-        <style dangerouslySetInnerHTML={{ __html: `
-
-          @media (max-width: 900px) {
-            .problem-solution-grid {
-              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-              gap: 24px !important;
-            }
-          }
-          @media (max-width: 640px) {
-            .problem-solution-grid {
-              grid-template-columns: 1fr !important;
-            }
-            .problem-solution-card {
-              padding: 32px 24px !important;
-            }
-            .problem-solution-title {
-              font-size: 24px !important;
-            }
-            .problem-solution-item {
-              font-size: 15px !important;
-              gap: 10px !important;
-            }
-            .problem-solution-dot {
-              width: 16px !important;
-              height: 16px !important;
-            }
-          }
-          @media (max-width: 480px) {
-            .problem-solution-card {
-              padding: 24px 20px !important;
-            }
-            .problem-solution-title {
-              font-size: 22px !important;
-            }
-          }
-        `}} />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+           .problem-solution-card:hover {
+             transform: translateY(-4px);
+             box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+             border-color: rgba(255,255,255,0.2) !important;
+           }
+           @media (max-width: 900px) {
+             .problem-solution-grid {
+               grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+               gap: 24px !important;
+             }
+           }
+           @media (max-width: 640px) {
+             .problem-solution-grid {
+               grid-template-columns: 1fr !important;
+             }
+             .problem-solution-card {
+               padding: 32px 24px !important;
+             }
+             .problem-solution-title {
+               font-size: 24px !important;
+             }
+             .problem-solution-item {
+               font-size: 15px !important;
+               gap: 10px !important;
+             }
+             .problem-solution-dot {
+               width: 16px !important;
+               height: 16px !important;
+             }
+           }
+           @media (max-width: 480px) {
+             .problem-solution-card {
+               padding: 24px 20px !important;
+             }
+             .problem-solution-title {
+               font-size: 22px !important;
+             }
+           }
+         `}} />
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <h2 style={{
-             ...tokens.typography.displaySmall,
-             color: "var(--ref-primary-primary40)",
-             textAlign: "center",
+            ...tokens.typography.displaySmall,
+            color: "#FFFFFF",
+            textAlign: "center",
             marginBottom: tokens.spacing.xl,
           }}>
             From Manual Hassle to Automated Insight
           </h2>
           <p style={{
-             ...tokens.typography.bodyLarge,
-             color: "var(--ref-neutral-neutral40)",
-             textAlign: "center",
+            ...tokens.typography.bodyLarge,
+            color: "rgba(255, 255, 255, 0.7)",
+            textAlign: "center",
             maxWidth: "800px",
             margin: "0 auto",
             marginBottom: tokens.spacing.xxl,
           }}>
             Traditional drone data processing is time‑consuming and error‑prone. FieldSpec transforms raw images into actionable intelligence.
           </p>
-          
-          <div className="problem-solution-grid" style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", 
-            gap: "32px",
+
+          <div className="problem-solution-grid" style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+            gap: tokens.spacing.xl,
             alignItems: "stretch",
           }}>
             {/* Problem Card */}
             <div className="problem-solution-card" style={{
-              padding: "40px 32px",
-              backgroundColor: "var(--ref-neutral-neutral98)",
-              borderRadius: "20px",
-              border: "1px solid var(--ref-neutral-neutral92)",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
+              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
+              backgroundColor: "#1e293b",
+              borderRadius: tokens.radius.lg,
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
               height: "100%",
               display: "flex",
               flexDirection: "column",
               position: "relative",
               overflow: "hidden",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             }}>
               <div style={{
                 position: "absolute",
-                top: "24px",
-                left: "24px",
-                width: "8px",
-                height: "8px",
-                backgroundColor: "var(--ref-key-accent-key-color)",
+                top: `${tokens.spacing.lg}`,
+                left: `${tokens.spacing.lg}`,
+                width: "12px",
+                height: "12px",
+                backgroundColor: "#60A5FA",
                 borderRadius: "50%",
+                boxShadow: `0 0 0 4px rgba(96, 165, 250, 0.2)`,
               }} />
-               <h3 className="problem-solution-title" style={{
-                 fontFamily: "var(--sys-typescale-title-large-fontfamily)",
-                 fontSize: "var(--sys-typescale-headline-medium-fontsize)",
-                 fontWeight: 600,
-                 color: "var(--ref-neutral-neutral40)",
-                 marginBottom: "24px",
-                 marginTop: "8px",
-               }}>
-                 The Problem
-               </h3>
+              <h3 className="problem-solution-title" style={{
+                ...tokens.typography.headlineMedium,
+                color: "#FFFFFF",
+                marginBottom: tokens.spacing.lg,
+                marginTop: tokens.spacing.xs,
+              }}>
+                The Problem
+              </h3>
               <div style={{ flex: 1 }}>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.primaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Manual report writing is slow, inconsistent, and prone to human error</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Manual report writing is slow, inconsistent, and prone to human error</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.primaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Drone data remains unstructured, making analysis and comparison difficult</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Drone data remains unstructured, making analysis and comparison difficult</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-medium-fontsize)", fontWeight: "bold" }}>✕</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.primaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Insights vary between team members, reducing decision‑making confidence</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Insights vary between team members, reducing decision‑making confidence</span>
                   </li>
                 </ul>
               </div>
@@ -666,79 +607,79 @@ export default function MarketingPage() {
                       <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "var(--ref-key-accent-key-color)" : "var(--ref-neutral-neutral87)" }} />
                     ))}
                   </div>
-                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "var(--ref-neutral-neutral40)" }}>3 major pain points</span>
+                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "rgba(255,255,255,0.5)" }}>3 major pain points</span>
                 </div>
               </div>
             </div>
 
             {/* Solution Card */}
             <div className="problem-solution-card" style={{
-              padding: "40px 32px",
-              backgroundColor: "var(--ref-neutral-neutral98)",
-              borderRadius: "20px",
-              border: "1px solid var(--ref-neutral-neutral92)",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
+              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
+              backgroundColor: "#1e293b",
+              borderRadius: tokens.radius.lg,
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
               height: "100%",
               display: "flex",
               flexDirection: "column",
               position: "relative",
               overflow: "hidden",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             }}>
               <div style={{
                 position: "absolute",
-                top: "24px",
-                left: "24px",
-                width: "8px",
-                height: "8px",
-                backgroundColor: "var(--ref-key-accent-key-color)",
+                top: `${tokens.spacing.lg}`,
+                left: `${tokens.spacing.lg}`,
+                width: "12px",
+                height: "12px",
+                backgroundColor: "#34D399",
                 borderRadius: "50%",
+                boxShadow: `0 0 0 4px rgba(52, 211, 153, 0.2)`,
               }} />
-               <h3 className="problem-solution-title" style={{
-                 fontFamily: "var(--sys-typescale-title-large-fontfamily)",
-                 fontSize: "var(--sys-typescale-headline-medium-fontsize)",
-                 fontWeight: 600,
-                 color: "var(--ref-neutral-neutral40)",
-                 marginBottom: "24px",
-                 marginTop: "8px",
-               }}>
-                 The Solution
-               </h3>
+              <h3 className="problem-solution-title" style={{
+                ...tokens.typography.headlineMedium,
+                color: "#FFFFFF",
+                marginBottom: tokens.spacing.lg,
+                marginTop: tokens.spacing.xs,
+              }}>
+                The Solution
+              </h3>
               <div style={{ flex: 1 }}>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>AI‑powered analysis delivers consistent, accurate insights in minutes</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>AI‑powered analysis delivers consistent, accurate insights in minutes</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Automatic structuring of drone data into searchable, comparable formats</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Automatic structuring of drone data into searchable, comparable formats</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: "4px", backgroundColor: "rgba(255, 107, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "var(--ref-neutral-neutral40)", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
                       </div>
                     </div>
-                    <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-large-fontsize)", lineHeight: 1.6, color: "var(--ref-neutral-neutral40)" }}>Professional reports generated automatically, ready for stakeholders</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Professional reports generated automatically, ready for stakeholders</span>
                   </li>
                 </ul>
               </div>
-              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--ref-neutral-neutral92)" }}>
+              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ display: "flex", gap: "4px" }}>
                     {[1, 2, 3].map((i) => (
-                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "var(--ref-key-accent-key-color)" : "var(--ref-neutral-neutral87)" }} />
+                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "#34D399" : "rgba(255, 255, 255, 0.3)" }} />
                     ))}
                   </div>
-                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "var(--ref-neutral-neutral40)" }}>3 key benefits</span>
+                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "rgba(255, 255, 255, 0.5)" }}>3 key benefits</span>
                 </div>
               </div>
             </div>
@@ -749,13 +690,27 @@ export default function MarketingPage() {
 
       {/* How It Works */}
       <section id="how-it-works" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surface,
+        padding: `160px ${tokens.spacing.lg} ${tokens.spacing.xxl}`, 
+        backgroundColor: "#0f172a",
+        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
       }}>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .step-card:hover {
+              transform: translateY(-4px);
+              box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+              border-color: rgba(255,255,255,0.2) !important;
+            }
+           @media (min-width: 768px) {
+             .step-connector {
+               display: block !important;
+             }
+           }
+         `}} />
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <h2 style={{
             ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
+            color: "#FFFFFF",
             textAlign: "center",
             marginBottom: tokens.spacing.xs,
           }}>
@@ -763,7 +718,7 @@ export default function MarketingPage() {
           </h2>
           <p style={{
             ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
+            color: "rgba(255, 255, 255, 0.7)",
             textAlign: "center",
             marginBottom: tokens.spacing.xxl,
           }}>
@@ -777,57 +732,61 @@ export default function MarketingPage() {
             {steps.map((step, index) => (
               <div
                 key={step.num}
+                className="step-card"
                 style={{
                   padding: tokens.spacing.xl,
-                  backgroundColor: tokens.colors.surfaceVariant,
+                  backgroundColor: "#1e293b",
                   borderRadius: tokens.radius.lg,
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   textAlign: "center",
                   position: "relative",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               >
                 <div style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: tokens.radius.md,
-                  backgroundColor: tokens.colors.primary,
+                  width: "64px",
+                  height: "64px",
+                  borderRadius: tokens.radius.lg,
+                  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.secondary} 100%)`,
                   color: tokens.colors.onPrimary,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: tokens.spacing.md,
-                  boxShadow: `0 4px 12px ${tokens.colors.primary}40`,
+                  boxShadow: `0 6px 20px ${tokens.colors.primary}40`,
                 }}>
                   <span className="material-icons" style={{ fontSize: "28px" }}>{step.icon}</span>
                 </div>
                 <h3 style={{
                   ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
+                  color: "#FFFFFF",
                   marginBottom: tokens.spacing.xs,
                 }}>
                   {step.title}
                 </h3>
                 <p style={{
                   ...tokens.typography.bodySmall,
-                  color: tokens.colors.onSurfaceVariant,
+                  color: "rgba(255, 255, 255, 0.6)",
                   lineHeight: 1.5,
                 }}>
                   {step.description}
                 </p>
                 {index < steps.length - 1 && (
-                  <div style={{
+                  <div className="step-connector" style={{
                     position: "absolute",
                     right: "-12px",
                     top: "50%",
                     transform: "translateY(-50%)",
                     width: "24px",
                     height: "24px",
-                    color: tokens.colors.onSurfaceVariant,
+                    color: "rgba(255, 255, 255, 0.3)",
                     display: "none",
                   }}>
-                    <span className="material-icons" style={{ fontSize: "24px" }}>chevron_right</span>
+                    <span className="material-icons" style={{ fontSize: "24px" }}>arrow_forward</span>
                   </div>
                 )}
               </div>
@@ -839,12 +798,25 @@ export default function MarketingPage() {
       {/* Features Section */}
       <section id="features" style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
+        backgroundColor: "#31579b",
       }}>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+           .feature-card:hover {
+             transform: translateY(-4px);
+             box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+             border-color: rgba(255,255,255,0.5);
+           }
+           .use-case-card:hover {
+             transform: translateY(-4px);
+             box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+             border-color: var(--sys-primary);
+           }
+         `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2 style={{
             ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
+            color: "#FFFFFF",
             textAlign: "center",
             marginBottom: tokens.spacing.xs,
           }}>
@@ -852,7 +824,7 @@ export default function MarketingPage() {
           </h2>
           <p style={{
             ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
+            color: "rgba(255, 255, 255, 0.8)",
             textAlign: "center",
             marginBottom: tokens.spacing.xxl,
           }}>
@@ -866,44 +838,62 @@ export default function MarketingPage() {
             {features.map((feature, i) => (
               <div
                 key={i}
+                className="feature-card"
                 style={{
-                  backgroundColor: tokens.colors.surface,
-                  borderRadius: tokens.radius.lg,
+                  backgroundColor: "#1B293D",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  padding: tokens.spacing.md,
                   display: "flex",
                   flexDirection: "column",
-                  overflow: "hidden",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               >
-                {feature.imageUrl && (
-                  <img
-                    src={feature.imageUrl}
-                    alt={feature.title}
-                    style={{
-                      width: "100%",
-                      height: "180px",
-                      objectFit: "cover",
-                      marginBottom: "16px",
-                    }}
-                  />
+                {feature.imageUrl ? (
+                  <div style={{
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    marginBottom: tokens.spacing.lg,
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}>
+                    <img
+                      src={feature.imageUrl}
+                      alt={feature.title}
+                      style={{
+                        width: "100%",
+                        height: "220px",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ height: "16px" }} />
                 )}
                 <div style={{
-                  padding: tokens.spacing.xl,
-                  paddingTop: feature.imageUrl ? 0 : tokens.spacing.xl,
+                  padding: `0 ${tokens.spacing.sm}`,
                   flex: 1,
                   display: "flex",
                   flexDirection: "column",
                 }}>
                   <h4 style={{
-                    ...tokens.typography.titleMedium,
-                    color: tokens.colors.onSurface,
-                    marginBottom: tokens.spacing.sm,
+                    fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                    fontSize: "20px",
+                    fontStyle: "italic",
+                    fontWeight: 500,
+                    color: "#FFFFFF",
+                    marginBottom: "12px",
                   }}>
                     {feature.title}
                   </h4>
                   <p style={{
-                    ...tokens.typography.bodyMedium,
-                    color: tokens.colors.onSurfaceVariant,
-                    lineHeight: 1.5,
+                    fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    lineHeight: 1.6,
+                    paddingBottom: tokens.spacing.sm,
                   }}>
                     {feature.description}
                   </p>
@@ -917,227 +907,458 @@ export default function MarketingPage() {
       {/* Use Cases */}
       <section id="use-cases" style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surface,
+        backgroundColor: "#0F172A", // Dark theme matching screenshot
+        position: "relative",
       }}>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+          }
+          .use-case-card-bento {
+            background: #1E293B;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+          }
+          .use-case-card-bento:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+          }
+          .bento-span-2 {
+            grid-column: span 2;
+          }
+          .bento-span-1 {
+            grid-column: span 1;
+          }
+          @media (max-width: 900px) {
+            .bento-grid {
+              grid-template-columns: 1fr;
+            }
+            .bento-span-2, .bento-span-1 {
+              grid-column: span 1;
+            }
+          }
+        `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xs,
-          }}>
-            Built for Field Inspections
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xxl,
-          }}>
-            Designed for clarity, speed, and accuracy
-          </p>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: tokens.spacing.lg,
-          }}>
-            {useCases.map((useCase, i) => (
-              <div
-                key={i}
-                style={{
-                  backgroundColor: tokens.colors.surfaceVariant,
-                  borderRadius: tokens.radius.lg,
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden",
-                }}
-              >
-                {useCase.imageUrl && (
-                  <img
-                    src={useCase.imageUrl}
-                    alt={useCase.title}
-                    style={{
+          <div style={{ marginBottom: "24px" }}>
+            <span style={{
+              color: "#60A5FA",
+              fontSize: "14px",
+              fontWeight: 600,
+              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+              display: "block",
+              marginBottom: "12px",
+              letterSpacing: "0.01em"
+            }}>Field Inspections</span>
+            <h2 style={{
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontWeight: 600,
+              color: "#FFFFFF",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              maxWidth: "600px",
+            }}>
+              Built for Field Inspections
+            </h2>
+          </div>
+
+          <div className="bento-grid">
+            {useCases.map((useCase, i) => {
+              const spanClass = (i === 0 || i === 3) ? "bento-span-2" : "bento-span-1";
+
+              return (
+                <div
+                  key={i}
+                  className={`use-case-card-bento ${spanClass}`}
+                >
+                  {useCase.imageUrl && (
+                    <div style={{
+                      height: "240px",
                       width: "100%",
-                      height: "180px",
-                      objectFit: "cover",
-                      marginBottom: "16px",
-                    }}
-                  />
-                )}
-                <div style={{
-                  padding: tokens.spacing.xl,
-                  paddingTop: useCase.imageUrl ? 0 : tokens.spacing.xl,
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                }}>
-                  <h4 style={{
-                    ...tokens.typography.titleMedium,
-                    color: tokens.colors.onSurface,
-                    marginBottom: tokens.spacing.sm,
+                      backgroundColor: "#0B1120",
+                      borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      overflow: "hidden",
+                    }}>
+                      <img
+                        src={useCase.imageUrl}
+                        alt={useCase.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          opacity: 0.85,
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div style={{
+                    padding: "32px",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end" // Pushes text down nicely
                   }}>
-                    {useCase.title}
-                  </h4>
-                  <p style={{
-                    ...tokens.typography.bodySmall,
-                    color: tokens.colors.onSurfaceVariant,
-                    lineHeight: 1.5,
-                  }}>
-                    {useCase.description}
-                  </p>
+                    <span style={{
+                      color: "rgba(255,255,255,0.7)",
+                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      marginBottom: "8px",
+                      textTransform: "capitalize",
+                    }}>
+                      {useCase.title.split(" ")[0]}
+                    </span>
+                    <h4 style={{
+                      color: "#FFFFFF",
+                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                      fontSize: "20px",
+                      fontWeight: "500",
+                      marginBottom: "12px",
+                    }}>
+                      {useCase.title}
+                    </h4>
+                    <p style={{
+                      color: "rgba(255,255,255,0.5)",
+                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                      fontSize: "14px",
+                      lineHeight: 1.6,
+                    }}>
+                      {useCase.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
       <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.primaryContainer,
-        textAlign: "center",
+        padding: `0 24px 160px`, // Added large explicit spacing between CTA and footer
+        backgroundColor: "#0F172A",
       }}>
-        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onPrimaryContainer,
-            marginBottom: tokens.spacing.md,
-          }}>
-            Start Building Reports Today
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onPrimaryContainer,
-            marginBottom: tokens.spacing.xl,
-            opacity: 0.9,
-          }}>
-            Upload your first images and see how FieldSpec transforms your inspection workflow.
-          </p>
-          <Link href="/signup" className="btn-primary" style={{
-            display: "inline-block",
-            padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-            backgroundColor: tokens.colors.primary,
-            color: tokens.colors.onPrimary,
-            textDecoration: "none",
-            borderRadius: tokens.radius.md,
-            ...tokens.typography.labelLarge,
-          }}>
-            Start Building Reports
-          </Link>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+           .cta-card {
+             background-color: #1a1e29;
+             background-image: radial-gradient(ellipse at bottom, rgba(76, 29, 149, 0.45) 0%, transparent 60%);
+             border: 1px solid rgba(255,255,255,0.05);
+             border-radius: 20px;
+             padding: 50px 24px; // Removed another 50px of total height
+             text-align: center;
+             position: relative;
+             overflow: hidden;
+             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+           }
+           .cta-primary-btn {
+             background-color: rgba(255,255,255,0.15);
+             color: #FFFFFF;
+             padding: 12px 24px;
+             border-radius: 8px;
+             font-size: 15px;
+             font-weight: 500;
+             text-decoration: none;
+             transition: background-color 0.2s, transform 0.2s;
+             border: 1px solid rgba(255,255,255,0.05);
+             display: inline-block;
+           }
+           .cta-primary-btn:hover {
+             background-color: rgba(255,255,255,0.22);
+             transform: translateY(-1px);
+           }
+           .cta-secondary-link {
+             color: #FFFFFF;
+             font-size: 15px;
+             font-weight: 500;
+             text-decoration: none;
+             display: inline-flex;
+             align-items: center;
+             gap: 6px;
+             transition: color 0.2s, transform 0.2s;
+           }
+           .cta-secondary-link:hover {
+             color: rgba(255,255,255,0.8);
+           }
+         `}} />
+        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+            <h2 style={{
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontWeight: 600,
+              color: "#FFFFFF",
+              marginBottom: "24px",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              textAlign: "center",
+            }}>
+              Start Building Reports Today
+            </h2>
+            <p style={{
+              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+              fontSize: "17px",
+              color: "rgba(255,255,255,0.6)",
+              lineHeight: 1.6,
+              marginBottom: "40px",
+              maxWidth: "540px",
+              margin: "0 auto 40px",
+              textAlign: "center",
+            }}>
+              Upload your first images and see how FieldSpec transforms your inspection workflow.
+            </p>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", flexWrap: "wrap", marginTop: "40px" }}>
+              <Link href="/signup" className="cta-primary-btn">
+                Get started
+              </Link>
+              <Link href="/demo" className="cta-secondary-link">
+                Learn more <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
-        borderTop: `1px solid ${tokens.colors.outlineVariant}`,
+        backgroundColor: "#31579b", // Custom requested blue background
+        color: "#ffffff",
+        fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
       }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: tokens.spacing.xxl,
-            marginBottom: tokens.spacing.xl,
-          }}>
-            {/* Brand Column */}
-            <div>
-              <Brand size="md" className="mb-md" />
-              <p style={{
-                ...tokens.typography.bodySmall,
-                color: tokens.colors.onSurfaceVariant,
-                lineHeight: 1.6,
-                maxWidth: "250px",
-              }}>
-                AI-powered inspection reports for drone surveys. Turn images into professional reports in minutes.
-              </p>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          .footer-top {
+            padding: 80px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+          }
+          .footer-left {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+          }
+          .footer-right {
+            flex: 2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            justify-content: space-between;
+            min-width: 320px;
+          }
+          .footer-logo {
+            font-size: 36px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+          }
+          .footer-newsletter-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+          }
+          .footer-newsletter-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 60px;
+            align-items: center;
+          }
+          .footer-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--sys-radius-md);
+            padding: 12px 24px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+          }
+          .footer-input:focus {
+            border-color: rgba(255,255,255,0.6);
+          }
+          .footer-subscribe-btn {
+            background: transparent;
+            border: 1px solid #cc5500; /* Accented orange outline */
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--sys-radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .footer-subscribe-btn:hover {
+            background: #cc5500;
+          }
+          .footer-arrow-btn {
+            background: transparent;
+            border: 1px solid #cc5500;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+          }
+          .footer-arrow-btn:hover {
+            background: #cc5500;
+          }
+          .footer-connect-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+          }
+          .footer-socials {
+            display: flex;
+            gap: 24px;
+          }
+          .footer-social-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.2s ease;
+          }
+          .footer-social-link:hover {
+            opacity: 0.7;
+          }
+
+          .footer-col-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 24px;
+          }
+          .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          }
+          .footer-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            transition: color 0.2s ease;
+          }
+          .footer-link:hover {
+            color: #ffffff;
+          }
+
+          .footer-bottom {
+            background-color: rgba(0, 0, 0, 0.15); /* Slightly darker overlay for bottom */
+            padding: 24px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            border-top: 1px solid rgba(255,255,255,0.05);
+          }
+          .footer-bottom-link {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+          .footer-bottom-link:hover {
+            color: rgba(255,255,255,0.9);
+          }
+
+          @media (max-width: 768px) {
+            .footer-right {
+              flex-direction: column;
+              gap: 40px;
+            }
+            .footer-bottom {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+            }
+          }
+        `}} />
+
+        <div className="footer-top">
+          <div className="footer-left">
+            <div className="footer-logo" style={{ marginBottom: "50px", paddingBottom: "0" }}>
+              <img src="/logo-white.png" alt="FieldSpec" style={{ height: "40px", width: "auto", objectFit: "contain" }} />
             </div>
 
-            {/* Product Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Product
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#features" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Features</Link>
-                <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>How It Works</Link>
-                <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Use Cases</Link>
-                <Link href="/signup" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Get Started</Link>
-              </div>
+            <div className="footer-newsletter-title">Keep on track by subscribing our Newsletter.</div>
+            <div className="footer-newsletter-form">
+              <input type="email" placeholder="example@email.com" className="footer-input" />
+              <button className="footer-subscribe-btn">Subscribe</button>
+              <button className="footer-arrow-btn" aria-label="Subscribe shortcut">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="1" y1="12" x2="23" y2="12"></line>
+                  <polyline points="16 5 23 12 16 19"></polyline>
+                </svg>
+              </button>
             </div>
 
-            {/* Company Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Company
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>About</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Blog</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Careers</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Contact</Link>
-              </div>
-            </div>
-
-            {/* Legal Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Legal
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Privacy Policy</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Terms of Service</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Cookie Policy</Link>
-              </div>
+            <div className="footer-connect-title">Connect</div>
+            <div className="footer-socials">
+              <Link href="#" className="footer-social-link">LinkedIn ↗</Link>
+              <Link href="#" className="footer-social-link">Instagram ↗</Link>
+              <Link href="#" className="footer-social-link">Facebook ↗</Link>
             </div>
           </div>
 
-          {/* Bottom Bar */}
-          <div style={{
-            paddingTop: tokens.spacing.lg,
-            borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: tokens.spacing.md,
-          }}>
-            <p style={{
-              ...tokens.typography.bodySmall,
-              color: tokens.colors.onSurfaceVariant,
-            }}>
-              © {new Date().getFullYear()} FieldSpec. All rights reserved.
-            </p>
-            <div style={{ display: "flex", gap: tokens.spacing.md }}>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </Link>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-              </Link>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-              </Link>
+          <div className="footer-right">
+            <div>
+              <div className="footer-col-title">Contacts</div>
+              <div className="footer-links">
+                <a href="mailto:info@fieldspec.com" className="footer-link">info@fieldspec.com</a>
+                <a href="mailto:hello@fieldspec.com" className="footer-link">hello@fieldspec.com</a>
+                <span className="footer-link">+1 234 567 890</span>
+                <span className="footer-link">+31 23 732 600</span>
+              </div>
             </div>
+
+            <div>
+              <div className="footer-col-title">Services</div>
+              <div className="footer-links">
+                <Link href="#" className="footer-link">Services</Link>
+                <Link href="#" className="footer-link">Our Fleet</Link>
+                <Link href="#" className="footer-link">Industries</Link>
+              </div>
+            </div>
+
+            <div>
+              <div className="footer-col-title">Company</div>
+              <div className="footer-links">
+                <Link href="#" className="footer-link">About Us</Link>
+                <Link href="#" className="footer-link">Contact Us</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <div>© Copyright 2025 - Made by FieldSpec</div>
+          <div>
+            <Link href="#" className="footer-bottom-link">Get Template - Privacy Policy</Link>
           </div>
         </div>
       </footer>

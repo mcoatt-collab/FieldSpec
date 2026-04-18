@@ -3,30 +3,29 @@ import Image from "next/image";
 interface BrandProps {
   className?: string;
   size?: "sm" | "md" | "lg";
+  variant?: "blue" | "white";
 }
 
-export default function Brand({ className = "", size = "md" }: BrandProps) {
+export default function Brand({ className = "", size = "md", variant = "blue" }: BrandProps) {
   const sizes = {
-    sm: { img: 32, text: "text-title-medium" },
-    md: { img: 40, text: "text-title-large" },
-    lg: { img: 64, text: "text-headline-medium" },
+    sm: { h: 24, w: 147 },
+    md: { h: 32, w: 196 },
+    lg: { h: 48, w: 295 },
   };
 
-  const currentSize = sizes[size];
+  const currentSize = sizes[size] || sizes.md;
+  const logoSrc = variant === "white" ? "/logo-white.png" : "/logo-blue.png";
 
   return (
-    <div className={`flex items-center gap-xs ${className}`}>
-      <Image
-        src="/logo.png"
+    <div className={`flex items-center ${className}`}>
+      <img
+        src={logoSrc}
         alt="FieldSpec Logo"
-        width={currentSize.img}
-        height={currentSize.img}
+        width={currentSize.w}
+        height={currentSize.h}
         className="object-contain"
         style={{ border: "none" }}
       />
-      <span className={`text-primary font-bold ${currentSize.text}`}>
-        FieldSpec
-      </span>
     </div>
   );
 }
