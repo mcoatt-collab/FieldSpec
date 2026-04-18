@@ -103,51 +103,11 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-md">
-          <label className="block mb-xs text-on-surface text-label-medium">
-            Email <span className="text-primary">*</span>
-          </label>
-<<<<<<< HEAD
-  <div className="relative flex items-center">
-    <span className="material-icons absolute left-[12px] text-on-surface-variant" style={{ fontSize: "16px" }}>mail</span>
-    <input
-      type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      required
-      placeholder=" "
-      className="w-full box-border pl-[36px] pr-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
-    />
-  </div>
-        </div >
-
-    <div className="mb-lg">
-      <label className="block mb-xs text-on-surface text-label-medium">
-        Password <span className="text-primary">*</span>
-      </label>
-      <div className="relative flex items-center">
-        <span className="material-icons absolute left-[12px] text-on-surface-variant" style={{ fontSize: "16px" }}>lock</span>
-        <input
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          placeholder=" "
-          className="w-full box-border pl-[36px] pr-[36px] py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-[8px] p-xs text-on-surface-variant hover:text-on-surface cursor-pointer bg-transparent border-none"
-          tabIndex={-1}
-        >
-          <span className="material-icons" style={{ fontSize: "18px" }}>
-            {showPassword ? "visibility" : "visibility_off"}
-          </span>
-        </button>
-      </div>
-    </div>
-
-=======
+          <div className="flex justify-between items-center mb-xs">
+            <label className="text-on-surface text-label-medium">
+              Email <span className="text-primary">*</span>
+            </label>
+          </div>
           <input
             type="email"
             value={email}
@@ -190,9 +150,6 @@ export default function LoginPage() {
             <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{passwordError}</p>
           )}
         </div>
-
-
->>>>>>> c578303ad97fdcca402fd7eab5f4d3759ba7925e
   {
     error && (
       <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
