@@ -1,14 +1,25 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect, useCallback } from "react";
-import Navbar from "@/components/marketing/Navbar";
-import Hero from "@/components/marketing/Hero";
-import { Features, HowItWorks, ProblemSolution } from "@/components/marketing/Sections";
+import Link from "next/link";
 import { tokens } from "@/lib/design-tokens";
+import Brand from "@/components/Brand";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "AI Drone Survey Report Builder | FieldSpec",
+  description:
+    "Transform drone imagery into actionable insights. FieldSpec uses AI to analyze aerial surveys and generate professional reports for agriculture, construction, and infrastructure.",
+  keywords: [
+    "drone survey",
+    "AI analysis",
+    "aerial inspection",
+    "crop health",
+    "infrastructure inspection",
+    "professional reports",
+    "drone mapping",
+    "field analysis",
+  ],
+};
 
 export default function MarketingPage() {
-<<<<<<< HEAD
   const features = [
     {
       title: "AI-Generated Insights",
@@ -43,23 +54,15 @@ export default function MarketingPage() {
     { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility infrastructure safely and efficiently.", imageUrl: "/images/infrastructure-inspections.jpg" },
     { title: "Drone Operators", description: "Add professional reporting to your drone services. Deliver more value to clients.", imageUrl: "/images/drone-operators.jpg" },
   ];
-=======
-  const router = useRouter();
 
-  // Proactive background prefetching for core auth routes
-  useEffect(() => {
-    router.prefetch("/signup");
-    router.prefetch("/login");
-  }, [router]);
->>>>>>> main
-
-  // Handler for manual prefetching on hover to minimize latency
-  const handlePrefetch = useCallback((path: string) => {
-    router.prefetch(path);
-  }, [router]);
+  const steps = [
+    { num: "1", title: "Upload Drone Images", description: "Drag and drop or batch upload images. GPS data is extracted automatically.", icon: "upload" },
+    { num: "2", title: "Tag & Organize", description: "Categorize images by type, location, or condition. Keep everything structured.", icon: "label" },
+    { num: "3", title: "Generate AI Insights", description: "Let AI analyze each image and produce findings and recommendations.", icon: "auto_awesome" },
+    { num: "4", title: "Export Professional Report", description: "Build and export a structured PDF report. Ready for stakeholders.", icon: "description" },
+  ];
 
   return (
-<<<<<<< HEAD
     <main style={{ flex: 1 }}>
       {/* Navigation */}
       <nav style={{
@@ -196,7 +199,13 @@ export default function MarketingPage() {
               }
             }
           `}</style>
-        <Brand size="md" variant="white" />
+        <div style={{ display: "flex", alignItems: "center", height: "40px" }}>
+          <img 
+            src="/logo-white.png" 
+            alt="FieldSpec" 
+            style={{ height: "32px", width: "auto", objectFit: "contain" }} 
+          />
+        </div>
         {/* Desktop Navigation */}
         <div className="desktop-nav">
           <div className="nav-center">
@@ -945,7 +954,7 @@ export default function MarketingPage() {
           }
         `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ marginBottom: "60px", textAlign: "center" }}>
             <span style={{
               color: "#60A5FA",
               fontSize: "14px",
@@ -956,13 +965,11 @@ export default function MarketingPage() {
               letterSpacing: "0.01em"
             }}>Field Inspections</span>
             <h2 style={{
-              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
-              fontWeight: 600,
+              ...tokens.typography.headlineLarge,
               color: "#FFFFFF",
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-              maxWidth: "600px",
+              textAlign: "center",
+              margin: "0 auto",
+              maxWidth: "800px",
             }}>
               Built for Field Inspections
             </h2>
@@ -1048,7 +1055,7 @@ export default function MarketingPage() {
           __html: `
            .cta-card {
              background-color: #1a1e29;
-             background-image: radial-gradient(ellipse at bottom, rgba(76, 29, 149, 0.45) 0%, transparent 60%);
+             background-image: radial-gradient(ellipse at bottom, #31579b 0%, transparent 60%);
              border: 1px solid rgba(255,255,255,0.05);
              border-radius: 20px;
              padding: 50px 24px; // Removed another 50px of total height
@@ -1358,29 +1365,7 @@ export default function MarketingPage() {
             <Link href="#" className="footer-bottom-link">Get Template - Privacy Policy</Link>
           </div>
         </div>
-=======
-    <div style={{ backgroundColor: tokens.colors.background }}>
-      <Navbar onPrefetch={handlePrefetch} />
-      <Hero onPrefetch={handlePrefetch} />
-      
-      <ProblemSolution />
-      
-      <Features />
-      
-      <HowItWorks />
-
-      {/* Footer */}
-      <footer style={{
-        padding: tokens.spacing.xxl,
-        backgroundColor: "#0f172a",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-        textAlign: "center",
-      }}>
-        <p style={{ ...tokens.typography.bodyMedium, color: "rgba(255, 255, 255, 0.6)" }}>
-          &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
-        </p>
->>>>>>> main
       </footer>
-    </div>
+    </main>
   );
 }
