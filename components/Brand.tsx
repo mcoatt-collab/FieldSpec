@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { tokens } from "@/lib/design-tokens";
 
 interface BrandProps {
   className?: string;
@@ -10,24 +11,35 @@ interface BrandProps {
 
 export default function Brand({ className = "", size = "md", variant = "blue" }: BrandProps) {
   const sizes = {
-    sm: { h: 24, w: 147 },
-    md: { h: 32, w: 196 },
-    lg: { h: 48, w: 295 },
+    sm: { icon: 24, font: "text-title-large" },
+    md: { icon: 32, font: "text-headline-small" },
+    lg: { icon: 48, font: "text-headline-medium" },
   };
 
-  const currentSize = sizes[size] || sizes.md;
-  const logoSrc = variant === "white" ? "/logo-white.png" : "/logo-blue.png";
+  const current = sizes[size] || sizes.md;
+  const logoSrc = variant === "white" ? "/logo-white-icon.png" : "/logo.png";
+  const textColor = variant === "white" ? tokens.colors.onPrimary : tokens.colors.onPrimary;
 
   return (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center gap-sm ${className}`}>
       <img
         src={logoSrc}
         alt="FieldSpec Logo"
-        width={currentSize.w}
-        height={currentSize.h}
+        width={current.icon}
+        height={current.icon}
         className="object-contain"
         style={{ border: "none" }}
       />
+      <span 
+        className={`${current.font} tracking-tight font-sans font-bold`}
+        style={{ 
+          fontFamily: "var(--sys-typescale-headline-small-fontfamily), sans-serif",
+          fontWeight: 600,
+          color: textColor
+        }}
+      >
+        FieldSpec
+      </span>
     </div>
   );
 }
