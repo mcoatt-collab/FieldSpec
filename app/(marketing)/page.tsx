@@ -24,30 +24,35 @@ export default function MarketingPage() {
     {
       title: "AI-Generated Insights",
       description: "Get automated findings and recommendations for every image. No more manual analysis.",
+      imageUrl: "/images/ai-generated-insights.jpg",
     },
     {
       title: "Image-Based Analysis",
       description: "Upload drone images with GPS data. AI extracts patterns and identifies issues automatically.",
+      imageUrl: "/images/image-based-analysis.jpg",
     },
     {
       title: "Structured Reports",
       description: "Build professional reports with consistent formatting. Export-ready in minutes.",
+      imageUrl: "/images/structured-reports.jpg",
     },
     {
       title: "Map Visualisation",
       description: "See all your images on an interactive map. Pinpoint issues to exact locations.",
+      imageUrl: "/images/map-visualisation.jpg",
     },
     {
       title: "Fast Export",
       description: "Generate PDF reports with one click. Share with stakeholders instantly.",
+      imageUrl: "/images/hand-holding-stopwatch.jpg",
     },
   ];
 
   const useCases = [
-    { title: "Agricultural Inspections", description: "Assess crop health, identify pest damage, monitor irrigation issues across large areas." },
-    { title: "Land Surveys", description: "Document land conditions, track changes over time, create comprehensive survey reports." },
-    { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility infrastructure safely and efficiently." },
-    { title: "Drone Operators", description: "Add professional reporting to your drone services. Deliver more value to clients." },
+    { title: "Agricultural Inspections", description: "Assess crop health, identify pest damage, monitor irrigation issues across large areas.", imageUrl: "/images/agricultural-inspections.jpg" },
+    { title: "Land Surveys", description: "Document land conditions, track changes over time, create comprehensive survey reports.", imageUrl: "/images/land-surveys.jpg" },
+    { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility infrastructure safely and efficiently.", imageUrl: "/images/infrastructure-inspections.jpg" },
+    { title: "Drone Operators", description: "Add professional reporting to your drone services. Deliver more value to clients.", imageUrl: "/images/drone-operators.jpg" },
   ];
 
   const steps = [
@@ -862,25 +867,47 @@ export default function MarketingPage() {
               <div
                 key={i}
                 style={{
-                  padding: tokens.spacing.xl,
                   backgroundColor: tokens.colors.surface,
                   borderRadius: tokens.radius.lg,
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
                 }}
               >
-                <h4 style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.sm,
+                {feature.imageUrl && (
+                  <img
+                    src={feature.imageUrl}
+                    alt={feature.title}
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      objectFit: "cover",
+                      marginBottom: "16px",
+                    }}
+                  />
+                )}
+                <div style={{
+                  padding: tokens.spacing.xl,
+                  paddingTop: feature.imageUrl ? 0 : tokens.spacing.xl,
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
                 }}>
-                  {feature.title}
-                </h4>
-                <p style={{
-                  ...tokens.typography.bodyMedium,
-                  color: tokens.colors.onSurfaceVariant,
-                  lineHeight: 1.5,
-                }}>
-                  {feature.description}
-                </p>
+                  <h4 style={{
+                    ...tokens.typography.titleMedium,
+                    color: tokens.colors.onSurface,
+                    marginBottom: tokens.spacing.sm,
+                  }}>
+                    {feature.title}
+                  </h4>
+                  <p style={{
+                    ...tokens.typography.bodyMedium,
+                    color: tokens.colors.onSurfaceVariant,
+                    lineHeight: 1.5,
+                  }}>
+                    {feature.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -918,25 +945,47 @@ export default function MarketingPage() {
               <div
                 key={i}
                 style={{
-                  padding: tokens.spacing.xl,
                   backgroundColor: tokens.colors.surfaceVariant,
                   borderRadius: tokens.radius.lg,
+                  display: "flex",
+                  flexDirection: "column",
+                  overflow: "hidden",
                 }}
               >
-                <h4 style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.sm,
+                {useCase.imageUrl && (
+                  <img
+                    src={useCase.imageUrl}
+                    alt={useCase.title}
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      objectFit: "cover",
+                      marginBottom: "16px",
+                    }}
+                  />
+                )}
+                <div style={{
+                  padding: tokens.spacing.xl,
+                  paddingTop: useCase.imageUrl ? 0 : tokens.spacing.xl,
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
                 }}>
-                  {useCase.title}
-                </h4>
-                <p style={{
-                  ...tokens.typography.bodySmall,
-                  color: tokens.colors.onSurfaceVariant,
-                  lineHeight: 1.5,
-                }}>
-                  {useCase.description}
-                </p>
+                  <h4 style={{
+                    ...tokens.typography.titleMedium,
+                    color: tokens.colors.onSurface,
+                    marginBottom: tokens.spacing.sm,
+                  }}>
+                    {useCase.title}
+                  </h4>
+                  <p style={{
+                    ...tokens.typography.bodySmall,
+                    color: tokens.colors.onSurfaceVariant,
+                    lineHeight: 1.5,
+                  }}>
+                    {useCase.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
