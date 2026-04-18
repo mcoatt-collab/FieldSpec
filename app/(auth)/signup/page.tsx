@@ -121,13 +121,13 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
+          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] transition-all duration-200"
         >
           {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
 
-      <div className="mt-md mb-xs flex items-center">
+      <div className="mt-sm mb-sm flex items-center">
         <div className="flex-1 h-px bg-outline"></div>
         <span className="px-sm text-on-surface-variant text-label-medium">or</span>
         <div className="flex-1 h-px bg-outline"></div>
@@ -147,7 +147,7 @@ export default function SignupPage() {
         <span className="text-on-surface text-label-large">Sign up with Google</span>
       </button>
 
-      <div className="mt-md text-center text-on-surface-variant text-body-small">
+      <div className="mt-[20px] text-center text-on-surface-variant text-body-medium">
         Already have an account?{" "}
         <Link href="/login" className="text-primary">
           Sign in
