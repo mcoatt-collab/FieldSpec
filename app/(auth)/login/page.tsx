@@ -54,7 +54,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error?.message || "Login failed");
+        setError("Incorrect email address or password. Please try again.");
         setLoading(false);
         return;
       }
@@ -93,10 +93,10 @@ export default function LoginPage() {
           transform: translateY(1px);
         }
       `}</style>
-      <h1 className="text-center mb-1 text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
-        Welcome Back
+      <h1 className="text-center text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)" }}>
+        Sign In
       </h1>
-      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
+      <p className="text-center text-on-surface-variant text-body-medium" style={{ marginTop: "-32px" }}>
         Welcome back to FieldSpec
       </p>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
             required
             placeholder=" "
             autoComplete="off"
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            className="w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
             style={showEmailBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
           {emailError && (
@@ -140,7 +140,7 @@ export default function LoginPage() {
             required
             placeholder=" "
             autoComplete="off"
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
+            className="w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200"
             style={showPasswordBorder ? { borderColor: "var(--sys-error)" } : {}}
           />
           {passwordError && (

@@ -78,11 +78,35 @@ export async function sendPasswordResetEmail(
   const resetUrl = `${APP_URL}/reset-password?token=${token}`;
 
   const html = `
-    <h1>Reset Your Password</h1>
-    <p>You requested a password reset. Click the link below to set a new password:</p>
-    <p><a href="${resetUrl}">${resetUrl}</a></p>
-    <p>This link will expire in 30 minutes.</p>
-    <p>If you didn't request a password reset, you can safely ignore this email.</p>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5f5;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 40px 20px;">
+        <tr>
+          <td align="center">
+            <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 400px; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+              <tr>
+                <td style="padding: 30px 30px 20px 30px;">
+                  <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 600; color: #1a1a1a;">Reset Your Password</h1>
+                  <p style="margin: 0 0 24px 0; font-size: 14px; color: #666666; line-height: 1.5;">
+                    Click the button below to reset your password.
+                  </p>
+                  <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #1e3a5f; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 500; border-radius: 6px;">Reset Password</a>
+                  <p style="margin: 24px 0 0 0; font-size: 12px; color: #999999;">
+                    This link expires in 30 minutes.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
   `;
 
   return sendEmail({
