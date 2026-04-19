@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { tokens } from "@/lib/design-tokens";
-import Brand from "@/components/Brand";
+import ThemeToggle from "@/components/ThemeToggle";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -67,27 +67,28 @@ export default function MarketingPage() {
       {/* Navigation */}
       <nav style={{
         padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+         borderBottom: "1px solid var(--sys-outline-variant)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#31579b",
+         backgroundColor: "var(--color-section-bg)",
         position: "sticky",
         top: 0,
         zIndex: 100,
+        boxShadow: "0 1px 8px rgba(0,0,0,0.06)",
       }}>
         <style>{`
-            .nav-link:hover { color: rgba(255, 255, 255, 0.7) !important; }
-            .nav-link { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; }
-            .btn-primary:hover { background-color: rgba(255, 255, 255, 0.9) !important; }
+             .nav-link:hover { color: var(--sys-primary) !important; opacity: 0.8; }
+             .nav-link { text-decoration: none; transition: color 0.3s ease; color: var(--sys-on-surface) !important; font-weight: 500; }
+             .btn-primary:hover { background-color: var(--sys-primary-container) !important; }
             .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-            .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
-            .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: #FFFFFF !important; }
-            .btn-text:hover { color: rgba(255, 255, 255, 0.7) !important; }
-            .btn-text { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; }
-             .social-icon { color: rgba(255, 255, 255, 0.8); transition: color 0.3s ease; }
-             .social-icon:hover { color: #FFFFFF !important; }
-             /* Desktop navigation - Brand left, nav-center centered, nav-right right */
+             .btn-outline:hover { background-color: var(--sys-surface-variant) !important; }
+             .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: var(--sys-on-surface) !important; }
+             .btn-text:hover { color: var(--sys-primary) !important; opacity: 1; }
+             .btn-text { text-decoration: none; transition: color 0.3s ease; color: var(--sys-on-surface-variant) !important; }
+              .social-icon { color: var(--sys-on-surface-variant); transition: color 0.3s ease; }
+              .social-icon:hover { color: var(--sys-on-surface) !important; }
+             /* Desktop navigation */
              .desktop-nav {
                display: flex;
                flex: 1;
@@ -123,7 +124,7 @@ export default function MarketingPage() {
            .hamburger-menu span {
              width: 100%;
              height: 3px;
-             background: #FFFFFF;
+              background: var(--sys-on-surface);
              border-radius: 2px;
              transition: all 0.3s ease;
            }
@@ -145,9 +146,9 @@ export default function MarketingPage() {
               top: 100%;
               left: 0;
               width: 100%;
-              background: #31579b;
-              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-              box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+               background: var(--color-section-bg);
+               border-bottom: 1px solid var(--sys-outline-variant);
+              box-shadow: 0 8px 24px rgba(0,0,0,0.1);
               padding: ${tokens.spacing.lg};
               display: flex;
               flex-direction: column;
@@ -165,13 +166,14 @@ export default function MarketingPage() {
               max-height: 500px;
             }
             .dropdown-link {
-              color: #FFFFFF;
+               color: var(--sys-on-surface);
               text-decoration: none;
               padding: ${tokens.spacing.sm} 0;
               transition: color 0.3s ease;
+              font-weight: 500;
             }
             .dropdown-link:hover {
-              color: rgba(255, 255, 255, 0.7) !important;
+               color: var(--sys-primary) !important;
             }
            .dropdown-actions {
              display: flex;
@@ -201,7 +203,7 @@ export default function MarketingPage() {
           `}</style>
         <div style={{ display: "flex", alignItems: "center", height: "40px" }}>
           <img 
-            src="/logo-white.png" 
+            src="/logo.png" 
             alt="FieldSpec" 
             style={{ height: "32px", width: "auto", objectFit: "contain" }} 
           />
@@ -209,31 +211,32 @@ export default function MarketingPage() {
         {/* Desktop Navigation */}
         <div className="desktop-nav">
           <div className="nav-center">
-            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
               Features
             </Link>
-            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
               How It Works
             </Link>
-            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
               Use Cases
             </Link>
           </div>
           <div className="nav-right">
-            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge }}>
               Log In
             </Link>
-            <Link href="/signup" className="btn-primary" style={{
-              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-              backgroundColor: "#FFFFFF",
-              color: "#31579b",
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              ...tokens.typography.labelLarge,
-              fontWeight: "600",
-            }}>
+             <Link href="/signup" className="btn-primary" style={{
+               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+               backgroundColor: tokens.colors.primary,
+               color: tokens.colors.onPrimary,
+               textDecoration: "none",
+               borderRadius: tokens.radius.md,
+               ...tokens.typography.labelLarge,
+               fontWeight: "600",
+             }}>
               Get Started
             </Link>
+            <ThemeToggle />
           </div>
         </div>
         <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />
@@ -243,30 +246,31 @@ export default function MarketingPage() {
           <span></span>
         </label>
         <div className="dropdown-menu">
-          <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+          <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
             Features
           </Link>
-          <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+          <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
             How It Works
           </Link>
-          <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+          <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
             Use Cases
           </Link>
           <div className="dropdown-actions">
-            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}>
+            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge }}>
               Log In
             </Link>
-            <Link href="/signup" className="btn-primary final-cta-btn" style={{
-              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-              backgroundColor: "#FFFFFF",
-              color: "#31579b",
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              ...tokens.typography.labelLarge,
-              fontWeight: "600",
-            }}>
+             <Link href="/signup" className="btn-primary final-cta-btn" style={{
+               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+               backgroundColor: tokens.colors.primary,
+               color: tokens.colors.onPrimary,
+               textDecoration: "none",
+               borderRadius: tokens.radius.md,
+               ...tokens.typography.labelLarge,
+               fontWeight: "600",
+             }}>
               Get Started
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
@@ -284,6 +288,7 @@ export default function MarketingPage() {
         textAlign: "center",
         zIndex: 1,
         animation: "heroFadeIn 1s ease-out forwards",
+        backgroundColor: "var(--color-section-bg)",
       }}>
         {/* Video Background */}
         <div className="hero-video-container">
@@ -477,7 +482,7 @@ export default function MarketingPage() {
       {/* Problem → Solution Section */}
       <section style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: "#0f172a",
+        backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -523,7 +528,7 @@ export default function MarketingPage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <h2 style={{
             ...tokens.typography.displaySmall,
-            color: "#FFFFFF",
+            color: tokens.colors.onSurface,
             textAlign: "center",
             marginBottom: tokens.spacing.xl,
           }}>
@@ -531,7 +536,7 @@ export default function MarketingPage() {
           </h2>
           <p style={{
             ...tokens.typography.bodyLarge,
-            color: "rgba(255, 255, 255, 0.7)",
+            color: tokens.colors.onSurfaceVariant,
             textAlign: "center",
             maxWidth: "800px",
             margin: "0 auto",
@@ -549,9 +554,9 @@ export default function MarketingPage() {
             {/* Problem Card */}
             <div className="problem-solution-card" style={{
               padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "#1e293b",
+              backgroundColor: tokens.colors.surfaceContainer,
               borderRadius: tokens.radius.lg,
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: `1px solid ${tokens.colors.outlineVariant}`,
               boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
               height: "100%",
               display: "flex",
@@ -566,13 +571,13 @@ export default function MarketingPage() {
                 left: `${tokens.spacing.lg}`,
                 width: "12px",
                 height: "12px",
-                backgroundColor: "#60A5FA",
-                borderRadius: "50%",
-                boxShadow: `0 0 0 4px rgba(96, 165, 250, 0.2)`,
+                 backgroundColor: tokens.colors.primary,
+                 borderRadius: "50%",
+                 boxShadow: `0 0 0 4px rgba(96, 165, 250, 0.2)`,
               }} />
               <h3 className="problem-solution-title" style={{
                 ...tokens.typography.headlineMedium,
-                color: "#FFFFFF",
+                color: tokens.colors.onSurface,
                 marginBottom: tokens.spacing.lg,
                 marginTop: tokens.spacing.xs,
               }}>
@@ -586,7 +591,7 @@ export default function MarketingPage() {
                         <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Manual report writing is slow, inconsistent, and prone to human error</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Manual report writing is slow, inconsistent, and prone to human error</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
@@ -594,7 +599,7 @@ export default function MarketingPage() {
                         <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Drone data remains unstructured, making analysis and comparison difficult</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Drone data remains unstructured, making analysis and comparison difficult</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
@@ -602,18 +607,18 @@ export default function MarketingPage() {
                         <span style={{ color: tokens.colors.primary, fontSize: tokens.typography.bodyMedium.fontSize, fontWeight: "bold" }}>✕</span>
                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Insights vary between team members, reducing decision‑making confidence</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Insights vary between team members, reducing decision‑making confidence</span>
                   </li>
                 </ul>
               </div>
-              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--ref-neutral-neutral92)" }}>
+              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: `1px solid ${tokens.colors.outlineVariant}` }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ display: "flex", gap: "4px" }}>
                     {[1, 2, 3].map((i) => (
                       <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "var(--ref-key-accent-key-color)" : "var(--ref-neutral-neutral87)" }} />
                     ))}
                   </div>
-                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "rgba(255,255,255,0.5)" }}>3 major pain points</span>
+                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: tokens.colors.onSurfaceVariant }}>3 major pain points</span>
                 </div>
               </div>
             </div>
@@ -621,9 +626,9 @@ export default function MarketingPage() {
             {/* Solution Card */}
             <div className="problem-solution-card" style={{
               padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "#1e293b",
+              backgroundColor: tokens.colors.surfaceContainer,
               borderRadius: tokens.radius.lg,
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: `1px solid ${tokens.colors.outlineVariant}`,
               boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
               height: "100%",
               display: "flex",
@@ -638,13 +643,13 @@ export default function MarketingPage() {
                 left: `${tokens.spacing.lg}`,
                 width: "12px",
                 height: "12px",
-                backgroundColor: "#34D399",
-                borderRadius: "50%",
-                boxShadow: `0 0 0 4px rgba(52, 211, 153, 0.2)`,
+                 backgroundColor: tokens.colors.secondary,
+                 borderRadius: "50%",
+                 boxShadow: `0 0 0 4px rgba(52, 211, 153, 0.2)`,
               }} />
               <h3 className="problem-solution-title" style={{
                 ...tokens.typography.headlineMedium,
-                color: "#FFFFFF",
+                color: tokens.colors.onSurface,
                 marginBottom: tokens.spacing.lg,
                 marginTop: tokens.spacing.xs,
               }}>
@@ -654,38 +659,38 @@ export default function MarketingPage() {
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>AI‑powered analysis delivers consistent, accurate insights in minutes</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>AI‑powered analysis delivers consistent, accurate insights in minutes</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Automatic structuring of drone data into searchable, comparable formats</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Automatic structuring of drone data into searchable, comparable formats</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: "rgba(52, 211, 153, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: "#34D399", fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
-                    <span style={{ ...tokens.typography.bodyLarge, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>Professional reports generated automatically, ready for stakeholders</span>
+                    <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Professional reports generated automatically, ready for stakeholders</span>
                   </li>
                 </ul>
               </div>
-              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+              <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: `1px solid ${tokens.colors.outlineVariant}` }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ display: "flex", gap: "4px" }}>
                     {[1, 2, 3].map((i) => (
-                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? "#34D399" : "rgba(255, 255, 255, 0.3)" }} />
+                       <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? tokens.colors.secondary : tokens.colors.outlineVariant }} />
                     ))}
                   </div>
-                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: "rgba(255, 255, 255, 0.5)" }}>3 key benefits</span>
+                   <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: tokens.colors.onSurfaceVariant }}>3 key benefits</span>
                 </div>
               </div>
             </div>
@@ -697,8 +702,8 @@ export default function MarketingPage() {
       {/* How It Works */}
       <section id="how-it-works" style={{
         padding: `160px ${tokens.spacing.lg} ${tokens.spacing.xxl}`, 
-        backgroundColor: "#0f172a",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+        backgroundColor: "var(--color-section-bg)",
+        borderTop: `1px solid ${tokens.colors.outlineVariant}`,
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -716,7 +721,7 @@ export default function MarketingPage() {
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <h2 style={{
             ...tokens.typography.headlineLarge,
-            color: "#FFFFFF",
+            color: tokens.colors.onSurface,
             textAlign: "center",
             marginBottom: tokens.spacing.xs,
           }}>
@@ -724,7 +729,7 @@ export default function MarketingPage() {
           </h2>
           <p style={{
             ...tokens.typography.bodyLarge,
-            color: "rgba(255, 255, 255, 0.7)",
+            color: tokens.colors.onSurfaceVariant,
             textAlign: "center",
             marginBottom: tokens.spacing.xxl,
           }}>
@@ -741,9 +746,9 @@ export default function MarketingPage() {
                 className="step-card"
                 style={{
                   padding: tokens.spacing.xl,
-                  backgroundColor: "#1e293b",
+                  backgroundColor: tokens.colors.surfaceContainer,
                   borderRadius: tokens.radius.lg,
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                   display: "flex",
                   flexDirection: "column",
@@ -769,14 +774,14 @@ export default function MarketingPage() {
                 </div>
                 <h3 style={{
                   ...tokens.typography.titleMedium,
-                  color: "#FFFFFF",
+                  color: tokens.colors.onSurface,
                   marginBottom: tokens.spacing.xs,
                 }}>
                   {step.title}
                 </h3>
                 <p style={{
                   ...tokens.typography.bodySmall,
-                  color: "rgba(255, 255, 255, 0.6)",
+                  color: tokens.colors.onSurfaceVariant,
                   lineHeight: 1.5,
                 }}>
                   {step.description}
@@ -789,7 +794,8 @@ export default function MarketingPage() {
                     transform: "translateY(-50%)",
                     width: "24px",
                     height: "24px",
-                    color: "rgba(255, 255, 255, 0.3)",
+                    color: tokens.colors.outlineVariant,
+                    opacity: 0.3,
                     display: "none",
                   }}>
                     <span className="material-icons" style={{ fontSize: "24px" }}>arrow_forward</span>
@@ -804,25 +810,29 @@ export default function MarketingPage() {
       {/* Features Section */}
       <section id="features" style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: "#31579b",
+        backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
            .feature-card:hover {
              transform: translateY(-4px);
-             box-shadow: 0 12px 32px rgba(0,0,0,0.2);
-             border-color: rgba(255,255,255,0.5);
+             box-shadow: 0 12px 32px rgba(49,87,155,0.12);
+              border-color: var(--sys-primary);
            }
            .use-case-card:hover {
              transform: translateY(-4px);
              box-shadow: 0 12px 32px rgba(0,0,0,0.4);
              border-color: var(--sys-primary);
            }
+           :root.light .feature-card {
+             background-color: #D8E4F3 !important;
+             border-color: #c3d5ed !important;
+           }
          `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2 style={{
             ...tokens.typography.headlineLarge,
-            color: "#FFFFFF",
+             color: tokens.colors.onSurface,
             textAlign: "center",
             marginBottom: tokens.spacing.xs,
           }}>
@@ -830,7 +840,7 @@ export default function MarketingPage() {
           </h2>
           <p style={{
             ...tokens.typography.bodyLarge,
-            color: "rgba(255, 255, 255, 0.8)",
+             color: tokens.colors.onSurfaceVariant,
             textAlign: "center",
             marginBottom: tokens.spacing.xxl,
           }}>
@@ -846,9 +856,9 @@ export default function MarketingPage() {
                 key={i}
                 className="feature-card"
                 style={{
-                  backgroundColor: "#1B293D",
+                  backgroundColor: tokens.colors.surfaceContainer,
                   borderRadius: "20px",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   padding: tokens.spacing.md,
                   display: "flex",
                   flexDirection: "column",
@@ -888,7 +898,7 @@ export default function MarketingPage() {
                     fontSize: "20px",
                     fontStyle: "italic",
                     fontWeight: 500,
-                    color: "#FFFFFF",
+                    color: tokens.colors.onSurface,
                     marginBottom: "12px",
                   }}>
                     {feature.title}
@@ -897,7 +907,7 @@ export default function MarketingPage() {
                     fontFamily: "var(--sys-typescale-body-large-fontfamily)",
                     fontSize: "15px",
                     fontStyle: "italic",
-                    color: "rgba(255, 255, 255, 0.7)",
+                    color: tokens.colors.onSurfaceVariant,
                     lineHeight: 1.6,
                     paddingBottom: tokens.spacing.sm,
                   }}>
@@ -913,7 +923,7 @@ export default function MarketingPage() {
       {/* Use Cases */}
       <section id="use-cases" style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: "#0F172A", // Dark theme matching screenshot
+        backgroundColor: "var(--color-section-bg)",
         position: "relative",
       }}>
         <style dangerouslySetInnerHTML={{
@@ -925,8 +935,8 @@ export default function MarketingPage() {
             margin-top: 48px;
           }
           .use-case-card-bento {
-            background: #1E293B;
-            border: 1px solid rgba(255,255,255,0.05);
+             background: var(--sys-surface-roles-surface-container);
+            border: 1px solid var(--sys-outline-variant);
             border-radius: 20px;
             display: flex;
             flex-direction: column;
@@ -935,7 +945,7 @@ export default function MarketingPage() {
           }
           .use-case-card-bento:hover {
             transform: translateY(-4px);
-            border-color: rgba(255,255,255,0.2);
+             border-color: var(--sys-outline-variant);
             box-shadow: 0 12px 32px rgba(0,0,0,0.3);
           }
           .bento-span-2 {
@@ -956,7 +966,7 @@ export default function MarketingPage() {
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ marginBottom: "60px", textAlign: "center" }}>
             <span style={{
-              color: "#60A5FA",
+               color: tokens.colors.primary,
               fontSize: "14px",
               fontWeight: 600,
               fontFamily: "var(--sys-typescale-body-large-fontfamily)",
@@ -966,7 +976,7 @@ export default function MarketingPage() {
             }}>Field Inspections</span>
             <h2 style={{
               ...tokens.typography.headlineLarge,
-              color: "#FFFFFF",
+              color: tokens.colors.onSurface,
               textAlign: "center",
               margin: "0 auto",
               maxWidth: "800px",
@@ -975,7 +985,12 @@ export default function MarketingPage() {
             </h2>
           </div>
 
-          <div className="bento-grid">
+          <div className="bento-grid" style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "24px",
+            marginTop: "48px",
+          }}>
             {useCases.map((useCase, i) => {
               const spanClass = (i === 0 || i === 3) ? "bento-span-2" : "bento-span-1";
 
@@ -1012,7 +1027,7 @@ export default function MarketingPage() {
                     justifyContent: "flex-end" // Pushes text down nicely
                   }}>
                     <span style={{
-                      color: "rgba(255,255,255,0.7)",
+                      color: tokens.colors.onSurfaceVariant,
                       fontFamily: "var(--sys-typescale-body-large-fontfamily)",
                       fontSize: "13px",
                       fontWeight: 500,
@@ -1022,7 +1037,7 @@ export default function MarketingPage() {
                       {useCase.title.split(" ")[0]}
                     </span>
                     <h4 style={{
-                      color: "#FFFFFF",
+                      color: tokens.colors.onSurface,
                       fontFamily: "var(--sys-typescale-body-large-fontfamily)",
                       fontSize: "20px",
                       fontWeight: "500",
@@ -1031,10 +1046,11 @@ export default function MarketingPage() {
                       {useCase.title}
                     </h4>
                     <p style={{
-                      color: "rgba(255,255,255,0.5)",
+                      color: tokens.colors.onSurfaceVariant,
                       fontFamily: "var(--sys-typescale-body-large-fontfamily)",
                       fontSize: "14px",
                       lineHeight: 1.6,
+                      opacity: 0.7,
                     }}>
                       {useCase.description}
                     </p>
@@ -1049,14 +1065,14 @@ export default function MarketingPage() {
       {/* Final CTA */}
       <section style={{
         padding: `0 24px 160px`, // Added large explicit spacing between CTA and footer
-        backgroundColor: "#0F172A",
+        backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
            .cta-card {
-             background-color: #1a1e29;
-             background-image: radial-gradient(ellipse at bottom, #31579b 0%, transparent 60%);
-             border: 1px solid rgba(255,255,255,0.05);
+              background-color: var(--sys-surface-roles-surface-container);
+             background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
+             border: 1px solid var(--sys-outline-variant);
              border-radius: 20px;
              padding: 50px 24px; // Removed another 50px of total height
              text-align: center;
@@ -1064,10 +1080,10 @@ export default function MarketingPage() {
              overflow: hidden;
              box-shadow: 0 20px 40px rgba(0,0,0,0.3);
            }
-           .cta-primary-btn {
-             background-color: rgba(255,255,255,0.15);
-             color: #FFFFFF;
-             padding: 12px 24px;
+            .cta-primary-btn {
+              background-color: rgba(255,255,255,0.15);
+              color: var(--sys-on-surface);
+              padding: 12px 24px;
              border-radius: 8px;
              font-size: 15px;
              font-weight: 500;
@@ -1080,9 +1096,9 @@ export default function MarketingPage() {
              background-color: rgba(255,255,255,0.22);
              transform: translateY(-1px);
            }
-           .cta-secondary-link {
-             color: #FFFFFF;
-             font-size: 15px;
+            .cta-secondary-link {
+              color: var(--sys-on-surface);
+              font-size: 15px;
              font-weight: 500;
              text-decoration: none;
              display: inline-flex;
@@ -1100,7 +1116,7 @@ export default function MarketingPage() {
               fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
               fontSize: "clamp(2rem, 5vw, 3.5rem)",
               fontWeight: 600,
-              color: "#FFFFFF",
+              color: tokens.colors.onSurface,
               marginBottom: "24px",
               letterSpacing: "-0.02em",
               lineHeight: 1.1,
@@ -1111,7 +1127,7 @@ export default function MarketingPage() {
             <p style={{
               fontFamily: "var(--sys-typescale-body-large-fontfamily)",
               fontSize: "17px",
-              color: "rgba(255,255,255,0.6)",
+              color: tokens.colors.onSurfaceVariant,
               lineHeight: 1.6,
               marginBottom: "40px",
               maxWidth: "540px",
@@ -1134,12 +1150,30 @@ export default function MarketingPage() {
 
       {/* Footer */}
       <footer style={{
-        backgroundColor: "#31579b", // Custom requested blue background
-        color: "#ffffff",
         fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
+          footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-color);
+          }
+          :root {
+            --footer-bg: var(--ref-primary-primary20);
+            --footer-color: var(--ref-primary-primary100);
+            --footer-focus-border: rgba(255, 255, 255, 0.6);
+            --footer-logo-filter: none;
+             --footer-arrow-color: var(--footer-color);
+            --footer-bottom-overlay: rgba(255, 255, 255, 0.05);
+          }
+          :root.light {
+            --footer-bg: var(--ref-primary-primary80);
+            --footer-color: var(--ref-primary-primary20);
+            --footer-focus-border: rgba(0, 0, 0, 0.3);
+            --footer-logo-filter: brightness(0.5);
+            --footer-arrow-color: var(--footer-color);
+            --footer-bottom-overlay: rgba(0, 0, 0, 0.05);
+          }
           .footer-top {
             padding: 80px 5%;
             display: flex;
@@ -1171,6 +1205,10 @@ export default function MarketingPage() {
             margin-bottom: 60px;
             letter-spacing: -1px;
           }
+          .footer-logo img {
+            filter: var(--footer-logo-filter);
+            transition: filter 0.3s ease;
+          }
           .footer-newsletter-title {
             font-size: 16px;
             font-weight: 500;
@@ -1185,21 +1223,21 @@ export default function MarketingPage() {
           .footer-input {
             flex: 1;
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid var(--sys-outline-variant);
             border-radius: var(--sys-radius-md);
             padding: 12px 24px;
-            color: #fff;
+            color: var(--footer-color);
             font-size: 14px;
             outline: none;
             transition: border-color 0.2s ease;
           }
           .footer-input:focus {
-            border-color: rgba(255,255,255,0.6);
+            border-color: var(--footer-focus-border);
           }
           .footer-subscribe-btn {
             background: transparent;
-            border: 1px solid #cc5500; /* Accented orange outline */
-            color: #fff;
+             border: 1px solid var(--ref-accent-accent40); /* Accented orange outline */
+            color: var(--footer-color);
             padding: 12px 24px;
             border-radius: var(--sys-radius-md);
             font-size: 14px;
@@ -1207,13 +1245,13 @@ export default function MarketingPage() {
             cursor: pointer;
             transition: all 0.2s ease;
           }
-          .footer-subscribe-btn:hover {
-            background: #cc5500;
-          }
+           .footer-subscribe-btn:hover {
+             background: var(--ref-accent-accent40);
+           }
           .footer-arrow-btn {
             background: transparent;
-            border: 1px solid #cc5500;
-            color: #fff;
+             border: 1px solid var(--ref-accent-accent40);
+            color: var(--footer-arrow-color);
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -1224,9 +1262,9 @@ export default function MarketingPage() {
             transition: all 0.2s ease;
             flex-shrink: 0;
           }
-          .footer-arrow-btn:hover {
-            background: #cc5500;
-          }
+           .footer-arrow-btn:hover {
+             background: var(--ref-accent-accent40);
+           }
           .footer-connect-title {
             font-size: 16px;
             font-weight: 500;
@@ -1237,7 +1275,7 @@ export default function MarketingPage() {
             gap: 24px;
           }
           .footer-social-link {
-            color: #ffffff;
+            color: var(--footer-color);
             text-decoration: none;
             font-size: 13px;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -1261,33 +1299,37 @@ export default function MarketingPage() {
             gap: 16px;
           }
           .footer-link {
-            color: rgba(255,255,255,0.8);
+            color: var(--footer-color);
+            opacity: 0.8;
             text-decoration: none;
             font-size: 13px;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             transition: color 0.2s ease;
           }
           .footer-link:hover {
-            color: #ffffff;
+            opacity: 1;
+            color: var(--footer-color);
           }
 
           .footer-bottom {
-            background-color: rgba(0, 0, 0, 0.15); /* Slightly darker overlay for bottom */
+            background-color: var(--footer-bottom-overlay);
             padding: 24px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
-            color: rgba(255,255,255,0.6);
-            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--footer-color);
+            opacity: 0.6;
+            border-top: 1px solid var(--sys-outline-variant);
           }
           .footer-bottom-link {
-            color: rgba(255,255,255,0.6);
+            color: var(--footer-color);
+            opacity: 0.6;
             text-decoration: none;
             transition: color 0.2s ease;
           }
           .footer-bottom-link:hover {
-            color: rgba(255,255,255,0.9);
+            opacity: 0.9;
           }
 
           @media (max-width: 768px) {
@@ -1362,7 +1404,7 @@ export default function MarketingPage() {
         <div className="footer-bottom">
           <div>© Copyright 2025 - Made by FieldSpec</div>
           <div>
-            <Link href="#" className="footer-bottom-link">Get Template - Privacy Policy</Link>
+            <Link href="#" className="footer-bottom-link" style={{ color: "inherit" }}>Get Template - Privacy Policy</Link>
           </div>
         </div>
       </footer>

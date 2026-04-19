@@ -1,5 +1,13 @@
 @import "../design-tokens.css";
 
+:root {
+  --color-section-bg: var(--ref-primary-primary20); /* #182f4e for dark mode */
+}
+
+:root.light {
+  --color-section-bg: var(--sys-surface-roles-surface); /* Light background for light mode */
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

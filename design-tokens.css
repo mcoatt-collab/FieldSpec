@@ -401,13 +401,13 @@
 
 /* Light Theme */
 :root.light {
-  --sys-add-on-surface-roles-background: var(--ref-neutral-neutral99);
+  --sys-add-on-surface-roles-background: #f7fafd;
   --sys-add-on-surface-roles-on-background: var(--ref-neutral-neutral10);
   --sys-add-on-surface-roles-scrim: var(--ref-neutral-neutral0);
   --sys-add-on-surface-roles-shadow: var(--ref-neutral-neutral0);
   --sys-add-on-surface-roles-surface-bright: var(--ref-neutral-neutral100);
   --sys-add-on-surface-roles-surface-dim: var(--ref-neutral-neutral95);
-  --sys-surface-roles-surface: var(--ref-neutral-neutral99);
+  --sys-surface-roles-surface: #f7fafd;
   --sys-surface-roles-on-surface: var(--ref-neutral-neutral10);
   --sys-surface-roles-surface-variant: var(--ref-neutral-variant-neutral-variant90);
   --sys-surface-roles-on-surface-variant: var(--ref-neutral-variant-neutral-variant40);
@@ -451,4 +451,40 @@
   --sys-add-on-on-tertiary-fixed-variant: var(--ref-tertiary-tertiary30);
   --sys-add-on-tertiary-fixed: var(--ref-tertiary-tertiary90);
   --sys-add-on-tertiary-fixed-dim: var(--ref-tertiary-tertiary80);
+}
+
+/* ─── Dark mode: card backgrounds ─────────────────────────────────────────── */
+.problem-solution-card,
+.step-card,
+.feature-card,
+.use-case-card-bento,
+.cta-card {
+  background-color: var(--ref-primary-primary40) !important; /* #315F9B */
+  border-color: var(--ref-primary-primary30) !important; /* #254774 */
+}
+
+.step-card:hover,
+.feature-card:hover,
+.use-case-card-bento:hover,
+.problem-solution-card:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  border-color: var(--ref-primary-primary20) !important; /* #182f4e */
+}
+
+/* ─── Light mode: card backgrounds ─────────────────────────────────────────── */
+:root.light .problem-solution-card,
+:root.light .step-card,
+:root.light .feature-card,
+:root.light .use-case-card-bento,
+:root.light .cta-card {
+  background-color: #D8E4F3 !important;
+  border-color: #c3d5ed !important;
+}
+
+:root.light .step-card:hover,
+:root.light .feature-card:hover,
+:root.light .use-case-card-bento:hover,
+:root.light .problem-solution-card:hover {
+  box-shadow: 0 12px 32px rgba(49, 87, 155, 0.14) !important;
+  border-color: #31579b !important;
 }
