@@ -108,12 +108,55 @@ export default function ProjectsPage() {
         maxWidth: "1000px",
       }}
     >
+      <style>{`
+        .animate-content {
+          animation: slideUpFade 0.4s ease-out forwards;
+        }
+        @keyframes slideUpFade {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .custom-select {
+          transition: all 0.2s ease;
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 12px center;
+          background-size: 16px;
+          padding-right: 40px !important;
+          max-width: 100%;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        @media (max-width: 600px) {
+          .custom-select {
+            font-size: 14px !important;
+            height: 44px;
+          }
+          .form-actions {
+            flex-direction: column;
+          }
+          .form-actions button {
+            width: 100%;
+          }
+        }
+      `}</style>
       <div
+        className="animate-content"
         style={{
           marginBottom: tokens.spacing.xl,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "wrap",
+          gap: tokens.spacing.md,
         }}
       >
         <div>
@@ -146,7 +189,10 @@ export default function ProjectsPage() {
               borderRadius: tokens.radius.md,
               cursor: "pointer",
               ...tokens.typography.labelLarge,
+              transition: "transform 0.2s ease",
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             Create Project
           </button>
@@ -155,12 +201,14 @@ export default function ProjectsPage() {
 
       {showForm && (
         <div
+          className="animate-content"
           style={{
             marginBottom: tokens.spacing.lg,
             padding: tokens.spacing.lg,
             backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             boxShadow: tokens.elevation.level1,
+            border: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
           <form onSubmit={handleSubmit}>
@@ -184,12 +232,19 @@ export default function ProjectsPage() {
                   width: "100%",
                   boxSizing: "border-box",
                   padding: tokens.spacing.md,
-                  border: `1px solid ${tokens.colors.outline}`,
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   borderRadius: tokens.radius.md,
                   backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
+                  transition: "border-color 0.2s ease",
                 }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = tokens.colors.primary)
+                }
+                onBlur={(e) =>
+                  (e.currentTarget.style.borderColor = tokens.colors.outlineVariant)
+                }
               />
             </div>
 
@@ -202,32 +257,57 @@ export default function ProjectsPage() {
                   color: tokens.colors.onSurfaceVariant,
                 }}
               >
-                Link to Client <span style={{ color: tokens.colors.onSurfaceVariant }}>(optional)</span>
+                Link to Client{" "}
+                <span style={{ color: tokens.colors.onSurfaceVariant }}>
+                  (optional)
+                </span>
               </label>
               <select
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
+                className="custom-select"
                 style={{
                   width: "100%",
                   boxSizing: "border-box",
                   padding: tokens.spacing.md,
-                  border: `1px solid ${tokens.colors.outline}`,
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   borderRadius: tokens.radius.md,
                   backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
+                  transition: "border-color 0.2s ease",
+                  cursor: "pointer",
                 }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = tokens.colors.primary)
+                }
+                onBlur={(e) =>
+                  (e.currentTarget.style.borderColor = tokens.colors.outlineVariant)
+                }
               >
                 <option value="">No client linked</option>
-                {clients.map(client => (
+                {clients.map((client) => (
                   <option key={client.id} value={client.id}>
-                    {client.name}{client.company ? ` (${client.company})` : ""}
+                    {client.name}
+                    {client.company ? ` (${client.company})` : ""}
                   </option>
                 ))}
               </select>
-              <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.xs }}>
+              <p
+                style={{
+                  ...tokens.typography.bodySmall,
+                  color: tokens.colors.onSurfaceVariant,
+                  marginTop: tokens.spacing.xs,
+                }}
+              >
                 To create a project for a new client,{" "}
-                <a href="/dashboard/clients" style={{ color: tokens.colors.primary, textDecoration: "underline" }}>
+                <a
+                  href="/dashboard/clients"
+                  style={{
+                    color: tokens.colors.primary,
+                    textDecoration: "underline",
+                  }}
+                >
                   create the client first
                 </a>
                 .
@@ -249,7 +329,10 @@ export default function ProjectsPage() {
               </div>
             )}
 
-            <div style={{ display: "flex", gap: tokens.spacing.md }}>
+            <div
+              className="form-actions"
+              style={{ display: "flex", gap: tokens.spacing.md }}
+            >
               <button
                 type="submit"
                 disabled={creating}
@@ -262,7 +345,12 @@ export default function ProjectsPage() {
                   cursor: creating ? "not-allowed" : "pointer",
                   opacity: creating ? 0.7 : 1,
                   ...tokens.typography.labelLarge,
+                  transition: "transform 0.2s ease",
                 }}
+                onMouseEnter={(e) =>
+                  !creating && (e.currentTarget.style.transform = "scale(1.05)")
+                }
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               >
                 {creating ? "Creating..." : "Create"}
               </button>
@@ -278,11 +366,19 @@ export default function ProjectsPage() {
                   padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
                   backgroundColor: "transparent",
                   color: tokens.colors.onSurface,
-                  border: `1px solid ${tokens.colors.outline}`,
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   borderRadius: tokens.radius.md,
                   cursor: "pointer",
                   ...tokens.typography.labelLarge,
+                  transition: "background-color 0.2s ease",
                 }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    tokens.colors.surfaceContainerLow)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
               >
                 Cancel
               </button>
@@ -304,12 +400,14 @@ export default function ProjectsPage() {
         </div>
       ) : projects.length === 0 ? (
         <div
+          className="animate-content"
           style={{
             padding: tokens.spacing.xl,
             backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             boxShadow: tokens.elevation.level1,
             textAlign: "center",
+            border: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
           <p
@@ -329,7 +427,7 @@ export default function ProjectsPage() {
             gap: tokens.spacing.md,
           }}
         >
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <div
               key={project.id}
               style={{
@@ -337,6 +435,21 @@ export default function ProjectsPage() {
                 backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
                 boxShadow: tokens.elevation.level1,
+                border: `1px solid ${tokens.colors.outlineVariant}`,
+                animation: `slideUpFade 0.4s ease-out forwards ${index * 0.05}s`,
+                opacity: 0,
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.boxShadow = tokens.elevation.level2;
+                e.currentTarget.style.borderColor = tokens.colors.primary;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = tokens.elevation.level1;
+                e.currentTarget.style.borderColor = tokens.colors.outlineVariant;
               }}
             >
               <h3
