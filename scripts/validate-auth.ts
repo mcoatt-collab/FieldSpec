@@ -1,11 +1,13 @@
-import { PrismaClient } from "../lib/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { hashPassword } from "../lib/auth/password";
 import { generateToken, hashToken } from "../lib/auth/token";
 import { signJWT } from "../lib/auth/jwt";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../services/email/email.service";
-import { TokenType } from "../lib/generated/prisma/client";
+
+const TOKEN_TYPE_EMAIL_VERIFICATION = "email_verification";
+const TOKEN_TYPE_PASSWORD_RESET = "password_reset";
 
 const connectionString = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/fieldspec";
 const pool = new pg.Pool({ connectionString });
@@ -47,7 +49,7 @@ async function testSignup() {
     data: {
       userId: user.id,
       tokenHash: tokenData.hash,
-      type: TokenType.email_verification,
+      type: TOKEN_TYPE_EMAIL_VERIFICATION,
       expiresAt: tokenData.expiresAt,
     },
   });
@@ -62,7 +64,7 @@ async function testEmailVerification(userId: string, tokenHash: string) {
   const authToken = await prisma.authToken.findFirst({
     where: {
       tokenHash,
-      type: TokenType.email_verification,
+      type: TOKEN_TYPE_EMAIL_VERIFICATION,
       isUsed: false,
     },
     include: { user: true },
@@ -141,7 +143,7 @@ async function testForgotPassword(email: string) {
     data: {
       userId: user.id,
       tokenHash: tokenData.hash,
-      type: TokenType.password_reset,
+      type: TOKEN_TYPE_PASSWORD_RESET,
       expiresAt: tokenData.expiresAt,
     },
   });
@@ -157,7 +159,7 @@ async function testResetPassword(tokenRaw: string, newPassword: string) {
   const authToken = await prisma.authToken.findFirst({
     where: {
       tokenHash,
-      type: TokenType.password_reset,
+      type: TOKEN_TYPE_PASSWORD_RESET,
       isUsed: false,
     },
     include: { user: true },
@@ -234,7 +236,7 @@ async function main() {
       data: {
         userId: user.id,
         tokenHash: resetToken.hash,
-        type: TokenType.password_reset,
+        type: TOKEN_TYPE_PASSWORD_RESET,
         expiresAt: resetToken.expiresAt,
       },
     });
