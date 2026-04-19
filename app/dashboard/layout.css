@@ -10,3 +10,32 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* Custom Responsive Behavior for Dashboard */
+.dash-sidebar {
+  display: none !important;
+}
+.dash-hamburger {
+  display: flex !important;
+}
+.dash-header-padding, .dash-main-padding {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+@media (min-width: 800px) {
+  .dash-sidebar {
+    display: flex !important;
+  }
+  .dash-hamburger {
+    display: none !important;
+  }
+  .dash-header-padding {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  .dash-main-padding {
+    padding-left: var(--sys-spacing-spacing-lg, 32px);
+    padding-right: var(--sys-spacing-spacing-lg, 32px);
+  }
+}

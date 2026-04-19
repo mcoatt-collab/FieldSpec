@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+import { cache, withCache } from "@/lib/cache";
 
 const createImageSchema = z.object({
   projectId: z.string().uuid("Invalid project ID"),
@@ -63,6 +64,9 @@ export async function POST(request: NextRequest) {
       data: { photoCount: { increment: 1 } },
     });
 
+    await cache.delete(cache.buildKey("projects", userId));
+    await cache.delete(cache.buildKey("images", projectId));
+
     return NextResponse.json({ data: image }, { status: 201 });
   } catch (error) {
     console.error("POST images error:", error);
@@ -86,28 +90,32 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get("projectId");
 
-    const where: { project: { userId: string; id?: string } } = {
-      project: { userId },
-    };
+    const cacheKey = cache.buildKey("images", projectId || "all", userId);
 
-    if (projectId) {
-      where.project.id = projectId;
-    }
+    const images = await withCache(cacheKey, async () => {
+      const where: { project: { userId: string; id?: string } } = {
+        project: { userId },
+      };
 
-    const images = await prisma.image.findMany({
-      where: where,
-      select: {
-        id: true,
-        url: true,
-        thumbnailUrl: true,
-        category: true,
-        notes: true,
-        gpsLat: true,
-        gpsLng: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+      if (projectId) {
+        where.project.id = projectId;
+      }
+
+      return prisma.image.findMany({
+        where,
+        select: {
+          id: true,
+          url: true,
+          thumbnailUrl: true,
+          category: true,
+          notes: true,
+          gpsLat: true,
+          gpsLng: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+    }, 30);
 
     return NextResponse.json({ data: images }, { status: 200 });
   } catch (error) {

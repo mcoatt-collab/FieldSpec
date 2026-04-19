@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { Worker as BullMQWorker, Job as BullMQJob } from "bullmq";
 import { redis } from "@/lib/redis";
+=======
+import "dotenv/config";
+import { Worker, Job } from "bullmq";
+import { redisQueue, connectRedis } from "@/lib/redis";
+>>>>>>> origin/main
 import { prisma } from "@/lib/prisma";
 import { generateCaptionWithRetry, calculateConfidenceScore } from "@/lib/ai";
+import { cache } from "@/lib/cache";
 
 const AI_JOB_QUEUE = "ai-generation";
 
@@ -149,6 +156,20 @@ async function processAIJob(job: BullMQJob<AIJobData, unknown>) {
     for (const image of project.images) {
       console.log(`[AI Worker] Processing image ${processedCount + 1}/${totalImages}`);
 
+      const existingAI = await prisma.aIOutput.findUnique({
+        where: { imageId: image.id },
+      });
+
+      if (existingAI) {
+        console.log(`[AI Worker] Using cached AI result for image ${image.id}`);
+        processedCount++;
+        const baseProgress = 10;
+        const progressRange = 80;
+        const currentProgress = baseProgress + Math.floor((processedCount / totalImages) * progressRange);
+        await job.updateProgress(currentProgress);
+        continue;
+      }
+
       const category = image.category || null;
       const userNote = image.notes || null;
       const hasContext = !!project.name;
@@ -248,8 +269,14 @@ async function processAIJob(job: BullMQJob<AIJobData, unknown>) {
 }
 
 export async function startAIWorker() {
+<<<<<<< HEAD
   const worker = new BullMQWorker(AI_JOB_QUEUE, processAIJob, {
     connection: redis,
+=======
+  await connectRedis();
+  const worker = new Worker(AI_JOB_QUEUE, processAIJob, {
+    connection: redisQueue,
+>>>>>>> origin/main
     concurrency: 2,
   });
 
@@ -264,3 +291,6 @@ export async function startAIWorker() {
   console.log("[AI Worker] Started processing AI jobs");
   return worker;
 }
+
+// Start the worker when this file is executed directly
+startAIWorker().catch(console.error);

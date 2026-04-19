@@ -1,600 +1,126 @@
-import Link from "next/link";
-import { tokens } from "@/lib/design-tokens";
-import Brand from "@/components/Brand";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "AI Drone Survey Report Builder | FieldSpec",
-  description:
-    "Transform drone imagery into actionable insights. FieldSpec uses AI to analyze aerial surveys and generate professional reports for agriculture, construction, and infrastructure.",
-  keywords: [
-    "drone survey",
-    "AI analysis",
-    "aerial inspection",
-    "crop health",
-    "infrastructure inspection",
-    "professional reports",
-    "drone mapping",
-    "field analysis",
-  ],
-};
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useCallback } from "react";
+import Navbar from "@/components/marketing/Navbar";
+import Hero from "@/components/marketing/Hero";
+import { Features, HowItWorks, ProblemSolution } from "@/components/marketing/Sections";
+import Brand from "@/components/Brand";
+import { tokens } from "@/lib/design-tokens";
 
 export default function MarketingPage() {
-  const features = [
-    {
-      title: "AI-Generated Insights",
-      description: "Get automated findings and recommendations for every image. No more manual analysis.",
-    },
-    {
-      title: "Image-Based Analysis",
-      description: "Upload drone images with GPS data. AI extracts patterns and identifies issues automatically.",
-    },
-    {
-      title: "Structured Reports",
-      description: "Build professional reports with consistent formatting. Export-ready in minutes.",
-    },
-    {
-      title: "Map Visualisation",
-      description: "See all your images on an interactive map. Pinpoint issues to exact locations.",
-    },
-    {
-      title: "Fast Export",
-      description: "Generate PDF reports with one click. Share with stakeholders instantly.",
-    },
-  ];
+  const router = useRouter();
 
-  const useCases = [
-    { title: "Agricultural Inspections", description: "Assess crop health, identify pest damage, monitor irrigation issues across large areas." },
-    { title: "Land Surveys", description: "Document land conditions, track changes over time, create comprehensive survey reports." },
-    { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility infrastructure safely and efficiently." },
-    { title: "Drone Operators", description: "Add professional reporting to your drone services. Deliver more value to clients." },
-  ];
+  // Proactive background prefetching for core auth routes
+  useEffect(() => {
+    router.prefetch("/signup");
+    router.prefetch("/login");
+  }, [router]);
 
-  const steps = [
-    { num: "1", title: "Upload Drone Images", description: "Drag and drop or batch upload images. GPS data is extracted automatically.", icon: "upload" },
-    { num: "2", title: "Tag & Organize", description: "Categorize images by type, location, or condition. Keep everything structured.", icon: "label" },
-    { num: "3", title: "Generate AI Insights", description: "Let AI analyze each image and produce findings and recommendations.", icon: "auto_awesome" },
-    { num: "4", title: "Export Professional Report", description: "Build and export a structured PDF report. Ready for stakeholders.", icon: "description" },
-  ];
+  // Handler for manual prefetching on hover to minimize latency
+  const handlePrefetch = useCallback((path: string) => {
+    router.prefetch(path);
+  }, [router]);
 
   return (
-    <main style={{ flex: 1 }}>
-      {/* Navigation */}
-      <nav style={{
-        padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-        borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: tokens.colors.surface,
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
+    <div style={{ backgroundColor: tokens.colors.background }}>
+      <Navbar onPrefetch={handlePrefetch} />
+      <Hero onPrefetch={handlePrefetch} />
+      
+      <ProblemSolution />
+      
+      <Features />
+      
+      <HowItWorks />
+
+      <footer style={{
+        backgroundColor: "#0f172a",
+        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
       }}>
         <style>{`
-          .nav-link:hover { color: ${tokens.colors.primary} !important; }
-          .nav-link { text-decoration: none; transition: color 0.3s ease; }
-          .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
-          .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-          .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
-          .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
-          .btn-text:hover { color: ${tokens.colors.primary} !important; }
-          .btn-text { text-decoration: none; transition: color 0.3s ease; }
-          .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
-          .social-icon:hover { color: ${tokens.colors.primary} !important; }
+          .footer-link { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: color 0.3s ease; }
+          .footer-link:hover { color: #FFFFFF !important; }
+          .social-footer-icon { color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; font-size: 20px; }
+          .social-footer-icon:hover { color: #FFFFFF !important; }
         `}</style>
-        <Brand size="md" />
-        <div style={{ display: "flex", gap: tokens.spacing.xl, alignItems: "center", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
-          <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            Features
-          </Link>
-          <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            How It Works
-          </Link>
-          <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurfaceVariant }}>
-            Use Cases
-          </Link>
-        </div>
-        <div style={{ display: "flex", gap: tokens.spacing.md, alignItems: "center" }}>
-          <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface }}>
-            Log In
-          </Link>
-          <Link href="/signup" className="btn-primary" style={{
-            padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-            backgroundColor: tokens.colors.primary,
-            color: tokens.colors.onPrimary,
-            textDecoration: "none",
-            borderRadius: tokens.radius.md,
-            ...tokens.typography.labelLarge,
-          }}>
-            Get Started
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        textAlign: "center",
-        backgroundColor: tokens.colors.surface,
-        position: "relative",
-        overflow: "hidden",
-      }}>
+        
         <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(ellipse at center, ${tokens.colors.primaryContainer}30 0%, transparent 70%)`,
-          pointerEvents: "none",
-        }} />
-        <div style={{ position: "relative", maxWidth: "800px", margin: "0 auto" }}>
-          <h1 style={{
-            ...tokens.typography.displayLarge,
-            color: tokens.colors.onSurface,
-            marginBottom: tokens.spacing.lg,
-            lineHeight: 1.1,
-          }}>
-            Turn Drone Images into<br />
-            <span style={{ color: tokens.colors.primary }}>Professional Reports in Minutes</span>
-          </h1>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            maxWidth: "600px",
-            margin: `0 auto ${tokens.spacing.xl}`,
-            fontSize: "18px",
-            lineHeight: 1.6,
-          }}>
-            Upload your drone images. Let AI analyze them. Export structured reports ready for stakeholders. No manual work required.
-          </p>
-          <div style={{ display: "flex", gap: tokens.spacing.md, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/signup" className="btn-primary" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              ...tokens.typography.labelLarge,
-            }}>
-              Get Started
-            </Link>
-            <Link href="/login" className="btn-outline" style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: "transparent",
-              color: tokens.colors.onSurface,
-              textDecoration: "none",
-              borderRadius: tokens.radius.md,
-              border: `1px solid ${tokens.colors.outline}`,
-              ...tokens.typography.labelLarge,
-            }}>
-              Log In
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Problem → Solution Section */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
-      }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: tokens.spacing.xl }}>
-            {/* Problem */}
-            <div style={{
-              padding: tokens.spacing.xl,
-              backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.lg,
-              borderLeft: `4px solid ${tokens.colors.error}`,
-            }}>
-              <h3 style={{
-                ...tokens.typography.titleLarge,
-                color: tokens.colors.error,
-                marginBottom: tokens.spacing.lg,
-              }}>
-                The Problem
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: tokens.spacing.md }}>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Manual report writing is slow and inconsistent</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Drone data is hard to structure and analyze</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.error }}>✕</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Insights vary between team members</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Solution */}
-            <div style={{
-              padding: tokens.spacing.xl,
-              backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.lg,
-              borderLeft: `4px solid ${tokens.colors.primary}`,
-            }}>
-              <h3 style={{
-                ...tokens.typography.titleLarge,
-                color: tokens.colors.primary,
-                marginBottom: tokens.spacing.lg,
-              }}>
-                The Solution
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: tokens.spacing.md }}>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>AI automates analysis for consistent insights</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Structured data from every image automatically</span>
-                </li>
-                <li style={{ display: "flex", gap: tokens.spacing.sm, alignItems: "flex-start" }}>
-                  <span style={{ color: tokens.colors.primary }}>✓</span>
-                  <span style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurface }}>Professional reports ready in minutes</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surface,
-      }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xs,
-          }}>
-            How It Works
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xxl,
-          }}>
-            Four simple steps from images to reports
-          </p>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: tokens.spacing.lg,
-          }}>
-            {steps.map((step, index) => (
-              <div
-                key={step.num}
-                style={{
-                  padding: tokens.spacing.xl,
-                  backgroundColor: tokens.colors.surfaceVariant,
-                  borderRadius: tokens.radius.lg,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  position: "relative",
-                }}
-              >
-                <div style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: tokens.radius.md,
-                  backgroundColor: tokens.colors.primary,
-                  color: tokens.colors.onPrimary,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: tokens.spacing.md,
-                  boxShadow: `0 4px 12px ${tokens.colors.primary}40`,
-                }}>
-                  <span className="material-icons" style={{ fontSize: "28px" }}>{step.icon}</span>
-                </div>
-                <h3 style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.xs,
-                }}>
-                  {step.title}
-                </h3>
-                <p style={{
-                  ...tokens.typography.bodySmall,
-                  color: tokens.colors.onSurfaceVariant,
-                  lineHeight: 1.5,
-                }}>
-                  {step.description}
-                </p>
-                {index < steps.length - 1 && (
-                  <div style={{
-                    position: "absolute",
-                    right: "-12px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "24px",
-                    height: "24px",
-                    color: tokens.colors.onSurfaceVariant,
-                    display: "none",
-                  }}>
-                    <span className="material-icons" style={{ fontSize: "24px" }}>chevron_right</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
-      }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xs,
-          }}>
-            Features Built for Inspection Reports
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xxl,
-          }}>
-            Everything you need, nothing you don&apos;t
-          </p>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: tokens.spacing.lg,
-          }}>
-            {features.map((feature, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: tokens.spacing.xl,
-                  backgroundColor: tokens.colors.surface,
-                  borderRadius: tokens.radius.lg,
-                }}
-              >
-                <h4 style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.sm,
-                }}>
-                  {feature.title}
-                </h4>
-                <p style={{
-                  ...tokens.typography.bodyMedium,
-                  color: tokens.colors.onSurfaceVariant,
-                  lineHeight: 1.5,
-                }}>
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Use Cases */}
-      <section id="use-cases" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surface,
-      }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onSurface,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xs,
-          }}>
-            Built for Field Inspections
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onSurfaceVariant,
-            textAlign: "center",
-            marginBottom: tokens.spacing.xxl,
-          }}>
-            Designed for clarity, speed, and accuracy
-          </p>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: tokens.spacing.lg,
-          }}>
-            {useCases.map((useCase, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: tokens.spacing.xl,
-                  backgroundColor: tokens.colors.surfaceVariant,
-                  borderRadius: tokens.radius.lg,
-                }}
-              >
-                <h4 style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.sm,
-                }}>
-                  {useCase.title}
-                </h4>
-                <p style={{
-                  ...tokens.typography.bodySmall,
-                  color: tokens.colors.onSurfaceVariant,
-                  lineHeight: 1.5,
-                }}>
-                  {useCase.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.primaryContainer,
-        textAlign: "center",
-      }}>
-        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-          <h2 style={{
-            ...tokens.typography.headlineLarge,
-            color: tokens.colors.onPrimaryContainer,
-            marginBottom: tokens.spacing.md,
-          }}>
-            Start Building Reports Today
-          </h2>
-          <p style={{
-            ...tokens.typography.bodyLarge,
-            color: tokens.colors.onPrimaryContainer,
-            marginBottom: tokens.spacing.xl,
-            opacity: 0.9,
-          }}>
-            Upload your first images and see how FieldSpec transforms your inspection workflow.
-          </p>
-          <Link href="/signup" className="btn-primary" style={{
-            display: "inline-block",
-            padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-            backgroundColor: tokens.colors.primary,
-            color: tokens.colors.onPrimary,
-            textDecoration: "none",
-            borderRadius: tokens.radius.md,
-            ...tokens.typography.labelLarge,
-          }}>
-            Start Building Reports
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: tokens.colors.surfaceVariant,
-        borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-      }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: tokens.spacing.xxl,
-            marginBottom: tokens.spacing.xl,
-          }}>
-            {/* Brand Column */}
-            <div>
-              <Brand size="md" className="mb-md" />
-              <p style={{
-                ...tokens.typography.bodySmall,
-                color: tokens.colors.onSurfaceVariant,
-                lineHeight: 1.6,
-                maxWidth: "250px",
-              }}>
-                AI-powered inspection reports for drone surveys. Turn images into professional reports in minutes.
-              </p>
-            </div>
-
-            {/* Product Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Product
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#features" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Features</Link>
-                <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>How It Works</Link>
-                <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Use Cases</Link>
-                <Link href="/signup" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Get Started</Link>
-              </div>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Company
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>About</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Blog</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Careers</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Contact</Link>
-              </div>
-            </div>
-
-            {/* Legal Links */}
-            <div>
-              <h4 style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}>
-                Legal
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Privacy Policy</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Terms of Service</Link>
-                <Link href="#" className="nav-link" style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>Cookie Policy</Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div style={{
-            paddingTop: tokens.spacing.lg,
-            borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: tokens.spacing.md,
-          }}>
-            <p style={{
-              ...tokens.typography.bodySmall,
-              color: tokens.colors.onSurfaceVariant,
-            }}>
-              © {new Date().getFullYear()} FieldSpec. All rights reserved.
+          maxWidth: "1200px",
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: tokens.spacing.xl,
+        }}>
+          {/* Brand Column */}
+          <div>
+            <Brand size="md" variant="white" />
+            <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)", marginTop: tokens.spacing.md }}>
+              AI-powered field analysis for agriculture, construction, and infrastructure.
             </p>
-            <div style={{ display: "flex", gap: tokens.spacing.md }}>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </Link>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-              </Link>
-              <Link href="#" className="social-icon" style={{ display: "flex", alignItems: "center" }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-              </Link>
+          </div>
+
+          {/* Product Column */}
+          <div>
+            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+              Product
+            </h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+              <a href="#features" className="footer-link" style={tokens.typography.bodySmall}>Features</a>
+              <a href="#how-it-works" className="footer-link" style={tokens.typography.bodySmall}>How It Works</a>
+              <a href="#use-cases" className="footer-link" style={tokens.typography.bodySmall}>Use Cases</a>
+              <Link href="/signup" className="footer-link" style={tokens.typography.bodySmall}>Get Started</Link>
             </div>
+          </div>
+
+          {/* Company Column */}
+          <div>
+            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+              Company
+            </h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>About</a>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Blog</a>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Careers</a>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Contact</a>
+            </div>
+          </div>
+
+          {/* Legal Column */}
+          <div>
+            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+              Legal
+            </h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Privacy Policy</a>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Terms of Service</a>
+              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Cookie Policy</a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          maxWidth: "1200px",
+          margin: `${tokens.spacing.xl} auto 0`,
+          paddingTop: tokens.spacing.lg,
+          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: tokens.spacing.md,
+        }}>
+          <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)" }}>
+            &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
+          </p>
+          <div style={{ display: "flex", gap: tokens.spacing.md }}>
+            <a href="#" className="social-footer-icon" aria-label="Twitter">𝕏</a>
+            <a href="#" className="social-footer-icon" aria-label="LinkedIn">in</a>
+            <a href="#" className="social-footer-icon" aria-label="GitHub">⌘</a>
           </div>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }

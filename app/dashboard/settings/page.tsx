@@ -81,7 +81,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: tokens.spacing.lg, maxWidth: "600px" }}>
+      <div style={{ maxWidth: "600px" }}>
         <div
           style={{
             padding: tokens.spacing.xl,
@@ -97,7 +97,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div style={{ padding: tokens.spacing.lg, maxWidth: "600px" }}>
+    <div style={{ maxWidth: "600px" }}>
       <div style={{ marginBottom: tokens.spacing.xl }}>
         <h2
           style={{

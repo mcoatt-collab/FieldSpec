@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+<<<<<<< HEAD
 import { withRateLimit } from "@/lib/api-wrapper";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+=======
+import { cache, withCache } from "@/lib/cache";
+>>>>>>> origin/main
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -26,17 +30,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const projects = await prisma.project.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        name: true,
-        status: true,
-        photoCount: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const cacheKey = cache.buildKey("projects", userId);
+
+    const projects = await withCache(cacheKey, async () => {
+      return prisma.project.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          photoCount: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+    }, 30);
 
     return NextResponse.json({ data: projects }, { status: 200 });
   } catch (error) {
@@ -103,6 +111,8 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     });
+
+    await cache.delete(cache.buildKey("projects", userId));
 
     return NextResponse.json({ data: project }, { status: 201 });
   } catch (error) {
