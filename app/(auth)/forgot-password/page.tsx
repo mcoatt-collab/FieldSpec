@@ -9,7 +9,7 @@ export default function ForgotPasswordPage() {
         Forgot Password
       </h1>
       
-      <p className="text-center mb-md text-on-surface-variant text-body-medium">
+      <p className="text-center text-on-surface-variant text-body-medium" style={{ marginTop: "-32px" }}>
         Enter your email address and we&apos;ll send you a link to reset your password.
       </p>
 

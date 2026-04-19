@@ -14,8 +14,8 @@ export default function LoginPage() {
   const [touched, setTouched] = useState({ email: false, password: false });
   const [focused, setFocused] = useState({ email: false, password: false });
 
-  const emailError = touched.email && !email ? "Email is required" : "";
-  const passwordError = touched.password && !password ? "Password is required" : "";
+  const emailError = touched.email && !email ? "Enter a valid email address" : "";
+  const passwordError = touched.password && !password ? "Enter your password" : "";
 
   const showEmailBorder = touched.email && !email;
   const showPasswordBorder = touched.password && !password;
@@ -40,6 +40,7 @@ export default function LoginPage() {
     setTouched({ email: true, password: true });
 
     if (!email || !password) {
+      setLoading(false);
       return;
     }
 
@@ -95,9 +96,9 @@ export default function LoginPage() {
         }
       `}</style>
       <h1 className="text-center mb-1 text-on-surface text-headline-medium" style={{ fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 10px)", marginTop: "8px" }}>
-        Welcome Back
+        Sign In
       </h1>
-      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
+      <p className="text-center text-on-surface-variant text-body-medium" style={{ marginTop: "-32px" }}>
         Welcome back to FieldSpec
       </p>
 
@@ -150,8 +151,8 @@ export default function LoginPage() {
             <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{passwordError}</p>
           )}
         </div>
-  {
-    error && (
+
+        {error && (
       <div className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
         {error}
       </div>
