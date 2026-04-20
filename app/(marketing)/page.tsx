@@ -1,14 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useCallback } from "react";
+import type { Metadata } from "next";
+import { tokens } from "@/lib/design-tokens";
+import Brand from "@/components/Brand";
 import Navbar from "@/components/marketing/Navbar";
 import { Features, HowItWorks } from "@/components/marketing/Sections";
-import Brand from "@/components/Brand";
-import { tokens } from "@/lib/design-tokens";
 import ThemeToggle from "@/components/ThemeToggle";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "AI Drone Survey Report Builder | FieldSpec",
