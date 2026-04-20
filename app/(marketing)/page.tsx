@@ -1152,13 +1152,13 @@ export default function MarketingPage() {
       </section>
 
 <footer style={{
-        backgroundColor: "#0f172a",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+        backgroundColor: tokens.colors.surface,
+        borderTop: `1px solid ${tokens.colors.outlineVariant}`,
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
         fontFamily: tokens.typography.bodyMedium.fontFamily,
       }}>
         <style>{`
-          .footer-link { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: color 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
+          .footer-link { color: ${tokens.colors.onSurfaceVariant}; text-decoration: none; transition: color 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
           .footer-link:hover { color: #FFFFFF !important; }
           .social-footer-icon { color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; font-size: 20px; }
           .social-footer-icon:hover { color: #FFFFFF !important; }
@@ -1173,13 +1173,13 @@ export default function MarketingPage() {
         }}>
           <div>
             <Brand size="md" variant="white" />
-            <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)", marginTop: tokens.spacing.md }}>
+            <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.md }}>
               AI-powered field analysis for agriculture, construction, and infrastructure.
             </p>
           </div>
 
           <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
               Product
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
@@ -1191,7 +1191,7 @@ export default function MarketingPage() {
           </div>
 
           <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
               Company
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
@@ -1203,7 +1203,7 @@ export default function MarketingPage() {
           </div>
 
           <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
+            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
               Legal
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
@@ -1218,14 +1218,14 @@ export default function MarketingPage() {
           maxWidth: "1200px",
           margin: `${tokens.spacing.xl} auto 0`,
           paddingTop: tokens.spacing.lg,
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+          borderTop: `1px solid ${tokens.colors.outlineVariant}`,
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "center",
           gap: tokens.spacing.md,
         }}>
-          <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)" }}>
+          <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>
             &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
