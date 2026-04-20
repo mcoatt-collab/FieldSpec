@@ -45,7 +45,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-md mb-md bg-surface rounded-md          border border-outline-variant">
+        <div className="p-md mb-md bg-card rounded-md border border-outline-variant">
           <p className="text-on-surface-variant text-title-small">
             Total Images
           </p>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-md mb-md bg-surface rounded-md          border border-outline-variant">
+        <div className="p-md mb-md bg-card rounded-md border border-outline-variant">
           <p className="text-on-surface-variant text-title-small">
             Reports Generated
           </p>
