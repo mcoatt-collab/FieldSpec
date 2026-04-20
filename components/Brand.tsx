@@ -4,13 +4,11 @@ import { tokens } from "@/lib/design-tokens";
 interface BrandProps {
   className?: string;
   size?: "sm" | "md" | "lg";
-  variant?: "blue" | "white";
 }
 
 export default function Brand({
   className = "",
   size = "md",
-  variant = "blue",
 }: BrandProps) {
 const sizes = {
     sm: { img: 32, text: tokens.typography.titleMedium },
@@ -19,8 +17,8 @@ const sizes = {
   };
 
   const currentSize = sizes[size];
-  const logoSrc = variant === "white" ? "/logo-white-icon.png" : "/logo.png";
-  const textColor = variant === "white" ? tokens.colors.onSurface : tokens.colors.primary;
+  const logoSrc = "/logo.png";
+  const textColor = tokens.colors.primary;
 
   return (
     <div className={`flex items-center gap-xs ${className}`}>

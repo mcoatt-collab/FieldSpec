@@ -204,7 +204,7 @@ export default function MarketingPage() {
               }
             }
           `}</style>
-        <Brand size="md" variant="white" />
+        <Brand size="md" />
         {/* Desktop Navigation */}
         <div className="desktop-nav">
           <div className="nav-center">
@@ -1166,7 +1166,7 @@ export default function MarketingPage() {
           gap: tokens.spacing.xl,
         }}>
           <div>
-            <Brand size="md" variant="white" />
+            <Brand size="md" />
             <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.md }}>
               AI-powered field analysis for agriculture, construction, and infrastructure.
             </p>
