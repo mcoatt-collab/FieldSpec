@@ -1151,90 +1151,262 @@ export default function MarketingPage() {
         </div>
       </section>
 
-<footer style={{
-        backgroundColor: "#0f172a",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+      <footer style={{
+        fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
       }}>
-        <style>{`
-          .footer-link { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: color 0.3s ease; }
-          .footer-link:hover { color: #FFFFFF !important; }
-          .social-footer-icon { color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; font-size: 20px; }
-          .social-footer-icon:hover { color: #FFFFFF !important; }
-        `}</style>
-        
-        <div style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: tokens.spacing.xl,
-        }}>
-          {/* Brand Column */}
-          <div>
-            <Brand size="md" variant="white" />
-            <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)", marginTop: tokens.spacing.md }}>
-              AI-powered field analysis for agriculture, construction, and infrastructure.
-            </p>
-          </div>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-color);
+          }
+          :root {
+            --footer-bg: var(--ref-primary-primary20);
+            --footer-color: var(--ref-primary-primary100);
+            --footer-focus-border: rgba(255, 255, 255, 0.6);
+            --footer-logo-filter: none;
+             --footer-arrow-color: var(--footer-color);
+            --footer-bottom-overlay: rgba(255, 255, 255, 0.05);
+          }
+          :root.light {
+            --footer-bg: var(--ref-primary-primary80);
+            --footer-color: var(--ref-primary-primary20);
+            --footer-focus-border: rgba(0, 0, 0, 0.3);
+            --footer-logo-filter: brightness(0.5);
+            --footer-arrow-color: var(--footer-color);
+            --footer-bottom-overlay: rgba(0, 0, 0, 0.05);
+          }
+          .footer-top {
+            padding: 80px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+          }
+          .footer-left {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+          }
+          .footer-right {
+            flex: 2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            justify-content: space-between;
+            min-width: 320px;
+          }
+          .footer-logo {
+            font-size: 36px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+          }
+          .footer-logo img {
+            filter: var(--footer-logo-filter);
+            transition: filter 0.3s ease;
+          }
+          .footer-newsletter-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 24px;
+          }
+          .footer-newsletter-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 60px;
+            align-items: center;
+          }
+          .footer-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--sys-outline-variant);
+            border-radius: var(--sys-radius-md);
+            padding: 12px 24px;
+            color: var(--footer-color);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+          }
+          .footer-input:focus {
+            border-color: var(--footer-focus-border);
+          }
+          .footer-subscribe-btn {
+            background: transparent;
+             border: 1px solid var(--ref-accent-accent40); /* Accented orange outline */
+            color: var(--footer-color);
+            padding: 12px 24px;
+            border-radius: var(--sys-radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+           .footer-subscribe-btn:hover {
+             background: var(--ref-accent-accent40);
+           }
+          .footer-arrow-btn {
+            background: transparent;
+             border: 1px solid var(--ref-accent-accent40);
+            color: var(--footer-arrow-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+          }
+           .footer-arrow-btn:hover {
+             background: var(--ref-accent-accent40);
+           }
+          .footer-connect-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+          }
+          .footer-socials {
+            display: flex;
+            gap: 24px;
+          }
+          .footer-social-link {
+            color: var(--footer-color);
+            text-decoration: none;
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.2s ease;
+          }
+          .footer-social-link:hover {
+            opacity: 0.7;
+          }
 
-          {/* Product Column */}
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
-              Product
-            </h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-              <a href="#features" className="footer-link" style={tokens.typography.bodySmall}>Features</a>
-              <a href="#how-it-works" className="footer-link" style={tokens.typography.bodySmall}>How It Works</a>
-              <a href="#use-cases" className="footer-link" style={tokens.typography.bodySmall}>Use Cases</a>
-              <Link href="/signup" className="footer-link" style={tokens.typography.bodySmall}>Get Started</Link>
+          .footer-col-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 24px;
+          }
+          .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          }
+          .footer-link {
+            color: var(--footer-color);
+            opacity: 0.8;
+            text-decoration: none;
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            transition: color 0.2s ease;
+          }
+          .footer-link:hover {
+            opacity: 1;
+            color: var(--footer-color);
+          }
+
+          .footer-bottom {
+            background-color: var(--footer-bottom-overlay);
+            padding: 24px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--footer-color);
+            opacity: 0.6;
+            border-top: 1px solid var(--sys-outline-variant);
+          }
+          .footer-bottom-link {
+            color: var(--footer-color);
+            opacity: 0.6;
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+          .footer-bottom-link:hover {
+            opacity: 0.9;
+          }
+
+          @media (max-width: 768px) {
+            .footer-right {
+              flex-direction: column;
+              gap: 40px;
+            }
+            .footer-bottom {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+            }
+          }
+        `}} />
+
+        <div className="footer-top">
+          <div className="footer-left">
+            <div className="footer-logo" style={{ marginBottom: "50px", paddingBottom: "0" }}>
+              <img src="/logo-white.png" alt="FieldSpec" style={{ height: "40px", width: "auto", objectFit: "contain" }} />
+            </div>
+
+            <div className="footer-newsletter-title">Keep on track by subscribing our Newsletter.</div>
+            <div className="footer-newsletter-form">
+              <input type="email" placeholder="example@email.com" className="footer-input" />
+              <button className="footer-subscribe-btn">Subscribe</button>
+              <button className="footer-arrow-btn" aria-label="Subscribe shortcut">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="1" y1="12" x2="23" y2="12"></line>
+                  <polyline points="16 5 23 12 16 19"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <div className="footer-connect-title">Connect</div>
+            <div className="footer-socials">
+              <Link href="#" className="footer-social-link">LinkedIn ↗</Link>
+              <Link href="#" className="footer-social-link">Instagram ↗</Link>
+              <Link href="#" className="footer-social-link">Facebook ↗</Link>
             </div>
           </div>
 
-          {/* Company Column */}
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
-              Company
-            </h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>About</a>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Blog</a>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Careers</a>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Contact</a>
+          <div className="footer-right">
+            <div>
+              <div className="footer-col-title">Contacts</div>
+              <div className="footer-links">
+                <a href="mailto:info@fieldspec.com" className="footer-link">info@fieldspec.com</a>
+                <a href="mailto:hello@fieldspec.com" className="footer-link">hello@fieldspec.com</a>
+                <span className="footer-link">+1 234 567 890</span>
+                <span className="footer-link">+31 23 732 600</span>
+              </div>
             </div>
-          </div>
 
-          {/* Legal Column */}
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "#FFFFFF", marginBottom: tokens.spacing.md }}>
-              Legal
-            </h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Privacy Policy</a>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Terms of Service</a>
-              <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Cookie Policy</a>
+            <div>
+              <div className="footer-col-title">Services</div>
+              <div className="footer-links">
+                <Link href="#" className="footer-link">Services</Link>
+                <Link href="#" className="footer-link">Our Fleet</Link>
+                <Link href="#" className="footer-link">Industries</Link>
+              </div>
+            </div>
+
+            <div>
+              <div className="footer-col-title">Company</div>
+              <div className="footer-links">
+                <Link href="#" className="footer-link">About Us</Link>
+                <Link href="#" className="footer-link">Contact Us</Link>
+              </div>
             </div>
           </div>
         </div>
 
-        <div style={{
-          maxWidth: "1200px",
-          margin: `${tokens.spacing.xl} auto 0`,
-          paddingTop: tokens.spacing.lg,
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: tokens.spacing.md,
-        }}>
-          <p style={{ ...tokens.typography.bodySmall, color: "rgba(255, 255, 255, 0.6)" }}>
-            &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
-          </p>
-          <div style={{ display: "flex", gap: tokens.spacing.md }}>
-            <a href="#" className="social-footer-icon" aria-label="Twitter">𝕏</a>
-            <a href="#" className="social-footer-icon" aria-label="LinkedIn">in</a>
-            <a href="#" className="social-footer-icon" aria-label="GitHub">⌘</a>
+<div className="footer-bottom">
+          <div>© Copyright 2025 - Made by FieldSpec</div>
+          <div>
+            <Link href="#" className="footer-bottom-link" style={{ color: "inherit" }}>Get Template - Privacy Policy</Link>
           </div>
         </div>
       </footer>
