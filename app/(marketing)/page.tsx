@@ -74,7 +74,7 @@ export default function MarketingPage() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: tokens.colors.surface,
+        backgroundColor: "var(--color-section-bg)",
         position: "sticky",
         top: 0,
         zIndex: 100,
@@ -1152,7 +1152,7 @@ export default function MarketingPage() {
       </section>
 
 <footer style={{
-        backgroundColor: tokens.colors.surface,
+        backgroundColor: "var(--color-section-bg)",
         borderTop: `1px solid ${tokens.colors.outlineVariant}`,
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
         fontFamily: tokens.typography.bodyMedium.fontFamily,
