@@ -123,7 +123,7 @@ export default function ClientDetailPage() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: tokens.spacing.md, marginBottom: tokens.spacing.xl }}>
         {client.contactInfo && (
-          <div style={{ padding: tokens.spacing.lg, backgroundColor: tokens.colors.surface, borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
+          <div style={{ padding: tokens.spacing.lg, backgroundColor: "var(--color-card-bg)", borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
             <label style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, display: "block", marginBottom: tokens.spacing.xs }}>
               Contact Info
             </label>
@@ -132,7 +132,7 @@ export default function ClientDetailPage() {
             </p>
           </div>
         )}
-        <div style={{ padding: tokens.spacing.lg, backgroundColor: tokens.colors.surface, borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
+        <div style={{ padding: tokens.spacing.lg, backgroundColor: "var(--color-card-bg)", borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
           <label style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, display: "block", marginBottom: tokens.spacing.xs }}>
             Created
           </label>
@@ -140,7 +140,7 @@ export default function ClientDetailPage() {
             {new Date(client.createdAt).toLocaleDateString()}
           </p>
         </div>
-        <div style={{ padding: tokens.spacing.lg, backgroundColor: tokens.colors.surface, borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
+        <div style={{ padding: tokens.spacing.lg, backgroundColor: "var(--color-card-bg)", borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1 }}>
           <label style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, display: "block", marginBottom: tokens.spacing.xs }}>
             Projects
           </label>
@@ -169,7 +169,7 @@ export default function ClientDetailPage() {
                 onClick={() => router.push(`/dashboard/projects/${project.id}`)}
                 style={{
                   padding: tokens.spacing.lg,
-                  backgroundColor: tokens.colors.surface,
+                  backgroundColor: "var(--color-card-bg)",
                   borderRadius: tokens.radius.lg,
                   boxShadow: tokens.elevation.level1,
                   cursor: "pointer",

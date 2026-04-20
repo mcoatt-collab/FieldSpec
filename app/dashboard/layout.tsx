@@ -158,7 +158,7 @@ function DashboardLayoutShell({
               className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden animate-dropdown"
               style={{
                 right: 0,
-                backgroundColor: tokens.colors.surfaceContainerHigh,
+                backgroundColor: "var(--color-card-bg)",
                 boxShadow: tokens.elevation.level2,
                 minWidth: "200px",
                 zIndex: 100,
@@ -413,7 +413,7 @@ function DashboardLayoutShell({
           <div
             className="relative rounded-2xl overflow-hidden"
             style={{
-              backgroundColor: tokens.colors.surfaceContainerHigh,
+              backgroundColor: "var(--color-card-bg)",
               boxShadow: tokens.elevation.level3,
               width: "100%",
               maxWidth: "320px",
@@ -445,7 +445,7 @@ function DashboardLayoutShell({
                   onClick={() => setShowLogoutModal(false)}
                   className="px-md py-sm rounded-pill text-label-large transition-colors"
                   style={{
-                    backgroundColor: tokens.colors.surfaceContainerLow,
+                    backgroundColor: "var(--color-card-bg)",
                     color: tokens.colors.primary,
                     border: "none",
                     cursor: "pointer",
