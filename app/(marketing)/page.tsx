@@ -70,27 +70,27 @@ export default function MarketingPage() {
       {/* Navigation */}
       <nav style={{
         padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        borderBottom: "1px solid var(--sys-outline-variant)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: tokens.colors.primary,
+        backgroundColor: "var(--sys-surface-roles-surface)",
         position: "sticky",
         top: 0,
         zIndex: 100,
         boxShadow: "0 1px 8px rgba(0,0,0,0.06)",
       }}>
         <style>{`
-             .nav-link:hover { color: rgba(255, 255, 255, 0.7) !important; }
-             .nav-link { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; font-weight: 500; }
-             .btn-primary:hover { background-color: rgba(255, 255, 255, 0.2) !important; }
+             .nav-link:hover { color: var(--sys-primary) !important; opacity: 0.8; }
+             .nav-link { text-decoration: none; transition: color 0.3s ease; color: var(--sys-on-surface) !important; font-weight: 500; }
+             .btn-primary:hover { background-color: var(--sys-primary-container) !important; }
             .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-             .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
-             .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: #FFFFFF !important; }
-             .btn-text:hover { color: rgba(255, 255, 255, 0.7) !important; }
-             .btn-text { text-decoration: none; transition: color 0.3s ease; color: #FFFFFF !important; }
-              .social-icon { color: rgba(255, 255, 255, 0.8); transition: color 0.3s ease; }
-              .social-icon:hover { color: #FFFFFF !important; }
+             .btn-outline:hover { background-color: var(--sys-surface-variant) !important; }
+             .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: var(--sys-on-surface) !important; }
+             .btn-text:hover { color: var(--sys-primary) !important; opacity: 1; }
+             .btn-text { text-decoration: none; transition: color 0.3s ease; color: var(--sys-on-surface-variant) !important; }
+              .social-icon { color: var(--sys-on-surface-variant); transition: color 0.3s ease; }
+              .social-icon:hover { color: var(--sys-on-surface) !important; }
              /* Desktop navigation */
              .desktop-nav {
                display: flex;
