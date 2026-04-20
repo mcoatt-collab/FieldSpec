@@ -205,7 +205,7 @@ export default function ProjectsPage() {
           style={{
             marginBottom: tokens.spacing.lg,
             padding: tokens.spacing.lg,
-            backgroundColor: "var(--color-card-bg)",
+            backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             boxShadow: tokens.elevation.level1,
             border: `1px solid ${tokens.colors.outlineVariant}`,
@@ -234,7 +234,7 @@ export default function ProjectsPage() {
                   padding: tokens.spacing.md,
                   border: `1px solid ${tokens.colors.outlineVariant}`,
                   borderRadius: tokens.radius.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                   transition: "border-color 0.2s ease",
@@ -272,7 +272,7 @@ export default function ProjectsPage() {
                   padding: tokens.spacing.md,
                   border: `1px solid ${tokens.colors.outlineVariant}`,
                   borderRadius: tokens.radius.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                   transition: "border-color 0.2s ease",
@@ -403,7 +403,7 @@ export default function ProjectsPage() {
           className="animate-content"
           style={{
             padding: tokens.spacing.xl,
-            backgroundColor: "var(--color-card-bg)",
+            backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             boxShadow: tokens.elevation.level1,
             textAlign: "center",
@@ -432,7 +432,7 @@ export default function ProjectsPage() {
               key={project.id}
               style={{
                 padding: tokens.spacing.lg,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
                 boxShadow: tokens.elevation.level1,
                 border: `1px solid ${tokens.colors.outlineVariant}`,

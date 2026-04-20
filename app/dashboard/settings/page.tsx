@@ -102,7 +102,7 @@ export default function SettingsPage() {
       <div
         style={{
           padding: tokens.spacing.xl,
-          backgroundColor: "var(--color-card-bg)",
+          backgroundColor: tokens.colors.surface,
           borderRadius: tokens.radius.lg,
           boxShadow: tokens.elevation.level1,
         }}
@@ -130,7 +130,7 @@ export default function SettingsPage() {
                 padding: tokens.spacing.md,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.md,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyLarge,
               }}
@@ -158,7 +158,7 @@ export default function SettingsPage() {
                 padding: tokens.spacing.md,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.md,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyLarge,
               }}

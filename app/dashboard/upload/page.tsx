@@ -368,7 +368,7 @@ export default function UploadPage() {
           className="animate-content"
           style={{
             padding: tokens.spacing.xl,
-            backgroundColor: "var(--color-card-bg)",
+            backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             boxShadow: tokens.elevation.level1,
             textAlign: "center",
@@ -411,7 +411,7 @@ export default function UploadPage() {
                 padding: `${tokens.spacing.sm} ${tokens.spacing.xl} ${tokens.spacing.sm} ${tokens.spacing.sm}`,
                 border: `1px solid ${tokens.colors.outlineVariant}`,
                 borderRadius: tokens.radius.md,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyLarge,
                 boxSizing: "border-box",
@@ -577,7 +577,7 @@ export default function UploadPage() {
                   style={{
                     borderRadius: tokens.radius.lg,
                     overflow: "hidden",
-                    backgroundColor: "var(--color-card-bg)",
+                    backgroundColor: tokens.colors.surface,
                     border: `1px solid ${tokens.colors.outlineVariant}`,
                     transition: "all 0.2s ease",
                     animation: `slideUpFade 0.4s ease-out forwards ${index * 0.05}s`,
@@ -744,7 +744,7 @@ export default function UploadPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--color-card-bg)",
+              backgroundColor: tokens.colors.surface,
               borderRadius: tokens.radius.lg,
               padding: tokens.spacing.xl,
               maxWidth: "400px",
@@ -774,7 +774,7 @@ export default function UploadPage() {
                 padding: tokens.spacing.md,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.md,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyMedium,
                 boxSizing: "border-box",
@@ -817,7 +817,7 @@ export default function UploadPage() {
                 style={{
                   flex: 1,
                   padding: tokens.spacing.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   border: `1px solid ${tokens.colors.outline}`,
                   borderRadius: tokens.radius.md,

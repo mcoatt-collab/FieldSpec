@@ -699,7 +699,7 @@ async function handleExport() {
         <div
           style={{
             padding: tokens.spacing.xl,
-            backgroundColor: "var(--color-card-bg)",
+            backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
             textAlign: "center",
           }}
@@ -729,7 +729,7 @@ async function handleExport() {
                 padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.md,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 color: tokens.colors.onSurface,
                 ...tokens.typography.bodyLarge,
                 minWidth: "200px",
@@ -749,7 +749,7 @@ async function handleExport() {
               style={{
                 marginBottom: tokens.spacing.lg,
                 padding: tokens.spacing.lg,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
               }}
             >
@@ -845,7 +845,7 @@ async function handleExport() {
             <div
               style={{
                 padding: tokens.spacing.xl,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
                 marginBottom: tokens.spacing.lg,
               }}
@@ -1214,7 +1214,7 @@ function ReportEditor({
   return (
     <div
       style={{
-        backgroundColor: "var(--color-card-bg)",
+        backgroundColor: tokens.colors.surface,
         borderRadius: tokens.radius.lg,
         overflow: "hidden",
       }}
@@ -1243,7 +1243,7 @@ function ReportEditor({
               style={{
                 width: "100%",
                 padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 border: `1px solid ${tokens.colors.outline}`,
                 borderRadius: tokens.radius.sm,
                 ...tokens.typography.headlineSmall,
@@ -1527,7 +1527,7 @@ function ReportEditor({
                               style={{
                                 width: "100%",
                                 padding: tokens.spacing.sm,
-                                backgroundColor: "var(--color-card-bg)",
+                                backgroundColor: tokens.colors.surface,
                                 border: `1px solid ${isCaptionEdited ? tokens.colors.tertiary : tokens.colors.outline}`,
                                 borderRadius: tokens.radius.sm,
                                 ...tokens.typography.bodyMedium,
@@ -1566,7 +1566,7 @@ function ReportEditor({
                               style={{
                                 width: "100%",
                                 padding: tokens.spacing.sm,
-                                backgroundColor: "var(--color-card-bg)",
+                                backgroundColor: tokens.colors.surface,
                                 border: `1px solid ${isFindingEdited ? tokens.colors.tertiary : tokens.colors.outline}`,
                                 borderRadius: tokens.radius.sm,
                                 ...tokens.typography.bodySmall,
@@ -1605,7 +1605,7 @@ function ReportEditor({
                               style={{
                                 width: "100%",
                                 padding: tokens.spacing.sm,
-                                backgroundColor: "var(--color-card-bg)",
+                                backgroundColor: tokens.colors.surface,
                                 border: `1px solid ${isRecommendationEdited ? tokens.colors.tertiary : tokens.colors.outline}`,
                                 borderRadius: tokens.radius.sm,
                                 ...tokens.typography.bodySmall,
@@ -1646,7 +1646,7 @@ function ReportEditor({
                             style={{
                               marginTop: tokens.spacing.xs,
                               padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
-                              backgroundColor: "var(--color-card-bg)",
+                              backgroundColor: tokens.colors.surface,
                               borderRadius: tokens.radius.sm,
                               ...tokens.typography.labelSmall,
                               color: tokens.colors.onSurfaceVariant,

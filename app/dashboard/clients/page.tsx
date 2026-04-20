@@ -115,7 +115,7 @@ export default function ClientsPage() {
       )}
 
       {showCreateForm && (
-        <div style={{ padding: tokens.spacing.xl, backgroundColor: "var(--color-card-bg)", borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1, marginBottom: tokens.spacing.lg }}>
+        <div style={{ padding: tokens.spacing.xl, backgroundColor: tokens.colors.surface, borderRadius: tokens.radius.lg, boxShadow: tokens.elevation.level1, marginBottom: tokens.spacing.lg }}>
           <h3 style={{ ...tokens.typography.titleMedium, color: tokens.colors.onSurface, marginBottom: tokens.spacing.lg }}>
             Create New Client
           </h3>
@@ -136,7 +136,7 @@ export default function ClientsPage() {
                   padding: tokens.spacing.md,
                   border: `1px solid ${tokens.colors.outline}`,
                   borderRadius: tokens.radius.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                 }}
@@ -158,7 +158,7 @@ export default function ClientsPage() {
                   padding: tokens.spacing.md,
                   border: `1px solid ${tokens.colors.outline}`,
                   borderRadius: tokens.radius.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                 }}
@@ -180,7 +180,7 @@ export default function ClientsPage() {
                   padding: tokens.spacing.md,
                   border: `1px solid ${tokens.colors.outline}`,
                   borderRadius: tokens.radius.md,
-                  backgroundColor: "var(--color-card-bg)",
+                  backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                 }}
@@ -229,7 +229,7 @@ export default function ClientsPage() {
       )}
 
       {clients.length === 0 && !showCreateForm ? (
-        <div style={{ padding: tokens.spacing.xl, backgroundColor: "var(--color-card-bg)", borderRadius: tokens.radius.lg, textAlign: "center" }}>
+        <div style={{ padding: tokens.spacing.xl, backgroundColor: tokens.colors.surface, borderRadius: tokens.radius.lg, textAlign: "center" }}>
           <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, marginBottom: tokens.spacing.md }}>
             No clients yet
           </p>
@@ -245,7 +245,7 @@ export default function ClientsPage() {
               onClick={() => router.push(`/dashboard/clients/${client.id}`)}
               style={{
                 padding: tokens.spacing.lg,
-                backgroundColor: "var(--color-card-bg)",
+                backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
                 boxShadow: tokens.elevation.level1,
                 cursor: "pointer",

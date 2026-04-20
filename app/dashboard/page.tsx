@@ -36,7 +36,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-lg">
-        <div className="p-md mb-md bg-card rounded-md border border-outline-variant">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Total Projects
           </p>
@@ -45,7 +45,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-md mb-md bg-card rounded-md border border-outline-variant">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Total Images
           </p>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-md mb-md bg-card rounded-md border border-outline-variant">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Reports Generated
           </p>
