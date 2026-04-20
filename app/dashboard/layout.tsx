@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Brand from "@/components/Brand";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   DashboardUserProvider,
   useDashboardUser,
@@ -128,6 +129,7 @@ function DashboardLayoutShell({
             </span>
           </button>
           <Brand size="md" />
+          <ThemeToggle />
         </div>
 
         <div className="relative inline-flex" ref={dropdownRef}>

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Brand from "@/components/Brand";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AuthLayout({
   children,
@@ -12,6 +15,9 @@ export default function AuthLayout({
         <Link href="/" className="no-underline text-primary">
           <Brand size="lg" />
         </Link>
+      </div>
+      <div style={{ position: "absolute", top: "16px", right: "16px" }}>
+        <ThemeToggle />
       </div>
       {children}
     </div>
