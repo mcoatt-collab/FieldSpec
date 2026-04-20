@@ -225,12 +225,12 @@ function DashboardLayoutShell({
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden dash-main-padding">
+      <div className="flex-1 flex overflow-hidden dash-main-padding" style={{ backgroundColor: "var(--color-section-bg)" }}>
         <aside
           className="dash-sidebar flex-shrink-0 flex-col overflow-y-auto"
           style={{
             width: "calc(280px)",
-            backgroundColor: tokens.colors.surfaceContainerLow,
+            backgroundColor: "var(--color-section-bg)",
             borderRight: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
@@ -276,7 +276,7 @@ function DashboardLayoutShell({
         <main
           className="flex-1 overflow-y-auto"
           style={{
-            backgroundColor: tokens.colors.surface,
+            backgroundColor: "var(--color-section-bg)",
             padding: `${tokens.spacing.sm} ${tokens.spacing.md} ${tokens.spacing.md}`,
             marginTop: "16px",
           }}
@@ -310,7 +310,7 @@ function DashboardLayoutShell({
             left: 0,
             bottom: 0,
             width: "calc(280px)",
-            backgroundColor: tokens.colors.surfaceContainerLow,
+            backgroundColor: "var(--color-section-bg)",
             boxShadow: tokens.elevation.level2,
           }}
           onClick={(e) => e.stopPropagation()}
