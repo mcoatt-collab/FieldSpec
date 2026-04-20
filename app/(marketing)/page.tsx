@@ -204,13 +204,7 @@ export default function MarketingPage() {
               }
             }
           `}</style>
-        <div style={{ display: "flex", alignItems: "center", height: "40px" }}>
-          <img 
-            src="/logo.png" 
-            alt="FieldSpec" 
-            style={{ height: "32px", width: "auto", objectFit: "contain" }} 
-          />
-        </div>
+        <Brand size="md" variant="white" />
         {/* Desktop Navigation */}
         <div className="desktop-nav">
           <div className="nav-center">
