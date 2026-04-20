@@ -360,7 +360,6 @@ export default function ProjectsPage() {
         ))}
       </div>
 
-
       {loading ? (
         <div className="up-table-empty">
           <p className="up-table-empty-title">Loading...</p>
@@ -409,41 +408,41 @@ export default function ProjectsPage() {
             </thead>
             <tbody>
               {projects.slice(0, 10).map((project) => (
-                  <tr key={project.id} className="up-tr">
-                    <td className="up-td">
-                      <div className="up-file-info">
-                        <div className="up-thumb">
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-                          </svg>
-                        </div>
-                        <span className="up-file-name">{project.name}</span>
+                <tr key={project.id} className="up-tr">
+                  <td className="up-td">
+                    <div className="up-file-info">
+                      <div className="up-thumb">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                        </svg>
                       </div>
-                    </td>
-                    <td className="up-td up-td-num">{project.photoCount}</td>
-                    <td className="up-td up-td-date">{formatDate(project.createdAt)}</td>
-                    <td className="up-td">
-                      <span className="up-badge up-badge--active">Active</span>
-                    </td>
-                    <td className="up-td up-td-date">{formatDate(project.createdAt)}</td>
-                    <td className="up-td up-td-act">
-                      <div className="up-row-acts">
-                        <button className="up-act-btn" title="View project" aria-label="View project">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                          </svg>
-                        </button>
-                        <button className="up-act-btn" title="Edit project" aria-label="Edit project">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      <span className="up-file-name">{project.name}</span>
+                    </div>
+                  </td>
+                  <td className="up-td up-td-num">{project.photoCount}</td>
+                  <td className="up-td up-td-date">{formatDate(project.createdAt)}</td>
+                  <td className="up-td">
+                    <span className="up-badge up-badge--active">Active</span>
+                  </td>
+                  <td className="up-td up-td-date">{formatDate(project.createdAt)}</td>
+                  <td className="up-td up-td-act">
+                    <div className="up-row-acts">
+                      <button className="up-act-btn" title="View project" aria-label="View project">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      </button>
+                      <button className="up-act-btn" title="Edit project" aria-label="Edit project">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -542,12 +541,6 @@ const CSS = `
 .up-dtype-desc  { font-size:12.5px; color:var(--sys-surface-roles-on-surface-variant); margin:0 0 6px; line-height:1.5; }
 .up-dtype-meta  { font-size:11px; font-weight:500; color:var(--sys-surface-roles-on-surface-variant); background:var(--sys-surface-roles-surface-container); padding:3px 8px; border-radius:999px; display:inline-block; }
 
-.up-records-card { background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); overflow:hidden; }
-.up-table-empty { display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 24px; text-align:center; }
-.up-table-empty-icon { width:52px; height:52px; border-radius:50%; background:var(--sys-surface-roles-surface-container); display:flex; align-items:center; justify-content:center; color:var(--sys-surface-roles-on-surface-variant); }
-.up-table-empty-title { font-size:14.5px; font-weight:500; color:var(--sys-surface-roles-on-surface); margin:0; }
-.up-table-empty-sub   { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); margin:0; max-width:340px; }
-
 .up-projects-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
 .up-project-card { display:flex; align-items:center; gap:14px; padding:18px; background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); transition:box-shadow .3s ease,transform .25s ease,border-color .3s ease; position:relative; overflow:hidden; }
 .up-project-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center,color-mix(in srgb,var(--sys-primary) 6%,transparent),transparent 70%); opacity:0; transition:opacity .3s ease; pointer-events:none; }
@@ -560,14 +553,6 @@ const CSS = `
 .up-project-meta { font-size:12px; color:var(--sys-surface-roles-on-surface-variant); margin:0; }
 .up-project-action { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:none; border-radius:var(--sys-radius-sm); background:transparent; color:var(--sys-surface-roles-on-surface-variant); cursor:pointer; transition:background .2s,color .2s,box-shadow .2s; }
 .up-project-action:hover { background:var(--sys-surface-roles-surface-container); color:var(--sys-primary); box-shadow:0 0 10px color-mix(in srgb,var(--sys-primary) 30%,transparent); }
-
-@media (max-width:900px) {
-  .up-stats-grid, .up-dtype-grid { grid-template-columns:repeat(2,1fr); }
-}
-@media (max-width:600px) {
-  .up-stats-grid, .up-dtype-grid { grid-template-columns:1fr; }
-  .up-projects-grid { grid-template-columns:1fr; }
-}
 
 .up-table-card { background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); overflow:hidden; margin-top:28px; }
 .up-table-hd { display:flex; align-items:center; justify-content:space-between; padding:20px 24px 0; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--sys-outline-roles-outline-variant); }
@@ -586,7 +571,6 @@ const CSS = `
 .up-td-date { color:var(--sys-surface-roles-on-surface-variant); white-space:nowrap; font-size:13px; }
 .up-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-size:12px; font-weight:500; }
 .up-badge--active { background:color-mix(in srgb,#45ba4b 13%,transparent); color:#29702d; }
-.up-badge-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
 .up-file-info { display:flex; align-items:center; gap:10px; }
 .up-thumb { width:34px; height:34px; border-radius:var(--sys-radius-sm); overflow:hidden; background:var(--sys-surface-roles-surface-container); flex-shrink:0; display:flex; align-items:center; justify-content:center; color:var(--sys-surface-roles-on-surface-variant); transition:box-shadow .2s,transform .2s; }
 .up-tr:hover .up-thumb { box-shadow:0 0 10px color-mix(in srgb,var(--sys-primary) 30%,transparent); transform:scale(1.05); }
@@ -604,4 +588,12 @@ const CSS = `
 .up-foot-count { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); }
 .up-nav-btn { padding:6px 14px; border-radius:var(--sys-radius-sm); background:transparent; color:var(--sys-surface-roles-on-surface-variant); font-size:12.5px; font-weight:500; font-family:inherit; border:1px solid var(--sys-outline-roles-outline-variant); cursor:pointer; transition:background .15s; }
 .up-nav-btn:hover { background:var(--sys-surface-roles-surface-container); }
+
+@media (max-width:900px) {
+  .up-stats-grid, .up-dtype-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:600px) {
+  .up-stats-grid, .up-dtype-grid { grid-template-columns:1fr; }
+  .up-projects-grid { grid-template-columns:1fr; }
+}
 `;
