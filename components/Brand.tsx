@@ -20,7 +20,7 @@ const sizes = {
 
   const currentSize = sizes[size];
   const logoSrc = variant === "white" ? "/logo-white-icon.png" : "/logo.png";
-  const textColor = variant === "white" ? "var(--color-section-text)" : tokens.colors.primary;
+  const textColor = variant === "white" ? tokens.colors.onPrimary : tokens.colors.primary;
 
   return (
     <div className={`flex items-center gap-xs ${className}`}>
