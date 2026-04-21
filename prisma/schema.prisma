@@ -6,118 +6,147 @@ datasource db {
   provider = "postgresql"
 }
 
+enum AuthProvider {
+  email
+  google
+  github
+}
+
+enum TokenType {
+  email_verification
+  password_reset
+}
+
+enum ProjectStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum JobStatus {
+  queued
+  processing
+  completed
+  failed
+  cancelled
+}
+
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String       @id @default(uuid())
+  email        String       @unique
   passwordHash String?
-  authProvider String   @default("email")
   name         String
   companyName  String?
-  isVerified   Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  authProvider AuthProvider @default(email)
+  isVerified   Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   authTokens AuthToken[]
-  projects   Project[]
   clients    Client[]
+  projects   Project[]
 }
 
 model AuthToken {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
   tokenHash String
-  type      String
+  type      TokenType
   expiresAt DateTime
-  isUsed    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  isUsed    Boolean   @default(false)
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
 }
 
 model Client {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
   name        String
   company     String?
   contactInfo String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   projects Project[]
+
+  @@index([userId])
 }
 
 model Project {
-  id              String   @id @default(uuid())
-  userId          String
-  clientId        String?
-  name            String
-  location        String?
-  status          String   @default("draft")
-  photoCount      Int      @default(0)
-  mapSnapshotUrl  String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id         String        @id @default(uuid())
+  userId     String
+  clientId   String?
+  name       String
+  status     ProjectStatus @default(pending)
+  photoCount Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   client   Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
   images   Image[]
   aiJobs   AIJob[]
+  aiOutput AIOutput?
   report   Report?
+
+  @@index([userId])
+  @@index([clientId])
 }
 
 model Image {
   id           String   @id @default(uuid())
   projectId    String
   url          String
-  thumbnailUrl String
-  category     String
+  thumbnailUrl String?
+  category     String   @default("general")
   notes        String?
   gpsLat       Float?
   gpsLng       Float?
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  aiOutput AIOutput?
+  project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model AIJob {
-  id           String   @id @default(uuid())
-  projectId    String
-  type         String
-  status       String   @default("pending")
-  progress     Int      @default(0)
-  errorMessage String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String    @id @default(uuid())
+  projectId  String
+  status     JobStatus @default(queued)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model AIOutput {
-  id              String   @id @default(uuid())
-  imageId         String   @unique
-  caption         String
-  finding         String
-  recommendation  String
-  confidenceScore Float?
-  isEdited        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(uuid())
+  projectId String   @unique
+  output    Json
+  createdAt DateTime @default(now())
 
-  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model Report {
-  id              String   @id @default(uuid())
-  projectId       String   @unique
-  title           String
-  templateType    String   @default("default")
-  status          String   @default("draft")
-  content         String
-  exportedFileUrl String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(uuid())
+  projectId String   @unique
+  data      Json?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
