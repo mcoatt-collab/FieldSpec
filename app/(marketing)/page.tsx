@@ -1146,17 +1146,17 @@ export default function MarketingPage() {
       </section>
 
 <footer style={{
-        backgroundColor: "var(--color-section-bg)",
+        backgroundColor: "var(--footer-bg)",
         borderTop: `1px solid ${tokens.colors.outlineVariant}`,
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
         fontFamily: tokens.typography.bodyMedium.fontFamily,
       }}>
         <style>{`
-          .footer-link { color: ${tokens.colors.onSurfaceVariant}; text-decoration: none; transition: color 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
-          .footer-link:hover { color: #FFFFFF !important; }
-          .social-footer-icon { color: rgba(255, 255, 255, 0.6); transition: color 0.3s ease; font-size: 20px; }
-          .social-footer-icon:hover { color: #FFFFFF !important; }
-        `}</style>
+           .footer-link { color: var(--footer-color); opacity: 0.8; text-decoration: none; transition: color 0.3s ease, opacity 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
+           .footer-link:hover { opacity: 1; color: var(--footer-color) !important; }
+           .social-footer-icon { color: var(--footer-color); opacity: 0.6; transition: color 0.3s ease, opacity 0.3s ease; font-size: 20px; }
+           .social-footer-icon:hover { opacity: 1; color: var(--footer-color) !important; }
+         `}</style>
         
         <div style={{
           maxWidth: "1200px",
@@ -1167,14 +1167,14 @@ export default function MarketingPage() {
         }}>
           <div>
             <Brand size="md" />
-            <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.md }}>
+             <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8, marginTop: tokens.spacing.md }}>
               AI-powered field analysis for agriculture, construction, and infrastructure.
             </p>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
-              Product
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Product
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#features" className="footer-link" style={tokens.typography.bodySmall}>Features</a>
@@ -1184,9 +1184,9 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
-              Company
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Company
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#" className="footer-link" style={tokens.typography.bodySmall}>About</a>
@@ -1196,9 +1196,9 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: tokens.colors.onSurface, marginBottom: tokens.spacing.md }}>
-              Legal
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Legal
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Privacy Policy</a>
@@ -1219,7 +1219,7 @@ export default function MarketingPage() {
           alignItems: "center",
           gap: tokens.spacing.md,
         }}>
-          <p style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>
+           <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8 }}>
             &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
