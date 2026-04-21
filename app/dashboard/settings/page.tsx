@@ -1,17 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { useDashboardUser } from "@/components/dashboard/DashboardUserProvider";
 import { tokens } from "@/lib/design-tokens";
 
-interface User {
-  name: string;
-  companyName?: string | null;
-  email: string;
-}
-
 export default function SettingsPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, setUser } = useDashboardUser();
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -21,30 +15,16 @@ export default function SettingsPage() {
 
   const hasChanges = name !== initialValues.name || companyName !== initialValues.companyName;
 
-  const fetchUser = useCallback(async () => {
-    try {
-      const res = await fetch("/api/users/me");
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setUser(data.data);
-        setName(data.data.name || "");
-        setCompanyName(data.data.companyName || "");
-        setInitialValues({
-          name: data.data.name || "",
-          companyName: data.data.companyName || "",
-        });
-      }
-    } catch (err) {
-      console.error("Failed to fetch user:", err);
-      setError("Failed to load settings");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    if (!user) return;
+
+    setName(user.name || "");
+    setCompanyName(user.companyName || "");
+    setInitialValues({
+      name: user.name || "",
+      companyName: user.companyName || "",
+    });
+  }, [user]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,7 +35,7 @@ export default function SettingsPage() {
     setSaving(true);
 
     try {
-      const res = await fetch("/api/users/me", {
+      const res = await fetch("/api/auth/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, companyName }),
@@ -69,6 +49,7 @@ export default function SettingsPage() {
         return;
       }
 
+      setUser(data.data);
       setInitialValues({ name, companyName });
       setSaving(false);
       setSuccess(true);

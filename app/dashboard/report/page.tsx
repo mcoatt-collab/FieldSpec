@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useDashboardUser,
+  type DashboardUser,
+} from "@/components/dashboard/DashboardUserProvider";
 import { tokens } from "@/lib/design-tokens";
 
-interface UserProfile {
-  name: string;
-  companyName: string | null;
-  email: string;
-}
+type UserProfile = DashboardUser;
 
 interface Project {
   id: string;
@@ -80,13 +80,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 const JOB_POLL_INTERVAL = 3000;
 
 export default function ReportPage() {
+  const { user: userProfile } = useDashboardUser();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [projectStats, setProjectStats] = useState<ProjectStats | null>(null);
   const [report, setReport] = useState<StoredReport | null>(null);
   const [editedReport, setEditedReport] = useState<StructuredReport | null>(null);
   const [editedSections, setEditedSections] = useState<Map<string, EditedSection>>(new Map());
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [reportLoading, setReportLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -107,18 +107,21 @@ export default function ReportPage() {
   const [exportedFileUrl, setExportedFileUrl] = useState<string | null>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
   const reportRef = useRef<HTMLDivElement>(null);
+  const initialProjectLoadedRef = useRef(false);
 
   useEffect(() => {
-    fetchProjects();
-    fetchUserProfile();
+    void loadInitialData();
   }, []);
 
   useEffect(() => {
-    if (selectedProjectId) {
-      fetchProjectStats();
-      fetchReport();
-      checkExistingJob();
+    if (!selectedProjectId) return;
+
+    if (initialProjectLoadedRef.current) {
+      initialProjectLoadedRef.current = false;
+      return;
     }
+
+    void loadProjectData(selectedProjectId);
   }, [selectedProjectId]);
 
   useEffect(() => {
@@ -127,14 +130,18 @@ export default function ReportPage() {
     };
   }, []);
 
-  async function fetchProjects() {
+  async function loadInitialData() {
     try {
       const res = await fetch("/api/projects");
       const data = await res.json();
       if (res.ok && data.data) {
-        setProjects(data.data);
-        if (data.data.length > 0 && !selectedProjectId) {
-          setSelectedProjectId(data.data[0].id);
+        const nextProjects = data.data;
+        setProjects(nextProjects);
+        if (nextProjects.length > 0 && !selectedProjectId) {
+          const firstProjectId = nextProjects[0].id;
+          initialProjectLoadedRef.current = true;
+          setSelectedProjectId(firstProjectId);
+          await loadProjectData(firstProjectId);
         }
       }
     } catch (err) {
@@ -144,13 +151,28 @@ export default function ReportPage() {
     }
   }
 
-  async function fetchProjectStats() {
-    if (!selectedProjectId) return;
+  async function loadProjectData(projectId: string) {
+    setReportLoading(true);
+    setSaveState("idle");
+    setSaveError("");
+    setExportState("idle");
+    setExportError("");
+
     try {
-      const res = await fetch(`/api/images?projectId=${selectedProjectId}`);
-      const data = await res.json();
-      if (res.ok && data.data) {
-        const images = data.data;
+      const [imagesRes, reportRes, jobRes] = await Promise.all([
+        fetch(`/api/images?projectId=${projectId}`),
+        fetch(`/api/reports/${projectId}`),
+        fetch(`/api/ai/job/${projectId}`),
+      ]);
+
+      const [imagesData, reportData, jobData] = await Promise.all([
+        imagesRes.json(),
+        reportRes.json(),
+        jobRes.json(),
+      ]);
+
+      if (imagesRes.ok && imagesData.data) {
+        const images = imagesData.data;
         const untagged = images.filter(
           (img: { category: string | null }) => !img.category || img.category === "general"
         ).length;
@@ -160,49 +182,50 @@ export default function ReportPage() {
           untagged,
           withNotes,
         });
+      } else {
+        setProjectStats(null);
       }
-    } catch (err) {
-      console.error("Failed to fetch images:", err);
-    }
-  }
 
-  async function fetchUserProfile() {
-    try {
-      const res = await fetch("/api/users/me");
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setUserProfile(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch user profile:", err);
-    }
-  }
-
-  async function fetchReport() {
-    if (!selectedProjectId) return;
-    setReportLoading(true);
-    setSaveState("idle");
-    setSaveError("");
-    setExportState("idle");
-    setExportError("");
-    try {
-      const res = await fetch(`/api/reports/${selectedProjectId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReport(data.data);
-        setEditedReport(data.data.content);
-        setExportedFileUrl(data.data.exportedFileUrl || null);
-        initializeEditedSections(data.data.content);
+      if (reportRes.ok) {
+        setReport(reportData.data);
+        setEditedReport(reportData.data.content);
+        setExportedFileUrl(reportData.data.exportedFileUrl || null);
+        initializeEditedSections(reportData.data.content);
       } else {
         setReport(null);
         setEditedReport(null);
         setExportedFileUrl(null);
       }
+
+      if (jobRes.ok && jobData.data) {
+        setExistingJobId(jobData.data.id);
+        setCurrentJobId(jobData.data.id);
+        setJobStatus({
+          status: jobData.data.status,
+          progress: jobData.data.progress,
+          progressMessage: "",
+          errorMessage: null,
+        });
+        if (
+          jobData.data.status === "pending" ||
+          jobData.data.status === "processing"
+        ) {
+          startPolling(jobData.data.id);
+        }
+      } else {
+        setExistingJobId(null);
+        setCurrentJobId(null);
+        setJobStatus(null);
+      }
     } catch (err) {
-      console.error("Failed to fetch report:", err);
+      console.error("Failed to load report data:", err);
+      setProjectStats(null);
       setReport(null);
       setEditedReport(null);
       setExportedFileUrl(null);
+      setExistingJobId(null);
+      setCurrentJobId(null);
+      setJobStatus(null);
     } finally {
       setReportLoading(false);
     }
@@ -226,33 +249,6 @@ export default function ReportPage() {
       }
     }
     setEditedSections(sections);
-  }
-
-  async function checkExistingJob() {
-    if (!selectedProjectId) return;
-    try {
-      const res = await fetch(`/api/ai/job/${selectedProjectId}`);
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setExistingJobId(data.data.id);
-        setCurrentJobId(data.data.id);
-        setJobStatus({
-          status: data.data.status,
-          progress: data.data.progress,
-          progressMessage: "",
-          errorMessage: null,
-        });
-        if (data.data.status === "pending" || data.data.status === "processing") {
-          startPolling(data.data.id);
-        }
-      } else {
-        setExistingJobId(null);
-        setCurrentJobId(null);
-        setJobStatus(null);
-      }
-    } catch (err) {
-      setExistingJobId(null);
-    }
   }
 
   async function handleCancelJob() {
@@ -397,7 +393,7 @@ export default function ReportPage() {
             if (pollRef.current) clearInterval(pollRef.current);
             setGenerating(false);
             if (data.data.status === "completed") {
-              fetchReport();
+              void loadProjectData(selectedProjectId);
             }
           }
         }

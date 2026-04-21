@@ -1,5 +1,17 @@
 @import "../design-tokens.css";
 
+:root {
+  --color-section-bg: var(--sys-surface-roles-surface);
+  --color-section-text: var(--sys-surface-roles-on-surface);
+  --color-card-bg: var(--sys-surface-roles-surface-container);
+}
+
+:root.light {
+  --color-section-bg: var(--sys-surface-roles-surface);
+  --color-section-text: var(--sys-surface-roles-on-surface);
+  --color-card-bg: var(--sys-surface-roles-surface-container);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +26,9 @@
   --color-on-primary: var(--sys-on-primary);
   --color-primary-container: var(--sys-primary-container);
   --color-on-primary-container: var(--sys-on-primary-container);
+
+  /* Card Colors - Custom for dark/light modes */
+  --color-card: var(--color-card-bg);
   
   --color-secondary: var(--sys-secondary);
   --color-on-secondary: var(--sys-on-secondary);
@@ -119,6 +134,11 @@
     font-size: var(--sys-typescale-label-medium-fontsize);
     font-weight: 500;
     line-height: var(--sys-typescale-label-medium-lineheight);
+  }
+
+  /* Card background for dark/light modes */
+  .bg-card {
+    background-color: var(--sys-surface-roles-surface-container);
   }
 }
 

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/design-tokens";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ projects: 0, images: 0, reports: 0 });
@@ -35,8 +36,8 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="p-4 bg-surface rounded-md border border-outline-variant">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-lg">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Total Projects
           </p>
@@ -45,7 +46,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-4 bg-surface rounded-md border border-outline-variant">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Total Images
           </p>
@@ -54,7 +55,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="p-4 bg-surface rounded-md border border-outline-variant">
+        <div className="p-md mb-md rounded-md border border-outline-variant" style={{ backgroundColor: tokens.colors.surface }}>
           <p className="text-on-surface-variant text-title-small">
             Reports Generated
           </p>
@@ -65,4 +66,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
+}

@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     });
 
     await cache.delete(cache.buildKey("projects", userId));
-    await cache.delete(cache.buildKey("images", projectId));
+    await cache.delete(cache.buildKey("images", projectId || "all", userId));
 
     return NextResponse.json({ data: image }, { status: 201 });
   } catch (error) {

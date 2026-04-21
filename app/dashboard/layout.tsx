@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Brand from "@/components/Brand";
+import ThemeToggle from "@/components/ThemeToggle";
+import {
+  DashboardUserProvider,
+  useDashboardUser,
+} from "@/components/dashboard/DashboardUserProvider";
 import { tokens } from "@/lib/design-tokens";
 import "./layout.css";
 
@@ -21,37 +26,37 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  return (
+    <DashboardUserProvider>
+      <DashboardLayoutShell>{children}</DashboardLayoutShell>
+    </DashboardUserProvider>
+  );
+}
+
+function DashboardLayoutShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useDashboardUser();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
-  const [userName, setUserName] = useState("User");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
+<<<<<<< HEAD
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.data?.name) {
-            setUserName(data.data.name);
-          }
-        }
-        // DEV BYPASS: no redirect when DB is unavailable — just keep "User" default
-      } catch (err) {
-        console.error("Failed to fetch user:", err);
-      }
-    }
-    fetchUser();
-  }, []);
+  const userName = user?.name || "User";
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     }
@@ -79,7 +84,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden relative">
+    <div className="flex flex-col h-screen overflow-hidden relative" style={{ backgroundColor: "var(--color-section-bg)" }}>
       {/* Light Overlay - covers entire screen when modal is open */}
       {showLogoutModal && (
         <div
@@ -101,9 +106,9 @@ export default function DashboardLayout({
 
       {/* Header with Avatar */}
       <header
-        className="flex items-center justify-between py-3 dash-header-padding flex-shrink-0"
+        className="flex flex-shrink-0 items-center justify-between py-[12px] dash-header-padding"
         style={{
-          backgroundColor: tokens.colors.surfaceContainerLow,
+          backgroundColor: "var(--color-section-bg)",
           borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
           zIndex: 50,
         }}
@@ -121,11 +126,14 @@ export default function DashboardLayout({
               padding: "4px",
             }}
           >
-            <span className="material-icons" style={{ fontSize: "24px" }}>menu</span>
+            <span className="material-icons" style={{ fontSize: "24px" }}>
+              menu
+            </span>
           </button>
           <Brand size="md" />
+          <ThemeToggle />
         </div>
-        
+
         <div className="relative inline-flex" ref={dropdownRef}>
           {/* Material 3 Avatar Button */}
           <button
@@ -149,10 +157,10 @@ export default function DashboardLayout({
           {/* Dropdown Menu - Material 3 Style */}
           {showDropdown && (
             <div
-              className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden"
+              className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden animate-dropdown"
               style={{
                 right: 0,
-                backgroundColor: tokens.colors.surfaceContainerHigh,
+                backgroundColor: tokens.colors.surface,
                 boxShadow: tokens.elevation.level2,
                 minWidth: "200px",
                 zIndex: 100,
@@ -208,10 +216,7 @@ export default function DashboardLayout({
                     e.currentTarget.style.backgroundColor = "transparent";
                   }}
                 >
-                  <span
-                    className="material-icons"
-                    style={{ fontSize: "20px" }}
-                  >
+                  <span className="material-icons" style={{ fontSize: "20px" }}>
                     logout
                   </span>
                   Logout
@@ -222,12 +227,12 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden dash-main-padding">
+      <div className="flex-1 flex overflow-hidden dash-main-padding" style={{ backgroundColor: "var(--color-section-bg)" }}>
         <aside
           className="dash-sidebar flex-shrink-0 flex-col overflow-y-auto"
           style={{
-            width: "280px",
-            backgroundColor: tokens.colors.surfaceContainerLow,
+            width: "calc(280px)",
+            backgroundColor: "var(--color-section-bg)",
             borderRight: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
@@ -250,7 +255,17 @@ export default function DashboardLayout({
                     fontSize: "16px",
                   }}
                 >
-                  <span className="material-icons" style={{ fontSize: "20px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span
+                    className="material-icons"
+                    style={{
+                      fontSize: "20px",
+                      width: "20px",
+                      height: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -262,9 +277,10 @@ export default function DashboardLayout({
 
         <main
           className="flex-1 overflow-y-auto"
-          style={{ 
-            backgroundColor: tokens.colors.surface,
-            padding: "16px"
+          style={{
+            backgroundColor: "var(--color-section-bg)",
+            padding: `${tokens.spacing.sm} ${tokens.spacing.md} ${tokens.spacing.md}`,
+            marginTop: "16px",
           }}
         >
           {children}
@@ -272,97 +288,100 @@ export default function DashboardLayout({
       </div>
 
       {/* Mobile Navigation Drawer */}
-      {showMobileNav && (
-        <div
+      <div
+        className={`mobile-drawer-overlay ${showMobileNav ? "active" : ""}`}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 100,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}
+        onClick={() => setShowMobileNav(false)}
+      >
+        {/* Drawer Content */}
+        <aside
+          className={`flex flex-col mobile-drawer-content ${
+            showMobileNav ? "active" : ""
+          }`}
           style={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             left: 0,
-            right: 0,
             bottom: 0,
-            zIndex: 100, // Higher than header
+            width: "calc(280px)",
+            backgroundColor: "var(--color-section-bg)",
+            boxShadow: tokens.elevation.level2,
           }}
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Backdrop */}
           <div
+            className="flex items-center justify-between"
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}
-            onClick={() => setShowMobileNav(false)}
-          />
-
-          {/* Drawer Content */}
-          <aside
-            className="flex flex-col"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              bottom: 0,
-              width: "calc(280px)",
-              backgroundColor: tokens.colors.surfaceContainerLow,
-              boxShadow: tokens.elevation.level2,
+              padding: "12px 18px",
+              borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
             }}
           >
-            <div
-              className="flex items-center justify-between"
+            <Brand size="md" />
+            <button
+              onClick={() => setShowMobileNav(false)}
+              className="flex items-center justify-center rounded-full transition-colors"
               style={{
-                padding: "12px 18px",
-                borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+                background: "transparent",
+                border: "none",
+                color: tokens.colors.onSurfaceVariant,
+                cursor: "pointer",
+                padding: "4px",
               }}
             >
-              <Brand size="md" />
-              <button
-                onClick={() => setShowMobileNav(false)}
-                className="flex items-center justify-center rounded-full transition-colors"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: tokens.colors.onSurfaceVariant,
-                  cursor: "pointer",
-                  padding: "4px",
-                }}
-              >
-                <span className="material-icons" style={{ fontSize: "24px" }}>close</span>
-              </button>
-            </div>
-            
-            <nav className="flex-1 flex flex-col p-sm gap-xs mt-md overflow-y-auto">
-              {navItems.map((item) => {
-                const isActive = item.href === pathname;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setShowMobileNav(false)}
-                    className={`flex items-center rounded-md no-underline transition-all duration-200 ${
-                      isActive
-                        ? "bg-secondary-container text-on-secondary-container"
-                        : "text-on-surface-variant hover:bg-secondary-container/50"
-                    }`}
+              <span className="material-icons" style={{ fontSize: "24px" }}>
+                close
+              </span>
+            </button>
+          </div>
+
+          <nav className="flex-1 flex flex-col p-sm gap-xs mt-md overflow-y-auto">
+            {navItems.map((item) => {
+              const isActive = item.href === pathname;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setShowMobileNav(false)}
+                  className={`flex items-center rounded-md no-underline transition-all duration-200 ${
+                    isActive
+                      ? "bg-secondary-container text-on-secondary-container"
+                      : "text-on-surface-variant hover:bg-secondary-container/50"
+                  }`}
+                  style={{
+                    ...tokens.typography.labelLarge,
+                    padding: "12px",
+                    gap: "calc(0.25rem * 3)",
+                    fontSize: "16px",
+                  }}
+                >
+                  <span
+                    className="material-icons"
                     style={{
-                      ...tokens.typography.labelLarge,
-                      padding: "12px",
-                      gap: "calc(0.25rem * 3)",
-                      fontSize: "16px",
+                      fontSize: "20px",
+                      width: "20px",
+                      height: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    <span className="material-icons" style={{ fontSize: "20px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {item.icon}
-                    </span>
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-          </aside>
-        </div>
-      )}
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+      </div>
 
       {/* Logout Confirmation Modal - Centered */}
       {showLogoutModal && (
@@ -396,7 +415,7 @@ export default function DashboardLayout({
           <div
             className="relative rounded-2xl overflow-hidden"
             style={{
-              backgroundColor: tokens.colors.surfaceContainerHigh,
+              backgroundColor: tokens.colors.surface,
               boxShadow: tokens.elevation.level3,
               width: "100%",
               maxWidth: "320px",
@@ -428,7 +447,7 @@ export default function DashboardLayout({
                   onClick={() => setShowLogoutModal(false)}
                   className="px-md py-sm rounded-pill text-label-large transition-colors"
                   style={{
-                    backgroundColor: tokens.colors.surfaceContainerLow,
+                    backgroundColor: tokens.colors.surface,
                     color: tokens.colors.primary,
                     border: "none",
                     cursor: "pointer",

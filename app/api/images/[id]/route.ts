@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+import { cache } from "@/lib/cache";
 
 const updateImageSchema = z.object({
   category: z.string().optional(),
@@ -69,6 +70,9 @@ export async function PATCH(
       },
     });
 
+    // Invalidate project and image cache
+    await cache.delete(cache.buildKey("images", image.projectId || "all", userId));
+
     return NextResponse.json({ data: updatedImage }, { status: 200 });
   } catch (error) {
     console.error("PATCH /api/images/[id] error:", error);
@@ -106,7 +110,20 @@ export async function DELETE(
       );
     }
 
-    await prisma.image.delete({ where: { id: imageId } });
+    const projectId = image.projectId;
+
+    // Use a transaction to ensure both deletion and count update happen together
+    await prisma.$transaction([
+      prisma.image.delete({ where: { id: imageId } }),
+      prisma.project.update({
+        where: { id: projectId },
+        data: { photoCount: { decrement: 1 } },
+      }),
+    ]);
+
+    // Invalidate cache for projects and images
+    await cache.delete(cache.buildKey("projects", userId));
+    await cache.delete(cache.buildKey("images", projectId || "all", userId));
 
     return NextResponse.json({ data: { deleted: true } }, { status: 200 });
   } catch (error) {

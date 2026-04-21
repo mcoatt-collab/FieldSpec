@@ -23,6 +23,43 @@
   padding-right: 18px;
 }
 
+/* Animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: fadeInScale 0.2s ease-out forwards;
+  transform-origin: top right;
+}
+
+.mobile-drawer-overlay {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mobile-drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-drawer-content {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-100%);
+}
+
+.mobile-drawer-content.active {
+  transform: translateX(0);
+}
+
 @media (min-width: 800px) {
   .dash-sidebar {
     display: flex !important;

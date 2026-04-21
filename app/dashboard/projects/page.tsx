@@ -181,9 +181,7 @@ export default function ProjectsPage() {
     { id: "stat-completed-jobs", label: "Total Photos", value: loading ? "—" : totalPhotos, sub: "All time", trend: "+12%", trendUp: true, accent: "secondary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
     { id: "stat-avg-processing", label: "Avg. Processing", value: "2.4d", sub: "Per batch", trend: "−0.3d", trendUp: true, accent: "tertiary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
     { id: "stat-pending-analysis", label: "Pending Analysis", value: loading ? "—" : Math.max(0, Math.floor(totalPhotos * 0.05)), sub: "Queued", trend: null, trendUp: false, accent: "error", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> },
-  ];
-
-  return (
+  ]  return (
     <div className="up-page">
       <style>{CSS}</style>
 
@@ -364,7 +362,28 @@ export default function ProjectsPage() {
         <div className="up-table-empty">
           <p className="up-table-empty-title">Loading...</p>
         </div>
-      ) : projects.length > 0 && (
+      ) : projects.length === 0 ? (
+        <div
+          className="up-table-empty"
+          style={{
+            padding: tokens.spacing.xl,
+            backgroundColor: tokens.colors.surface,
+            borderRadius: tokens.radius.lg,
+            boxShadow: tokens.elevation.level1,
+            textAlign: "center",
+            border: `1px solid ${tokens.colors.outlineVariant}`,
+          }}
+        >
+          <p
+            style={{
+              ...tokens.typography.bodyLarge,
+              color: tokens.colors.onSurfaceVariant,
+            }}
+          >
+            No projects yet. Create your first project to get started.
+          </p>
+        </div>
+      ) : (
         <div className="up-projects-grid">
           {projects.map((project) => (
             <div key={project.id} className="up-project-card">
@@ -596,4 +615,4 @@ const CSS = `
   .up-stats-grid, .up-dtype-grid { grid-template-columns:1fr; }
   .up-projects-grid { grid-template-columns:1fr; }
 }
-`;
+`;

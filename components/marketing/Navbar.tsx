@@ -53,7 +53,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         @media (min-width: 769px) { .hamburger-menu, .dropdown-menu { display: none; } }
       `}</style>
       <Link href="/" className="no-underline">
-        <Brand size="md" variant="white" />
+        <Brand size="md" />
       </Link>
       
       {/* Desktop Navigation - Centered */}
