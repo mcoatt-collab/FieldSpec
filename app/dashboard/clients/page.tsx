@@ -82,7 +82,7 @@ export default function ClientsPage() {
   }
 
   return (
-    <div style={{ maxWidth: "1200px" }}>
+    <div style={{ maxWidth: "1200px", padding: `0 ${tokens.spacing.md}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: tokens.spacing.xl, flexWrap: "wrap", gap: tokens.spacing.md }}>
         <div>
           <h2 style={{ ...tokens.typography.headlineMedium, color: tokens.colors.onSurface }}>

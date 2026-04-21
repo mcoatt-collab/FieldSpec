@@ -262,6 +262,7 @@ export default function UploadPage() {
     <div
       style={{
         maxWidth: "1200px",
+        padding: `0 ${tokens.spacing.md}`,
       }}
     >
       <style>{`

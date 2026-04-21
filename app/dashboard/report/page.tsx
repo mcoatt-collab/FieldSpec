@@ -674,7 +674,7 @@ async function handleExport() {
   }
 
   return (
-    <div style={{ maxWidth: "1200px" }}>
+    <div style={{ maxWidth: "1200px", padding: `0 ${tokens.spacing.md}` }}>
       <div style={{ marginBottom: tokens.spacing.xl }}>
         <h2
           style={{

@@ -62,7 +62,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div style={{ maxWidth: "600px" }}>
+      <div style={{ maxWidth: "600px", padding: `0 ${tokens.spacing.md}` }}>
         <div
           style={{
             padding: tokens.spacing.xl,
