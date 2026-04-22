@@ -61,23 +61,22 @@ export async function signup(
       },
     });
 
-    // TODO: Re-enable email verification when SMTP is properly configured
-    // const tokenData = generateToken();
-    // await prisma.authToken.create({
-    //   data: {
-    //     userId: user.id,
-    //     tokenHash: tokenData.hash,
-    //     type: TOKEN_TYPE_EMAIL_VERIFICATION,
-    //     expiresAt: tokenData.expiresAt,
-    //   },
-    // });
+    const tokenData = generateToken();
+    await prisma.authToken.create({
+      data: {
+        userId: user.id,
+        tokenHash: tokenData.hash,
+        type: TOKEN_TYPE_EMAIL_VERIFICATION,
+        expiresAt: tokenData.expiresAt,
+      },
+    });
 
-    // const emailSent = await sendVerificationEmail(email, tokenData.raw);
-    // if (!emailSent) {
-    //   console.error(`[Auth] Failed to send verification email to ${email}`);
-    // } else {
-    //   console.log(`[Auth] Verification email sent to ${email}`);
-    // }
+    const emailSent = await sendVerificationEmail(email, tokenData.raw);
+    if (!emailSent) {
+      console.error(`[Auth] Failed to send verification email to ${email}`);
+    } else {
+      console.log(`[Auth] Verification email sent to ${email}`);
+    }
 
     return { success: true };
   } catch (error) {

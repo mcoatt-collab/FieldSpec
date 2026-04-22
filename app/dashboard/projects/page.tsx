@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 
 interface Project {
@@ -26,6 +27,7 @@ export default function ProjectsPage() {
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     fetchProjects();
@@ -430,6 +432,7 @@ export default function ProjectsPage() {
           {projects.map((project, index) => (
             <div
               key={project.id}
+              onClick={() => router.push(`/dashboard/projects/${project.id}`)}
               style={{
                 padding: tokens.spacing.lg,
                 backgroundColor: tokens.colors.surface,

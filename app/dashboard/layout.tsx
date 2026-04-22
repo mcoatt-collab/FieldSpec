@@ -14,6 +14,7 @@ import "./layout.css";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "home" },
+  { href: "/dashboard/clients", label: "Clients", icon: "group" },
   { href: "/dashboard/projects", label: "Projects", icon: "folder" },
   { href: "/dashboard/upload", label: "Upload", icon: "upload" },
   { href: "/dashboard/report", label: "Report", icon: "description" },
@@ -236,7 +237,8 @@ function DashboardLayoutShell({
         >
           <nav className="flex-1 flex flex-col p-sm gap-xs mt-md">
             {navItems.map((item) => {
-              const isActive = item.href === pathname;
+              const isActive = pathname === item.href || 
+                (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
               return (
                 <Link
                   key={item.href}
@@ -342,7 +344,8 @@ function DashboardLayoutShell({
 
           <nav className="flex-1 flex flex-col p-sm gap-xs mt-md overflow-y-auto">
             {navItems.map((item) => {
-              const isActive = item.href === pathname;
+              const isActive = pathname === item.href || 
+                (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
               return (
                 <Link
                   key={item.href}
@@ -411,7 +414,7 @@ function DashboardLayoutShell({
 
           {/* Modal Content */}
           <div
-            className="relative rounded-2xl overflow-hidden"
+            className="relative rounded-lg overflow-hidden"
             style={{
               backgroundColor: tokens.colors.surface,
               boxShadow: tokens.elevation.level3,

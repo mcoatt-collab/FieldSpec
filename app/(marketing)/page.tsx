@@ -83,8 +83,8 @@ export default function MarketingPage() {
         <style>{`
              .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
              .nav-link { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onSurface} !important; font-weight: 500; }
-             .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; }
-            .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
+             .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
+             .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
              .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
              .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: ${tokens.colors.onSurface} !important; }
              .btn-text:hover { color: ${tokens.colors.primary} !important; opacity: 1; }
@@ -355,10 +355,10 @@ export default function MarketingPage() {
             justifyContent: "center",
             flexWrap: "wrap",
           }}>
-            <Link href="/signup" className="hero-btn-primary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+            <Link href="/signup" className="hero-btn-primary">
               Get Started
             </Link>
-            <Link href="/login" className="hero-btn-secondary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+            <Link href="/login" className="hero-btn-secondary">
               Request Demo
             </Link>
           </div>
@@ -427,7 +427,8 @@ export default function MarketingPage() {
             justify-content: center;
           }
           .hero-btn-primary:hover {
-            background-color: var(--ref-primary-primary30);
+            background-color: var(--sys-primary-container);
+            color: var(--sys-on-primary-container);
             transform: translateY(-2px);
             box-shadow: var(--sys-elevation-8dp) !important;
           }
@@ -436,13 +437,13 @@ export default function MarketingPage() {
           .hero-btn-secondary {
             padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
-            color: var(--ref-neutral-neutral100);
+            color: var(--sys-secondary);
             text-decoration: none;
             border-radius: var(--sys-radius-md);
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
-            border: 2px solid var(--ref-neutral-neutral100);
+            border: 2px solid var(--sys-secondary);
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -451,8 +452,8 @@ export default function MarketingPage() {
             -webkit-backdrop-filter: blur(8px);
           }
           .hero-btn-secondary:hover {
-            background-color: var(--ref-neutral-neutral100);
-            color: var(--ref-primary-primary30);
+            background-color: var(--sys-secondary);
+            color: var(--sys-on-secondary);
           }
 
           /* Responsive Adjustments */
@@ -1078,19 +1079,20 @@ export default function MarketingPage() {
              box-shadow: 0 20px 40px rgba(0,0,0,0.3);
            }
             .cta-primary-btn {
-              background-color: rgba(255,255,255,0.15);
-              color: var(--sys-on-surface);
+              background-color: var(--sys-primary);
+              color: var(--sys-on-primary);
               padding: 12px 24px;
              border-radius: 8px;
              font-size: 15px;
              font-weight: 500;
              text-decoration: none;
              transition: background-color 0.2s, transform 0.2s;
-             border: 1px solid rgba(255,255,255,0.05);
+             border: none;
              display: inline-block;
            }
            .cta-primary-btn:hover {
-             background-color: rgba(255,255,255,0.22);
+             background-color: var(--sys-primary-container);
+             color: var(--sys-on-primary-container);
              transform: translateY(-1px);
            }
             .cta-secondary-link {
@@ -1152,11 +1154,11 @@ export default function MarketingPage() {
         fontFamily: tokens.typography.bodyMedium.fontFamily,
       }}>
         <style>{`
-           .footer-link { color: var(--footer-color); opacity: 0.8; text-decoration: none; transition: color 0.3s ease, opacity 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
-           .footer-link:hover { opacity: 1; color: var(--footer-color) !important; }
-           .social-footer-icon { color: var(--footer-color); opacity: 0.6; transition: color 0.3s ease, opacity 0.3s ease; font-size: 20px; }
-           .social-footer-icon:hover { opacity: 1; color: var(--footer-color) !important; }
-         `}</style>
+            .footer-link { color: var(--footer-color); opacity: 0.8; text-decoration: none; transition: color 0.3s ease, opacity 0.3s ease; font-family: ${tokens.typography.bodyMedium.fontFamily}; }
+            .footer-link:hover { opacity: 1; color: var(--footer-color) !important; }
+            .social-footer-icon { color: var(--footer-color); opacity: 0.6; transition: color 0.3s ease, opacity 0.3s ease; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+            .social-footer-icon:hover { opacity: 1; color: var(--footer-color) !important; }
+          `}</style>
         
         <div style={{
           maxWidth: "1200px",
@@ -1223,9 +1225,15 @@ export default function MarketingPage() {
             &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
-            <a href="#" className="social-footer-icon" aria-label="Twitter">𝕏</a>
-            <a href="#" className="social-footer-icon" aria-label="LinkedIn">in</a>
-            <a href="#" className="social-footer-icon" aria-label="GitHub">⌘</a>
+            <a href="https://x.com/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="Twitter" style={{ padding: "6px" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.5H2.66l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://linkedin.com/company/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="LinkedIn" style={{ padding: "6px" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://github.com/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="GitHub" style={{ padding: "6px" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
           </div>
         </div>
       </footer>

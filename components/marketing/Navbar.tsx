@@ -24,8 +24,8 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
       <style>{`
         .nav-link:hover { color: rgba(255, 255, 255, 0.7) !important; }
         .nav-link { text-decoration: none; transition: color 0.3s ease; }
-        .btn-primary:hover { background-color: rgba(255, 255, 255, 0.9) !important; }
-        .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
+        .signup-btn:hover { background-color: var(--sys-primary-container) !important; color: var(--sys-on-primary-container) !important; }
+        .signup-btn { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; color: var(--sys-on-primary); background-color: #FFFFFF; }
         .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
         .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
         .btn-text:hover { color: rgba(255, 255, 255, 0.7) !important; }
@@ -81,13 +81,12 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
           </Link>
           <Link 
             href="/signup" 
-            className="btn-primary" 
+            className="btn-primary signup-btn" 
             onMouseEnter={() => onPrefetch("/signup")}
             onTouchStart={() => onPrefetch("/signup")}
             style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
               backgroundColor: "#FFFFFF",
-              color: "#31579b",
               textDecoration: "none",
               borderRadius: tokens.radius.md,
               ...tokens.typography.labelLarge,
@@ -128,13 +127,12 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
           </Link>
           <Link 
             href="/signup" 
-            className="btn-primary" 
+            className="signup-btn" 
             onMouseEnter={() => onPrefetch("/signup")}
             onTouchStart={() => onPrefetch("/signup")}
             style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
               backgroundColor: "#FFFFFF",
-              color: "#31579b",
               textDecoration: "none",
               borderRadius: tokens.radius.md,
               ...tokens.typography.labelLarge,
