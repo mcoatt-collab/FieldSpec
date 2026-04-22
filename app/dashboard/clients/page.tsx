@@ -484,8 +484,8 @@ export default function ClientsPage() {
                   disabled={deletingClientId === client.id}
                   style={{
                     position: "absolute",
-                    top: tokens.spacing.xs,
-                    left: tokens.spacing.xs,
+                    bottom: tokens.spacing.xs,
+                    right: tokens.spacing.xs,
                     width: "32px",
                     height: "32px",
                     borderRadius: tokens.radius.sm,
