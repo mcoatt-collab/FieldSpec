@@ -83,8 +83,8 @@ export default function MarketingPage() {
         <style>{`
              .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
              .nav-link { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onSurface} !important; font-weight: 500; }
-             .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; }
-            .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
+             .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
+             .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
              .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
              .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: ${tokens.colors.onSurface} !important; }
              .btn-text:hover { color: ${tokens.colors.primary} !important; opacity: 1; }
@@ -428,6 +428,7 @@ export default function MarketingPage() {
           }
           .hero-btn-primary:hover {
             background-color: var(--sys-primary-container);
+            color: var(--sys-on-primary-container);
             transform: translateY(-2px);
             box-shadow: var(--sys-elevation-8dp) !important;
           }
@@ -436,13 +437,13 @@ export default function MarketingPage() {
           .hero-btn-secondary {
             padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
-            color: var(--sys-primary);
+            color: var(--sys-secondary);
             text-decoration: none;
             border-radius: var(--sys-radius-md);
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
-            border: 2px solid var(--sys-primary);
+            border: 2px solid var(--sys-secondary);
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -451,8 +452,8 @@ export default function MarketingPage() {
             -webkit-backdrop-filter: blur(8px);
           }
           .hero-btn-secondary:hover {
-            background-color: var(--sys-primary);
-            color: var(--sys-on-primary);
+            background-color: var(--sys-secondary);
+            color: var(--sys-on-secondary);
           }
 
           /* Responsive Adjustments */
@@ -1078,19 +1079,20 @@ export default function MarketingPage() {
              box-shadow: 0 20px 40px rgba(0,0,0,0.3);
            }
             .cta-primary-btn {
-              background-color: rgba(255,255,255,0.15);
-              color: var(--sys-on-surface);
+              background-color: var(--sys-primary);
+              color: var(--sys-on-primary);
               padding: 12px 24px;
              border-radius: 8px;
              font-size: 15px;
              font-weight: 500;
              text-decoration: none;
              transition: background-color 0.2s, transform 0.2s;
-             border: 1px solid rgba(255,255,255,0.05);
+             border: none;
              display: inline-block;
            }
            .cta-primary-btn:hover {
-             background-color: rgba(255,255,255,0.22);
+             background-color: var(--sys-primary-container);
+             color: var(--sys-on-primary-container);
              transform: translateY(-1px);
            }
             .cta-secondary-link {
