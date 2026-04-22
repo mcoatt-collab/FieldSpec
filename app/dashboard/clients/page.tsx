@@ -485,7 +485,7 @@ export default function ClientsPage() {
                   style={{
                     position: "absolute",
                     top: tokens.spacing.xs,
-                    right: tokens.spacing.xs,
+                    left: tokens.spacing.xs,
                     width: "32px",
                     height: "32px",
                     borderRadius: tokens.radius.sm,
