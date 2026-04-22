@@ -436,13 +436,13 @@ export default function MarketingPage() {
           .hero-btn-secondary {
             padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
-            color: var(--sys-surface-roles-on-surface);
+            color: var(--sys-primary);
             text-decoration: none;
             border-radius: var(--sys-radius-md);
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
-            border: 2px solid var(--sys-surface-roles-on-surface);
+            border: 2px solid var(--sys-primary);
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -451,8 +451,8 @@ export default function MarketingPage() {
             -webkit-backdrop-filter: blur(8px);
           }
           .hero-btn-secondary:hover {
-            background-color: var(--sys-surface-roles-surface);
-            color: var(--sys-surface-roles-on-surface);
+            background-color: var(--sys-primary);
+            color: var(--sys-on-primary);
           }
 
           /* Responsive Adjustments */
