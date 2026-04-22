@@ -14,6 +14,7 @@ import "./layout.css";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "home" },
+  { href: "/dashboard/clients", label: "Clients", icon: "group" },
   { href: "/dashboard/projects", label: "Projects", icon: "folder" },
   { href: "/dashboard/upload", label: "Upload", icon: "upload" },
   { href: "/dashboard/report", label: "Report", icon: "description" },
@@ -411,7 +412,7 @@ function DashboardLayoutShell({
 
           {/* Modal Content */}
           <div
-            className="relative rounded-2xl overflow-hidden"
+            className="relative rounded-lg overflow-hidden"
             style={{
               backgroundColor: tokens.colors.surface,
               boxShadow: tokens.elevation.level3,
