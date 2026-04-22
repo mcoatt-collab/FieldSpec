@@ -451,8 +451,8 @@ export default function MarketingPage() {
             -webkit-backdrop-filter: blur(8px);
           }
           .hero-btn-secondary:hover {
-            background-color: var(--sys-surface-roles-on-surface);
-            color: var(--sys-surface-roles-surface);
+            background-color: var(--sys-surface-roles-surface);
+            color: var(--sys-surface-roles-on-surface);
           }
 
           /* Responsive Adjustments */
