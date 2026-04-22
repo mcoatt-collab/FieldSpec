@@ -16,78 +16,130 @@ export function ActiveJobsPanel({ jobs }: ActiveJobsPanelProps) {
   }
 
   return (
-    <div className="flex flex-col gap-sm">
-      <div className="flex items-center gap-sm mb-xs">
-        <span className="material-icons" style={{ fontSize: "20px", color: tokens.colors.primary }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+      <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm, marginBottom: tokens.spacing.xs }}>
+        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize, color: tokens.colors.primary }}>
           sync
         </span>
         <span
-          className="text-label-large"
-          style={{ color: tokens.colors.onSurface }}
+          style={{ color: tokens.colors.onSurface, fontSize: tokens.typography.labelLarge.fontSize, fontWeight: tokens.typography.labelLarge.fontWeight }}
         >
           Active Processing
         </span>
       </div>
 
       <div 
-        className="grid grid-cols-2 rounded-xl overflow-hidden border"
         style={{ 
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
           backgroundColor: tokens.colors.surface,
           borderColor: tokens.colors.outlineVariant,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderRadius: tokens.radius.xl,
+          overflow: "hidden",
         }}
       >
-        <div className="flex flex-col items-start justify-center p-lg border-r"
-          style={{ borderColor: tokens.colors.outlineVariant }}
-        >
-          <div className="mb-md p-sm rounded-lg" style={{ backgroundColor: tokens.colors.surfaceContainerLow }}>
+        <div style={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          alignItems: "flex-start", 
+          justifyContent: "center", 
+          padding: tokens.spacing.lg,
+          borderRightWidth: "1px",
+          borderRightStyle: "solid",
+          borderRightColor: tokens.colors.outlineVariant,
+        }}>
+          <div style={{ marginBottom: tokens.spacing.md, padding: tokens.spacing.sm, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: tokens.radius.md }}>
             <span className="material-icons" style={{ fontSize: "48px", color: tokens.colors.surfaceContainerHigh }}>
               table_chart
             </span>
           </div>
           <p 
-            className="text-body-medium text-left max-w-[280px] mb-md"
-            style={{ color: tokens.colors.onSurfaceVariant }}
+            style={{ 
+              color: tokens.colors.onSurfaceVariant, 
+              fontSize: tokens.typography.bodyMedium.fontSize,
+              textAlign: "left",
+              maxWidth: "280px",
+              marginBottom: tokens.spacing.md,
+            }}
           >
             Monitor your active AI processing queue to track job progress in real-time.
           </p>
           <button 
             onClick={() => router.push("/dashboard/projects")}
-            className="text-label-large font-medium hover:underline cursor-pointer border-none bg-transparent"
-            style={{ color: tokens.colors.primary }}
+            style={{ 
+              color: tokens.colors.primary, 
+              fontSize: tokens.typography.labelLarge.fontSize,
+              fontWeight: "500",
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              textDecoration: "underline",
+              display: "flex",
+              alignItems: "center",
+              gap: tokens.spacing.xs,
+            }}
           >
             View all projects
+            <span className="material-icons" style={{ fontSize: tokens.typography.bodyMedium.fontSize }}>
+              arrow_forward
+            </span>
           </button>
         </div>
 
-        <div className="flex flex-col p-xl min-h-[250px]">
-          <div className="flex justify-between items-center mb-sm px-sm">
-            <span className="text-label-small" style={{ color: tokens.colors.outline }}>Activity</span>
-            <span className="text-label-small" style={{ color: tokens.colors.outline }}>Status</span>
+        <div style={{ display: "flex", flexDirection: "column", padding: tokens.spacing.lg, minHeight: "250px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: tokens.spacing.xs, paddingRight: tokens.spacing.sm }}>
+            <span style={{ color: tokens.colors.outline, 
+            fontWeight: tokens.typography.labelLarge.fontWeight,
+            fontSize: tokens.typography.labelLarge.fontSize }}>Activity</span>
+            <span style={{ color: tokens.colors.outline, 
+            fontWeight: tokens.typography.labelLarge.fontWeight,  
+            fontSize: tokens.typography.labelLarge.fontSize }}>Status</span>
           </div>
           
-          <div className="flex flex-col overflow-y-auto max-h-[180px] pr-sm">
+          <div style={{ display: "flex", flexDirection: "column", overflowY: "auto", maxHeight: "180px", paddingRight: tokens.spacing.sm }}>
             {jobs.map((job, index) => (
               <div 
                 key={job.id}
-                className={`flex items-center justify-between py-sm px-sm group hover:bg-black/5 transition-colors duration-200 cursor-pointer ${index !== jobs.length - 1 ? 'border-b' : ''}`}
-                style={{ borderColor: tokens.colors.outlineVariant }}
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "space-between", 
+                  paddingTop: tokens.spacing.sm, 
+                  paddingBottom: tokens.spacing.sm,
+                  paddingLeft: tokens.spacing.sm,
+                  paddingRight: tokens.spacing.sm,
+                  cursor: "pointer",
+                  borderBottomWidth: index !== jobs.length - 1 ? "1px" : "0",
+                  borderBottomStyle: "solid",
+                  borderBottomColor: tokens.colors.outlineVariant,
+                }}
                 onClick={() => router.push(`/dashboard/projects?job=${job.id}`)}
               >
-                <div className="flex items-center gap-sm">
+                <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm }}>
                   <span className="material-icons" style={{ 
-                    fontSize: "16px", 
+                    fontSize: tokens.typography.bodyMedium.fontSize, 
                     color: job.status === "processing" ? tokens.colors.primary : tokens.colors.outline 
                   }}>
                     {job.type === "full_report" ? "description" : "auto_awesome"}
                   </span>
-                  <span className="text-body-medium truncate max-w-[180px]" style={{ color: tokens.colors.onSurface }}>
+                  <span style={{ 
+                    color: tokens.colors.onSurface, 
+                    fontSize: tokens.typography.bodyMedium.fontSize,
+                    maxWidth: "180px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
                     {job.projectName}
                   </span>
                 </div>
                 
-                <div className="flex items-center gap-sm">
-                  <span className="text-label-medium" style={{ 
-                    color: job.status === "processing" ? tokens.colors.onSurface : tokens.colors.onSurfaceVariant 
+                <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm }}>
+                  <span style={{ 
+                    color: job.status === "processing" ? tokens.colors.onSurface : tokens.colors.onSurfaceVariant,
+                    fontSize: tokens.typography.labelMedium.fontSize,
                   }}>
                     {job.status === "processing" ? `${job.progress}%` : 
                      job.status === "completed" ? "Done" : 

@@ -8,15 +8,29 @@ export function EmptyState() {
 
   return (
     <div
-      className="rounded-xl border p-xl text-center"
       style={{
         backgroundColor: tokens.colors.surface,
         borderColor: tokens.colors.outlineVariant,
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderRadius: tokens.radius.xl,
+        padding: tokens.spacing.xl,
+        textAlign: "center",
       }}
     >
       <div
-        className="w-20 h-20 mx-auto mb-md rounded-full flex items-center justify-center"
-        style={{ backgroundColor: tokens.colors.surfaceVariant }}
+        style={{
+          width: "80px",
+          height: "80px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginBottom: tokens.spacing.md,
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: tokens.colors.surfaceVariant,
+        }}
       >
         <span
           className="material-icons"
@@ -27,29 +41,49 @@ export function EmptyState() {
       </div>
 
       <h3
-        className="text-title-large mb-sm"
-        style={{ color: tokens.colors.onSurface }}
+        style={{ 
+          color: tokens.colors.onSurface, 
+          fontSize: tokens.typography.titleLarge.fontSize,
+          fontWeight: tokens.typography.titleLarge.fontWeight,
+          marginBottom: tokens.spacing.sm,
+        }}
       >
         No projects yet
       </h3>
 
       <p
-        className="text-body-medium mb-lg max-w-md mx-auto"
-        style={{ color: tokens.colors.onSurfaceVariant }}
+        style={{ 
+          color: tokens.colors.onSurfaceVariant, 
+          fontSize: tokens.typography.bodyMedium.fontSize,
+          marginBottom: tokens.spacing.lg,
+          maxWidth: "400px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         Create your first project to start generating AI reports from your drone images.
       </p>
 
       <button
         onClick={() => router.push("/dashboard/projects?new=true")}
-        className="inline-flex items-center gap-sm px-lg py-sm rounded-pill text-label-large transition-all duration-200 hover:scale-105 cursor-pointer"
         style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: tokens.spacing.sm,
+          paddingLeft: tokens.spacing.lg,
+          paddingRight: tokens.spacing.lg,
+          paddingTop: tokens.spacing.sm,
+          paddingBottom: tokens.spacing.sm,
+          borderRadius: tokens.radius.pill,
           backgroundColor: tokens.colors.primary,
           color: tokens.colors.onPrimary,
           border: "none",
+          fontSize: tokens.typography.labelLarge.fontSize,
+          fontWeight: tokens.typography.labelLarge.fontWeight,
+          cursor: "pointer",
         }}
       >
-        <span className="material-icons" style={{ fontSize: "20px" }}>
+        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize }}>
           add
         </span>
         Create First Project

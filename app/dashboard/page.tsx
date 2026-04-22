@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { tokens } from "@/lib/design-tokens";
 import { ActiveJobsPanel } from "@/components/dashboard/ActiveJobsPanel";
 import { QuickActionsPanel } from "@/components/dashboard/QuickActionsPanel";
-import { RecentProjectsTable } from "@/components/dashboard/RecentProjectsTable";
+import { RecentProjectsSection } from "@/components/dashboard/RecentProjectsSection";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { InsightPreviewCard } from "@/components/dashboard/InsightPreviewCard";
 import { MapPreview } from "@/components/dashboard/MapPreview";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import {
   mockJobs,
-  mockProjects,
   mockInsight,
   mockStats,
   type Job,
@@ -89,23 +88,38 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-[1200px] px-md">
-        <div className="mb-xl">
+      <div style={{ maxWidth: "1200px", paddingLeft: tokens.spacing.md, paddingRight: tokens.spacing.md }}>
+        <div style={{ marginBottom: tokens.spacing.xl }}>
           <div
-            className="h-8 w-32 rounded mb-xs animate-pulse"
-            style={{ backgroundColor: tokens.colors.surfaceVariant }}
+            style={{ 
+              height: "32px", 
+              width: "128px", 
+              borderRadius: tokens.radius.sm, 
+              marginBottom: tokens.spacing.xs,
+              backgroundColor: tokens.colors.surfaceVariant,
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+            }}
           />
           <div
-            className="h-5 w-64 rounded animate-pulse"
-            style={{ backgroundColor: tokens.colors.surfaceVariant }}
+            style={{ 
+              height: "20px", 
+              width: "256px", 
+              borderRadius: tokens.radius.sm, 
+              backgroundColor: tokens.colors.surfaceVariant,
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+            }}
           />
         </div>
-        <div className="grid grid-cols-4 gap-md mb-lg">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-24 rounded-xl animate-pulse"
-              style={{ backgroundColor: tokens.colors.surfaceVariant }}
+              style={{ 
+                height: "96px", 
+                borderRadius: tokens.radius.xl, 
+                backgroundColor: tokens.colors.surfaceVariant,
+                animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+              }}
             />
           ))}
         </div>
@@ -114,25 +128,27 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-[1200px] px-md">
-      <div className="mb-xl">
+    <div style={{ maxWidth: "1200px", paddingLeft: tokens.spacing.md, paddingRight: tokens.spacing.md }}>
+      <div style={{ marginBottom: tokens.spacing.xl }}>
         <h2
-          className="text-headline-small mb-xs"
-          style={{ color: tokens.colors.onSurface }}
+          style={{ 
+            color: tokens.colors.onSurface, 
+            fontSize: tokens.typography.headlineSmall.fontSize,
+            fontWeight: tokens.typography.headlineSmall.fontWeight,
+            marginBottom: tokens.spacing.xs,
+          }}
         >
           Dashboard
         </h2>
         <p
-          className="text-body-medium"
-          style={{ color: tokens.colors.onSurfaceVariant }}
+          style={{ color: tokens.colors.onSurfaceVariant, fontSize: tokens.typography.bodyMedium.fontSize }}
         >
           Overview of your projects and recent activity
         </p>
       </div>
 
       <div
-        className="flex flex-col"
-        style={{ gap: tokens.spacing.lg }}
+        style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.lg }}
       >
         {jobs.length > 0 && (
           <section style={{ marginBottom: tokens.spacing.lg }}>
@@ -145,7 +161,7 @@ export default function DashboardPage() {
         </section>
 
         <section style={{ marginBottom: tokens.spacing.lg }}>
-          <RecentProjectsTable projects={projects} />
+          <RecentProjectsSection projects={projects} />
         </section>
 
         <section style={{ marginBottom: tokens.spacing.lg }}>
@@ -157,7 +173,7 @@ export default function DashboardPage() {
             <EmptyState />
           </section>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: tokens.spacing.lg }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: tokens.spacing.lg }}>
             {insight && (
               <section>
                 <InsightPreviewCard insight={insight} />

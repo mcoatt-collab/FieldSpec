@@ -2,12 +2,15 @@
 
 import { tokens } from "@/lib/design-tokens";
 import type { Stats } from "./mockData";
+import { useState } from "react";
 
 interface StatsCardsProps {
   stats: Stats;
 }
 
 export function StatsCards({ stats }: StatsCardsProps) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   const statItems = [
     {
       label: "Total Projects",
@@ -37,45 +40,54 @@ export function StatsCards({ stats }: StatsCardsProps) {
 
   return (
     <div>
-      <div className="flex items-center gap-sm mb-md">
-        <span className="material-icons" style={{ fontSize: "20px", color: tokens.colors.primary }}>
+      <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm, marginBottom: tokens.spacing.md }}>
+        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize, color: tokens.colors.primary }}>
           analytics
         </span>
         <span
-          className="text-label-large"
-          style={{ color: tokens.colors.onSurface }}
+          style={{ color: tokens.colors.onSurface, fontSize: tokens.typography.labelLarge.fontSize, fontWeight: tokens.typography.labelLarge.fontWeight }}
         >
           Overview
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-md">
-        {statItems.map((item) => (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: tokens.spacing.md }}>
+        {statItems.map((item, index) => (
           <div
             key={item.label}
-            className="flex-1 min-w-[180px] rounded-xl border p-md transition-all duration-200 hover:scale-[1.02]"
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
             style={{
-              backgroundColor: tokens.colors.surface,
+              backgroundColor: hoveredIndex === index ? tokens.colors.surfaceContainerLow : tokens.colors.surface,
               borderColor: tokens.colors.outlineVariant,
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderRadius: tokens.radius.xl,
+              padding: tokens.spacing.md,
+              cursor: "pointer",
+              transition: "background-color 0.15s ease",
             }}
           >
-            <div className="flex items-center justify-between mb-sm">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: tokens.spacing.sm }}>
               <span
                 className="material-icons"
-                style={{ fontSize: "20px", color: item.color }}
+                style={{ fontSize: tokens.typography.titleMedium.fontSize, color: item.color }}
               >
                 {item.icon}
               </span>
             </div>
             <p
-              className="text-body-medium"
-              style={{ color: tokens.colors.onSurfaceVariant }}
+              style={{ color: tokens.colors.onSurfaceVariant, fontSize: tokens.typography.bodyMedium.fontSize }}
             >
               {item.label}
             </p>
             <p
-              className="text-headline-small mt-xs"
-              style={{ color: tokens.colors.onSurface }}
+              style={{ 
+                color: tokens.colors.onSurface, 
+                fontSize: tokens.typography.headlineSmall.fontSize, 
+                fontWeight: tokens.typography.headlineSmall.fontWeight,
+                marginTop: tokens.spacing.xs,
+              }}
             >
               {item.value.toLocaleString()}
             </p>
