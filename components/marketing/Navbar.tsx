@@ -24,7 +24,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
       <style>{`
         .nav-link:hover { color: rgba(255, 255, 255, 0.7) !important; }
         .nav-link { text-decoration: none; transition: color 0.3s ease; }
-        .btn-primary:hover { background-color: rgba(255, 255, 255, 0.9) !important; }
+        .btn-primary:hover { background-color: var(--sys-primary-container) !important; }
         .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
         .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
         .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
@@ -87,7 +87,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
               backgroundColor: "#FFFFFF",
-              color: "#31579b",
+              color: "var(--sys-on-primary)",
               textDecoration: "none",
               borderRadius: tokens.radius.md,
               ...tokens.typography.labelLarge,
@@ -134,7 +134,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             style={{
               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
               backgroundColor: "#FFFFFF",
-              color: "#31579b",
+              color: "var(--sys-on-primary)",
               textDecoration: "none",
               borderRadius: tokens.radius.md,
               ...tokens.typography.labelLarge,
