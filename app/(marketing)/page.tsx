@@ -355,10 +355,10 @@ export default function MarketingPage() {
             justifyContent: "center",
             flexWrap: "wrap",
           }}>
-            <Link href="/signup" className="hero-btn-primary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+            <Link href="/signup" className="hero-btn-primary">
               Get Started
             </Link>
-            <Link href="/login" className="hero-btn-secondary" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+            <Link href="/login" className="hero-btn-secondary">
               Request Demo
             </Link>
           </div>
@@ -427,7 +427,8 @@ export default function MarketingPage() {
             justify-content: center;
           }
           .hero-btn-primary:hover {
-            background-color: var(--ref-primary-primary30);
+            background-color: var(--sys-primary-container);
+            color: var(--sys-on-primary-container);
             transform: translateY(-2px);
             box-shadow: var(--sys-elevation-8dp) !important;
           }
@@ -436,13 +437,13 @@ export default function MarketingPage() {
           .hero-btn-secondary {
             padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
-            color: var(--ref-neutral-neutral100);
+            color: var(--sys-surface-roles-on-surface);
             text-decoration: none;
             border-radius: var(--sys-radius-md);
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
-            border: 2px solid var(--ref-neutral-neutral100);
+            border: 2px solid var(--sys-surface-roles-on-surface);
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -451,8 +452,8 @@ export default function MarketingPage() {
             -webkit-backdrop-filter: blur(8px);
           }
           .hero-btn-secondary:hover {
-            background-color: var(--ref-neutral-neutral100);
-            color: var(--ref-primary-primary30);
+            background-color: var(--sys-surface-roles-on-surface);
+            color: var(--sys-surface-roles-surface);
           }
 
           /* Responsive Adjustments */
