@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { tokens } from "@/lib/design-tokens";
 
 interface Project {
@@ -17,7 +17,82 @@ interface Client {
   company: string | null;
 }
 
-const DATA_TYPE_CARDS = [
+const PROJECT_TEMPLATES = [
+  {
+    id: "roof-inspection",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      </svg>
+    ),
+    title: "Roof Inspection",
+    description: "Residential or commercial roof surveys",
+    category: "Infrastructure",
+  },
+  {
+    id: "solar-panel-audit",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    ),
+    title: "Solar Panel Audit",
+    description: "Solar farm and panel array inspections",
+    category: "Energy",
+  },
+  {
+    id: "construction-progress",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+      </svg>
+    ),
+    title: "Construction Progress",
+    description: "Site monitoring and progress tracking",
+    category: "Construction",
+  },
+  {
+    id: "bridge-infrastructure",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
+        <path d="M2 16h20"/><path d="M2 20h20"/>
+      </svg>
+    ),
+    title: "Bridge Infrastructure",
+    description: "Bridge and large structure inspections",
+    category: "Infrastructure",
+  },
+  {
+    id: "agricultural-survey",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    ),
+    title: "Agricultural Survey",
+    description: "Crop health and land assessment",
+    category: "Agriculture",
+  },
+  {
+    id: "thermal-inspection",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/>
+      </svg>
+    ),
+    title: "Thermal Inspection",
+    description: "Heat signature and thermal analysis",
+    category: "Specialized",
+  },
+];
+
+const FEATURES = [
   {
     id: "aerial-orthomosaic",
     icon: (
@@ -73,13 +148,14 @@ export default function ProjectsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showFeatures, setShowFeatures] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     fetchProjects();
@@ -90,24 +166,6 @@ export default function ProjectsPage() {
       fetchClients();
     }
   }, [showForm]);
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUploading(true);
-      setTimeout(() => setUploading(false), 1500);
-    }
-  };
-
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      setUploading(true);
-      setTimeout(() => setUploading(false), 1500);
-    }
-  }, []);
 
   async function fetchProjects() {
     try {
@@ -135,6 +193,36 @@ export default function ProjectsPage() {
     }
   }
 
+  async function handleDeleteProject(projectId: string) {
+    if (!confirm("Are you sure you want to delete this project?")) return;
+    
+    try {
+      const res = await fetch(`/api/projects/${projectId}`, { method: "DELETE" });
+      if (res.ok) {
+        setProjects(projects.filter(p => p.id !== projectId));
+      } else {
+        const data = await res.json();
+        setDeleteError(data.error?.message || "Failed to delete project");
+      }
+    } catch (err) {
+      setDeleteError("An error occurred while deleting");
+    }
+  }
+
+  async function handleDeleteClient(clientId: string) {
+    if (!confirm("Delete this client? All associated projects will also be deleted.")) return;
+    
+    try {
+      const res = await fetch(`/api/clients/${clientId}`, { method: "DELETE" });
+      if (res.ok) {
+        setClients(clients.filter(c => c.id !== clientId));
+        setProjects(projects.filter(p => (p as any).clientId !== clientId));
+      }
+    } catch (err) {
+      console.error("Failed to delete client:", err);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -159,11 +247,28 @@ export default function ProjectsPage() {
       setName("");
       setClientId("");
       setShowForm(false);
+      setShowTemplates(false);
       setCreating(false);
     } catch (err) {
       setError("An error occurred. Please try again.");
       setCreating(false);
     }
+  }
+
+  function useTemplate(template: typeof PROJECT_TEMPLATES[0]) {
+    setName(template.title);
+    setShowTemplates(false);
+    setShowForm(true);
+  }
+
+  function openFeatures(project: Project) {
+    setSelectedProject(project);
+    setShowFeatures(true);
+  }
+
+  function closeFeatures() {
+    setShowFeatures(false);
+    setSelectedProject(null);
   }
 
   function formatDate(dateString: string) {
@@ -177,10 +282,10 @@ export default function ProjectsPage() {
   const totalPhotos = projects.reduce((sum, p) => sum + p.photoCount, 0);
 
   const statsCards = [
-    { id: "stat-active-projects", label: "Active Projects", value: loading ? "—" : projects.length, sub: "In progress", trend: "+9%", trendUp: true, accent: "primary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> },
-    { id: "stat-completed-jobs", label: "Total Photos", value: loading ? "—" : totalPhotos, sub: "All time", trend: "+12%", trendUp: true, accent: "secondary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
-    { id: "stat-avg-processing", label: "Avg. Processing", value: "2.4d", sub: "Per batch", trend: "−0.3d", trendUp: true, accent: "tertiary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
-    { id: "stat-pending-analysis", label: "Pending Analysis", value: "0", sub: "Queued", trend: null, trendUp: true, accent: "error", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> },
+    { id: "stat-active-projects", label: "Active Projects", value: loading ? "—" : projects.length, sub: "Total count", trend: "+9%", trendUp: true, accent: "primary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> },
+    { id: "stat-completed-jobs", label: "Total Photos", value: loading ? "—" : totalPhotos, sub: "Uploaded", trend: "+12%", trendUp: true, accent: "secondary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
+    { id: "stat-avg-processing", label: "Avg. Processing", value: "~2-4 min", sub: "Per batch (50 images)", trend: "−30s", trendUp: true, accent: "tertiary", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+    { id: "stat-reports-generated", label: "Reports Generated", value: "0", sub: "This month", trend: null, trendUp: true, accent: "error", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> },
   ];
 
   return (
@@ -205,53 +310,6 @@ export default function ProjectsPage() {
             </svg>
             Create Project
           </button>
-        )}
-      </div>
-
-      <input ref={fileInputRef} type="file" id="project-file-upload" accept=".png,.jpeg,.jpg,.tiff,.tif,.pdf,.json,.csv,image/*"
-        onChange={handleFileSelect} disabled={uploading} style={{ display: "none" }} />
-
-      <div
-        id="project-upload-zone"
-        className={`up-zone${isDragging ? " up-zone--drag" : ""}${uploading ? " up-zone--busy" : ""}`}
-        onDrop={handleDrop}
-        onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onClick={() => fileInputRef.current?.click()}
-        role="button" tabIndex={0}
-        onKeyDown={e => { if ((e.key === "Enter" || e.key === " ") && !uploading) fileInputRef.current?.click(); }}
-      >
-        {uploading ? (
-          <div className="up-zone-inner">
-            <div className="up-progress-ring">
-              <svg width="56" height="56" viewBox="0 0 56 56">
-                <circle cx="28" cy="28" r="23" fill="none" stroke="var(--sys-surface-roles-surface-container)" strokeWidth="4"/>
-                <circle cx="28" cy="28" r="23" fill="none" stroke="var(--sys-primary)" strokeWidth="4"
-                  strokeLinecap="round" strokeDasharray="80 144.5" transform="rotate(-90 28 28)"/>
-              </svg>
-              <span className="up-pct">Importing...</span>
-            </div>
-            <p className="up-zone-primary">Importing project data...</p>
-          </div>
-        ) : (
-          <div className="up-zone-inner">
-            <div className="up-zone-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
-                <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
-              </svg>
-            </div>
-            <p className="up-zone-primary">{isDragging ? "Drop file here" : "Drag & drop to import project"}</p>
-            <p className="up-zone-or">or</p>
-            <button
-              type="button"
-              className="up-btn-secondary"
-              onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}
-            >
-              Browse Files
-            </button>
-            <p className="up-zone-formats">JPEG &middot; PNG &middot; TIFF &middot; JSON &middot; CSV &middot; Project exports</p>
-          </div>
         )}
       </div>
 
@@ -344,21 +402,80 @@ export default function ProjectsPage() {
       </div>
 
       <div className="up-section-head">
-        <h2 className="up-section-title">Supported Data Types</h2>
-        <p className="up-section-sub">Upload any of the following capture formats to begin AI analysis</p>
+        <h2 className="up-section-title">Project Features</h2>
+        <p className="up-section-sub">Select a project to access features like image upload, orthomosaic, and inspection tools</p>
       </div>
       <div className="up-dtype-grid">
-        {DATA_TYPE_CARDS.map(card => (
-          <div key={card.id} id={card.id} className={`up-dtype-card up-dtype-card--${card.accent}`}>
-            <div className={`up-dtype-icon up-dtype-icon--${card.accent}`}>{card.icon}</div>
-            <div className="up-dtype-body">
-              <h3 className="up-dtype-title">{card.title}</h3>
-              <p className="up-dtype-desc">{card.description}</p>
-              <span className="up-dtype-meta">{card.meta}</span>
+        {FEATURES.map(card => {
+          const hasProjects = projects.length > 0;
+          return (
+            <div 
+              key={card.id} 
+              id={card.id} 
+              className={`up-dtype-card up-dtype-card--${card.accent} ${!hasProjects ? 'up-dtype-card--disabled' : ''} ${hasProjects ? 'up-dtype-card--active' : ''}`}
+              onClick={() => hasProjects && openFeatures(projects[0])}
+            >
+              <div className={`up-dtype-icon up-dtype-icon--${card.accent}`}>{card.icon}</div>
+              <div className="up-dtype-body">
+                <h3 className="up-dtype-title">{card.title}</h3>
+                <p className="up-dtype-desc">{card.description}</p>
+                <span className="up-dtype-meta">{card.meta}</span>
+              </div>
+              {hasProjects ? (
+                <div className="up-dtype-ready">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Ready to use
+                </div>
+              ) : (
+                <div className="up-dtype-locked">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  </svg>
+                  Create project first
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      {!showTemplates && (
+        <div className="up-templates-prompt">
+          <p className="up-templates-prompt-text">Need inspiration? Browse project templates to get started</p>
+          <button className="up-btn-secondary" onClick={() => setShowTemplates(true)}>
+            View Templates
+          </button>
+        </div>
+      )}
+
+      {showTemplates && (
+        <div className="up-templates-section">
+          <div className="up-templates-header">
+            <div>
+              <h2 className="up-section-title">Project Templates</h2>
+              <p className="up-section-sub">Choose a template to get started quickly</p>
+            </div>
+            <button className="up-btn-ghost" onClick={() => setShowTemplates(false)}>
+              Close
+            </button>
+          </div>
+          <div className="up-templates-grid">
+            {PROJECT_TEMPLATES.map(template => (
+              <div key={template.id} className="up-template-card" onClick={() => useTemplate(template)}>
+                <div className="up-template-icon">{template.icon}</div>
+                <div className="up-template-body">
+                  <h3 className="up-template-title">{template.title}</h3>
+                  <p className="up-template-desc">{template.description}</p>
+                </div>
+                <span className="up-template-category">{template.category}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="up-table-card">
         <div className="up-table-hd">
@@ -410,16 +527,15 @@ export default function ProjectsPage() {
                   <td className="up-td up-td-date">{formatDate(project.createdAt)}</td>
                   <td className="up-td up-td-act">
                     <div className="up-row-acts">
-                      <button className="up-act-btn" title="View project" aria-label="View project">
+                      <button className="up-act-btn" onClick={() => openFeatures(project)} title="Open features" aria-label="Open features">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                          <circle cx="12" cy="12" r="3"/>
+                          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                          <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
                         </svg>
                       </button>
-                      <button className="up-act-btn" title="Edit project" aria-label="Edit project">
+                      <button className="up-act-btn" title="Delete project" aria-label="Delete project" onClick={() => handleDeleteProject(project.id)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
                         </svg>
                       </button>
                     </div>
@@ -436,6 +552,42 @@ export default function ProjectsPage() {
           </div>
         )}
       </div>
+
+      {showFeatures && selectedProject && (
+        <div className="up-modal-overlay" onClick={closeFeatures}>
+          <div className="up-modal" onClick={e => e.stopPropagation()}>
+            <div className="up-modal-header">
+              <div>
+                <h2 className="up-modal-title">{selectedProject.name}</h2>
+                <p className="up-modal-sub">Select a feature to access tools</p>
+              </div>
+              <button className="up-modal-close" onClick={closeFeatures} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <div className="up-features-grid">
+              {FEATURES.map(feature => (
+                <div key={feature.id} className={`up-feature-card up-feature-card--${feature.accent}`}>
+                  <div className={`up-feature-icon up-feature-icon--${feature.accent}`}>{feature.icon}</div>
+                  <div className="up-feature-body">
+                    <h3 className="up-feature-title">{feature.title}</h3>
+                    <p className="up-feature-desc">{feature.description}</p>
+                    <span className="up-feature-meta">{feature.meta}</span>
+                  </div>
+                  <button className="up-feature-btn">
+                    Upload & Analyze
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -461,24 +613,9 @@ const CSS = `
 
 .up-error { display:flex; align-items:center; gap:9px; padding:11px 14px; border-radius:var(--sys-radius-md); background:var(--sys-error-container); color:var(--sys-on-error-container); font-size:13.5px; margin-bottom:16px; }
 
-.up-zone { border:2px dashed var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-xl); background:var(--sys-surface-roles-surface-container-low); padding:36px 32px; text-align:center; cursor:pointer; transition:border-color .25s,background .25s,transform .2s,box-shadow .25s; margin-bottom:28px; outline:none; position:relative; }
-.up-zone::before { content:''; position:absolute; inset:0; border-radius:var(--sys-radius-xl); background:radial-gradient(ellipse at center,color-mix(in srgb,var(--sys-primary) 8%,transparent),transparent 70%); opacity:0; transition:opacity .3s ease; pointer-events:none; }
-.up-zone:hover, .up-zone:focus { border-color:var(--sys-primary); box-shadow:0 0 12px color-mix(in srgb,var(--sys-primary) 12%,transparent); background:color-mix(in srgb,var(--sys-primary) 3%,var(--sys-surface-roles-surface-container-low)); }
-.up-zone:hover::before { opacity:1; }
-.up-zone--drag { border-color:var(--sys-primary)!important; transform:scale(1.006); background:color-mix(in srgb,var(--sys-primary) 6%,var(--sys-surface-roles-surface-container-low))!important; box-shadow:0 0 16px color-mix(in srgb,var(--sys-primary) 20%,transparent)!important; }
-.up-zone--drag::before { opacity:1!important; }
-.up-zone--busy { cursor:not-allowed; }
-.up-zone-inner { display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; z-index:1; }
-.up-zone-icon { width:56px; height:56px; border-radius:50%; background:color-mix(in srgb,var(--sys-primary) 11%,transparent); display:flex; align-items:center; justify-content:center; color:var(--sys-primary); transition:background .2s,transform .25s,box-shadow .25s; }
-.up-zone:hover .up-zone-icon { background:color-mix(in srgb,var(--sys-primary) 17%,transparent); transform:translateY(-2px); box-shadow:0 0 8px color-mix(in srgb,var(--sys-primary) 25%,transparent); }
-.up-zone-primary { font-size:14.5px; font-weight:500; color:var(--sys-surface-roles-on-surface); margin:0; }
-.up-zone-or      { font-size:12px; color:var(--sys-surface-roles-on-surface-variant); margin:0; }
-.up-zone-formats { font-size:11px; color:var(--sys-surface-roles-on-surface-variant); margin:0; opacity:.75; }
-.up-progress-ring { position:relative; width:56px; height:56px; display:flex; align-items:center; justify-content:center; }
-.up-progress-ring svg { position:absolute; inset:0; width:100%; height:100%; }
-.up-pct { font-size:12px; font-weight:600; color:var(--sys-primary); position:relative; z-index:1; }
-
 .up-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+@media (max-width:1200px) { .up-stats-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .up-stats-grid { grid-template-columns:1fr; } }
 .up-stat-card { background:color-mix(in srgb,var(--sys-primary-container) 35%,var(--sys-surface-roles-surface-container-low)); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); padding:20px; display:flex; flex-direction:column; gap:5px; transition:box-shadow .3s ease,transform .25s ease,border-color .3s ease,background .3s ease; position:relative; overflow:hidden; }
 .up-stat-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--sys-primary) 8%,transparent),transparent 60%); opacity:0; transition:opacity .25s ease; pointer-events:none; }
 .up-stat-card:hover { box-shadow:0 4px 16px color-mix(in srgb,var(--sys-primary) 15%,transparent),var(--sys-elevation-2dp-penumbra); transform:translateY(-2px); border-color:var(--sys-primary); background:color-mix(in srgb,var(--sys-primary-container) 40%,var(--sys-surface-roles-surface-container-low)); }
@@ -505,6 +642,8 @@ const CSS = `
 .up-section-sub   { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); margin:0; }
 
 .up-dtype-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+@media (max-width:1100px) { .up-dtype-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .up-dtype-grid { grid-template-columns:1fr; } }
 .up-dtype-card { background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); padding:18px; display:flex; flex-direction:column; gap:12px; transition:box-shadow .3s ease,transform .25s ease,border-color .3s ease,background .3s ease; position:relative; overflow:hidden; }
 .up-dtype-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; opacity:.7; border-radius:var(--sys-radius-lg) var(--sys-radius-lg) 0 0; transition:opacity .25s ease; }
 .up-dtype-card--primary::before   { background:var(--sys-primary); }
@@ -572,11 +711,59 @@ const CSS = `
 .up-nav-btn { padding:6px 14px; border-radius:var(--sys-radius-sm); background:transparent; color:var(--sys-surface-roles-on-surface-variant); font-size:12.5px; font-weight:500; font-family:inherit; border:1px solid var(--sys-outline-roles-outline-variant); cursor:pointer; transition:background .15s; }
 .up-nav-btn:hover { background:var(--sys-surface-roles-surface-container); }
 
-@media (max-width:900px) {
-  .up-stats-grid, .up-dtype-grid { grid-template-columns:repeat(2,1fr); }
-}
-@media (max-width:600px) {
-  .up-stats-grid, .up-dtype-grid { grid-template-columns:1fr; }
-  .up-projects-grid { grid-template-columns:1fr; }
-}
+.up-dtype-card--disabled { opacity:.65; pointer-events:none; }
+.up-dtype-card--disabled .up-dtype-icon { filter:grayscale(.3); }
+.up-dtype-card--active { cursor:pointer; }
+.up-dtype-card--active:hover { box-shadow:0 6px 20px color-mix(in srgb,var(--sys-primary) 20%,transparent); transform:translateY(-3px) scale(1.02); border-color:var(--sys-primary); }
+.up-dtype-card--active:hover::before { opacity:1; }
+.up-dtype-card--active:hover .up-dtype-icon { transform:scale(1.08) rotate(3deg); box-shadow:0 4px 12px color-mix(in srgb,var(--sys-primary) 25%,transparent); }
+.up-dtype-card--active.up-dtype-card--primary:hover { box-shadow:0 6px 20px color-mix(in srgb,var(--sys-primary) 20%,transparent); }
+.up-dtype-card--active.up-dtype-card--secondary:hover { box-shadow:0 6px 20px color-mix(in srgb,var(--sys-secondary) 20%,transparent); }
+.up-dtype-card--active.up-dtype-card--tertiary:hover { box-shadow:0 6px 20px color-mix(in srgb,var(--sys-tertiary) 20%,transparent); }
+.up-dtype-card--active.up-dtype-card--error:hover { box-shadow:0 6px 20px color-mix(in srgb,var(--sys-error) 20%,transparent); }
+.up-dtype-locked { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:500; color:var(--sys-surface-roles-on-surface-variant); background:var(--sys-surface-roles-surface-container); padding:6px 10px; border-radius:var(--sys-radius-sm); margin-top:auto; }
+.up-dtype-ready { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:#37953c; background:color-mix(in srgb,#45ba4b 12%,transparent); padding:6px 10px; border-radius:var(--sys-radius-sm); margin-top:auto; }
+.up-dtype-card--active:hover .up-dtype-ready { background:color-mix(in srgb,#45ba4b 18%,transparent); }
+
+.up-templates-prompt { display:flex; align-items:center; justify-content:center; gap:16px; padding:16px 24px; background:var(--sys-surface-roles-surface-container-low); border:1px dashed var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); margin-bottom:24px; }
+.up-templates-prompt-text { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); margin:0; }
+
+.up-templates-section { margin-bottom:28px; }
+.up-templates-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+.up-templates-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+@media (max-width:900px) { .up-templates-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .up-templates-grid { grid-template-columns:1fr; } }
+.up-template-card { display:flex; align-items:flex-start; gap:14px; padding:18px; background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); cursor:pointer; transition:all .25s ease; position:relative; overflow:hidden; }
+.up-template-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center,color-mix(in srgb,var(--sys-primary) 6%,transparent),transparent 70%); opacity:0; transition:opacity .3s ease; }
+.up-template-card:hover { box-shadow:0 4px 16px color-mix(in srgb,var(--sys-primary) 12%,transparent); transform:translateY(-2px); border-color:var(--sys-primary); }
+.up-template-card:hover::before { opacity:1; }
+.up-template-icon { width:40px; height:40px; border-radius:var(--sys-radius-md); background:var(--sys-surface-roles-surface-container); display:flex; align-items:center; justify-content:center; color:var(--sys-surface-roles-on-surface-variant); flex-shrink:0; transition:all .25s ease; }
+.up-template-card:hover .up-template-icon { background:var(--sys-primary-container); color:var(--sys-on-primary-container); box-shadow:0 2px 8px color-mix(in srgb,var(--sys-primary) 20%,transparent); }
+.up-template-body { flex:1; min-width:0; }
+.up-template-title { font-size:14px; font-weight:600; color:var(--sys-surface-roles-on-surface); margin:0 0 4px; }
+.up-template-desc { font-size:12px; color:var(--sys-surface-roles-on-surface-variant); margin:0; line-height:1.5; }
+.up-template-category { position:absolute; top:12px; right:12px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--sys-primary); background:var(--sys-primary-container); padding:3px 8px; border-radius:999px; }
+
+.up-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; }
+.up-modal { background:var(--sys-surface-roles-surface-container-low); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-xl); max-width:700px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 48px rgba(0,0,0,.2); }
+.up-modal-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:24px; border-bottom:1px solid var(--sys-outline-roles-outline-variant); }
+.up-modal-title { font-size:18px; font-weight:600; color:var(--sys-surface-roles-on-surface); margin:0 0 4px; }
+.up-modal-sub { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); margin:0; }
+.up-modal-close { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; border-radius:var(--sys-radius-sm); background:transparent; color:var(--sys-surface-roles-on-surface-variant); cursor:pointer; transition:all .2s; flex-shrink:0; }
+.up-modal-close:hover { background:var(--sys-surface-roles-surface-container); color:var(--sys-surface-roles-on-surface); }
+
+.up-features-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; padding:24px; }
+.up-feature-card { display:flex; flex-direction:column; gap:14px; padding:20px; background:var(--sys-surface-roles-surface-container); border:1px solid var(--sys-outline-roles-outline-variant); border-radius:var(--sys-radius-lg); transition:all .25s ease; }
+.up-feature-card:hover { box-shadow:0 4px 16px color-mix(in srgb,var(--sys-primary) 12%,transparent); transform:translateY(-2px); border-color:var(--sys-primary); }
+.up-feature-icon { width:44px; height:44px; border-radius:var(--sys-radius-md); display:flex; align-items:center; justify-content:center; }
+.up-feature-icon--primary   { background:var(--sys-primary-container);   color:var(--sys-on-primary-container); }
+.up-feature-icon--secondary { background:var(--sys-secondary-container); color:var(--sys-on-secondary-container); }
+.up-feature-icon--tertiary  { background:var(--sys-tertiary-container);  color:var(--sys-on-tertiary-container); }
+.up-feature-icon--error     { background:var(--sys-error-container);     color:var(--sys-on-error-container); }
+.up-feature-body { flex:1; }
+.up-feature-title { font-size:15px; font-weight:600; color:var(--sys-surface-roles-on-surface); margin:0 0 4px; }
+.up-feature-desc { font-size:13px; color:var(--sys-surface-roles-on-surface-variant); margin:0 0 8px; line-height:1.5; }
+.up-feature-meta { font-size:11px; font-weight:500; color:var(--sys-surface-roles-on-surface-variant); background:var(--sys-surface-roles-surface-container-high); padding:4px 10px; border-radius:999px; display:inline-block; }
+.up-feature-btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:10px 18px; background:var(--sys-primary); color:var(--sys-on-primary); border:none; border-radius:var(--sys-radius-md); font-size:13px; font-weight:500; font-family:inherit; cursor:pointer; transition:all .2s; }
+.up-feature-btn:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 4px 12px color-mix(in srgb,var(--sys-primary) 30%,transparent); }
 `;

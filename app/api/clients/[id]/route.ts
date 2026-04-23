@@ -164,6 +164,10 @@ export async function DELETE(
       );
     }
 
+    await prisma.project.deleteMany({
+      where: { clientId: clientId },
+    });
+
     await prisma.client.delete({
       where: { id: clientId },
     });

@@ -492,11 +492,35 @@ app/dashboard/layout.tsx
 | URL | View |
 |---|---|
 | `/dashboard` | Overview / project summary |
-| `/dashboard/projects` | Project listing |
+| `/dashboard/projects` | Project listing, Creation (Templates), Feature selection |
 | `/dashboard/upload` | Upload & image management |
 | `/dashboard/report` | Report builder |
 | `/dashboard/map` | Map view |
 | `/dashboard/settings` | User settings |
+
+---
+
+## Phase 3.5 - Project Creation & Templates
+
+To ensure a smooth onboarding and workflow for clients, the dashboard will guide them to **create a project first** before uploading any data.
+
+### Project Templates (Optional)
+If a client is unsure of what to create, they can select from a predefined list of industry-standard templates:
+- **Roof Inspection**
+- **Solar Panel Audit**
+- **Construction Progress**
+- **Bridge Infrastructure**
+- **Agricultural Survey**
+- **Thermal Inspection**
+
+### Project Features
+Once a project is created, the client can select which features they want to utilize for that specific project:
+- **Aerial Orthomosaic** (Georeferenced top-down imagery)
+- **Inspection Footage** (Field video captures & fly-throughs)
+- **3D Models & Point Clouds** (Volumetric spatial data exports)
+- **Terrain & Elevation** (DTM, DSM and contour maps)
+
+This structured flow ensures the user knows exactly what they are doing and what features are available to them.
 
 ---
 
