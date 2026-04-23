@@ -1,15 +1,27 @@
 @import "../design-tokens.css";
 
 :root {
-  --color-section-bg: var(--sys-surface-roles-surface);
+  --color-section-bg: var(--ref-primary-primary20);
   --color-section-text: var(--sys-surface-roles-on-surface);
   --color-card-bg: var(--sys-surface-roles-surface-container);
+  --footer-bg: var(--ref-primary-primary80);
+  --footer-color: var(--ref-primary-primary20);
+  --footer-focus-border: rgba(255, 255, 255, 0.6);
+  --footer-logo-filter: none;
+  --footer-arrow-color: var(--footer-color);
+  --footer-bottom-overlay: rgba(255, 255, 255, 0.05);
 }
 
 :root.light {
   --color-section-bg: var(--sys-surface-roles-surface);
   --color-section-text: var(--sys-surface-roles-on-surface);
   --color-card-bg: var(--sys-surface-roles-surface-container);
+  --footer-bg: var(--ref-primary-primary20);
+  --footer-color: var(--ref-primary-primary100);
+  --footer-focus-border: rgba(0, 0, 0, 0.3);
+  --footer-logo-filter: brightness(0.5);
+  --footer-arrow-color: var(--footer-color);
+  --footer-bottom-overlay: rgba(0, 0, 0, 0.05);
 }
 
 @tailwind base;
