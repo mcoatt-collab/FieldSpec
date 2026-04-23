@@ -455,65 +455,54 @@ export function useReportState() {
         setExportState("generating");
         try {
           const html = data.data.html;
-          
+
+          // Write the server-generated HTML into a hidden iframe so it renders
+          // in isolation from the app's dark-mode styles.
           const iframe = document.createElement("iframe");
           iframe.style.position = "fixed";
           iframe.style.right = "0";
           iframe.style.bottom = "0";
-          iframe.style.width = "0";
-          iframe.style.height = "0";
+          iframe.style.width = "794px";   // A4 width at 96 dpi — needed for correct layout
+          iframe.style.height = "1123px"; // A4 height at 96 dpi
           iframe.style.border = "none";
           iframe.style.visibility = "hidden";
           document.body.appendChild(iframe);
-          
+
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
           if (!iframeDoc) throw new Error("Failed to access iframe document");
-          
+
           iframeDoc.open();
           iframeDoc.write(html);
           iframeDoc.close();
 
+          // Wait for images to load before capturing
+          await new Promise(resolve => setTimeout(resolve, 1500));
+
           const bodyEl = iframeDoc.body;
-          bodyEl.style.backgroundColor = "#ffffff";
-          bodyEl.style.color = "#1f2937";
-          bodyEl.style.fontFamily = "Arial, sans-serif";
-          bodyEl.style.margin = "0";
-          bodyEl.style.padding = "0";
-
-          const forceLightMode = iframeDoc.createElement("style");
-          forceLightMode.textContent = `
-            :root, :root.light, html, body, * {
-              background-color: #ffffff !important;
-              color: #1f2937 !important;
-            }
-            .section { background-color: #ffffff !important; border: 1px solid #e5e7eb !important; }
-            .summary-box { background-color: #ffffff !important; }
-            .recommendations-box pre { background-color: #f8fafc !important; }
-            .image-entry { background-color: #f8fafc !important; }
-            .meta-grid { background-color: #f8fafc !important; }
-            img { background-color: transparent !important; }
-          `;
-          iframeDoc.head.appendChild(forceLightMode);
-
-          await new Promise(resolve => setTimeout(resolve, 1000));
 
           const html2pdf = (await import("html2pdf.js")).default;
           const pdfOptions = {
             filename: `${editedReport?.title || "report"}.pdf`,
-            margin: 10,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true, width: 800, backgroundColor: "#ffffff" },
+            margin: [8, 8, 8, 8], // top, left, bottom, right in mm
+            image: { type: "jpeg", quality: 0.95 },
+            html2canvas: {
+              scale: 1.5,
+              useCORS: true,
+              letterRendering: true,
+              windowWidth: 794,     // match iframe width — prevents layout reflow
+              backgroundColor: "#ffffff",
+            },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["avoid-all", "css", "legacy"] },
           };
-          
+
           await html2pdf().set(pdfOptions).from(bodyEl).save();
           document.body.removeChild(iframe);
           setExportState("success");
         } catch (err) {
           console.error("PDF generation error:", err);
-          const iframe = document.body.querySelector("iframe[style*='visibility: hidden']") as HTMLIFrameElement;
-          if (iframe) document.body.removeChild(iframe);
+          const orphan = document.body.querySelector("iframe[style*='visibility: hidden']") as HTMLIFrameElement | null;
+          if (orphan) document.body.removeChild(orphan);
           throw err;
         }
       } else {

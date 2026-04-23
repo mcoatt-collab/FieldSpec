@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: { message: "No sections in report" } }, { status: 400 });
     }
 
-const formatCategory = (cat: string) => {
+    // Category display names
+    const categoryLabel = (cat: string): string => {
       const labels: Record<string, string> = {
         crop_health: "Crop Health",
         erosion: "Erosion",
@@ -48,314 +49,176 @@ const formatCategory = (cat: string) => {
       return labels[cat] || cat;
     };
 
+    // Category accent colors — resolved server-side so no CSS class override can touch them
+    const categoryColor = (cat: string): string => {
+      const colors: Record<string, string> = {
+        crop_health: "#22c55e",
+        erosion: "#8b5cf6",
+        damage: "#ef4444",
+        irrigation: "#3b82f6",
+        general: "#6b7280",
+      };
+      return colors[cat] || "#1e3a5f";
+    };
+
+    // Confidence badge background
+    const badgeColor = (score: number): string => {
+      if (score >= 0.8) return "#22c55e";
+      if (score >= 0.6) return "#f59e0b";
+      return "#ef4444";
+    };
+
+    const generatedDate = new Date(content.generatedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // ── Build each section ──────────────────────────────────────────────────────
+    const sectionsHtml = sections.map((s: any) => {
+      const accent = categoryColor(s.category);
+      const label  = categoryLabel(s.category);
+
+      // Images — table layout so html2canvas renders them correctly
+      const imagesHtml = s.images?.length
+        ? s.images.map((img: any) => {
+            const score = img.confidenceScore ?? 0;
+            const badge = badgeColor(score);
+            const pct   = Math.round(score * 100);
+            return `
+<table width="100%" cellpadding="0" cellspacing="0"
+  style="margin-bottom:10px;border:1px solid #e8e8e8;border-radius:4px;background-color:#f8f8f8;">
+  <tr>
+    <td width="130" valign="top" style="padding:10px;">
+      <img src="${img.imageUrl}"
+           width="120" height="90"
+           crossorigin="anonymous"
+           style="display:block;border-radius:3px;border:1px solid #e0e0e0;" />
+    </td>
+    <td valign="top" style="padding:10px 10px 10px 0;">
+      <p style="margin:0 0 5px 0;font-family:Arial,sans-serif;font-size:8.5pt;color:#1a1a1a;">
+        <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Caption&nbsp;</span>${img.caption || "N/A"}
+      </p>
+      <p style="margin:0 0 5px 0;font-family:Arial,sans-serif;font-size:8.5pt;color:#444444;">
+        <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Finding&nbsp;</span>${img.finding || "N/A"}
+      </p>
+      <p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:8.5pt;color:#666666;">
+        <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Recommendation&nbsp;</span>${img.recommendation || "N/A"}
+      </p>
+      <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Confidence&nbsp;</span>
+      <span style="display:inline-block;padding:2px 8px;border-radius:8px;font-size:8pt;font-weight:bold;background-color:${badge};color:#ffffff;">${pct}%</span>
+    </td>
+  </tr>
+</table>`;
+          }).join("")
+        : "";
+
+      const imagesBlock = imagesHtml
+        ? `<p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#666666;text-transform:uppercase;letter-spacing:0.3pt;">Analysis Images</p>${imagesHtml}`
+        : "";
+
+
+      return `
+<div style="margin-bottom:18px;padding:14px 14px 14px 16px;background-color:#ffffff;border:1px solid #e0e0e0;border-radius:6px;border-left:4px solid ${accent};page-break-inside:avoid;">
+  <p style="margin:0 0 10px 0;font-family:Arial,sans-serif;font-size:12pt;font-weight:bold;color:${accent};">${label}</p>
+
+  <p style="margin:0 0 3px 0;font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#555555;text-transform:uppercase;letter-spacing:0.5pt;">Summary</p>
+  <p style="margin:0 0 10px 0;font-family:Arial,sans-serif;font-size:9.5pt;color:#333333;line-height:1.5;">${s.summary || "N/A"}</p>
+
+  <p style="margin:0 0 3px 0;font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#555555;text-transform:uppercase;letter-spacing:0.5pt;">Recommendations</p>
+  <div style="margin:0 0 ${imagesHtml ? "12px" : "0"} 0;padding:9px 10px;background-color:#f8f8f8;border:1px solid #e8e8e8;border-radius:4px;font-family:Arial,sans-serif;font-size:9pt;color:#333333;line-height:1.5;white-space:pre-wrap;">${s.recommendations || "N/A"}</div>
+
+  ${imagesBlock}
+</div>`;
+    }).join("");
+
+    // ── Final HTML ──────────────────────────────────────────────────────────────
     const html = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>${content.title}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-      padding: 0; 
-      background: #ffffff;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #ffffff;
       color: #1a1a1a;
       font-size: 10pt;
       line-height: 1.4;
     }
-    .page { padding: 35pt 40pt; }
-    
-    /* Typography Hierarchy */
-    .report-title {
-      font-size: 22pt;
-      font-weight: 700;
-      color: #1e3a5f;
-      letter-spacing: -0.5px;
-    }
-    .report-subtitle {
-      font-size: 11pt;
-      font-weight: 400;
-      color: #666666;
-      margin-top: 4pt;
-    }
-    .section-heading {
-      font-size: 13pt;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 8pt;
-      padding-bottom: 6pt;
-      border-bottom: 1.5pt solid #e0e0e0;
-    }
-    .subsection-heading {
-      font-size: 10pt;
-      font-weight: 600;
-      color: #555555;
-      text-transform: uppercase;
-      letter-spacing: 0.5pt;
-      margin-bottom: 4pt;
-    }
-    .body-text {
-      font-size: 10pt;
-      font-weight: 400;
-      color: #333333;
-      line-height: 1.5;
-    }
-    .caption-text {
-      font-size: 8pt;
-      font-weight: 400;
-      color: #666666;
-    }
-    .label-text {
-      font-size: 7.5pt;
-      font-weight: 600;
-      color: #888888;
-      text-transform: uppercase;
-      letter-spacing: 0.3pt;
-    }
-    
-    /* Header */
-    .header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: flex-start;
-      margin-bottom: 25pt;
-      padding-bottom: 15pt;
-      border-bottom: 3pt solid #1e3a5f;
-    }
-    .header-left { }
-    .header-right { text-align: right; }
-    .header-right .date { 
-      font-size: 9pt;
-      color: #666666;
-    }
-    .header-right .brand { 
-      font-size: 12pt;
-      font-weight: 700;
-      color: #1e3a5f;
-      margin-top: 4pt;
-    }
-    
-    /* Metadata Grid */
-    .meta-grid { 
-      display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
-      gap: 12pt; 
-      margin-bottom: 20pt;
-      background: #f5f5f5;
-      padding: 15pt;
-      border-radius: 6pt;
-      border: 1pt solid #e8e8e8;
-    }
-    .meta-item { }
-    .meta-item .label { 
-      font-size: 7.5pt;
-      font-weight: 600;
-      color: #888888;
-      text-transform: uppercase;
-      letter-spacing: 0.3pt;
-    }
-    .meta-item .value { 
-      font-size: 10pt;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-top: 2pt;
-    }
-    
-    /* Sections */
-    .section { 
-      margin-bottom: 18pt; 
-      padding: 15pt; 
-      background: #ffffff;
-      border: 1pt solid #e0e0e0;
-      border-radius: 6pt;
-      border-left: 3pt solid #1e3a5f;
-      page-break-inside: avoid;
-    }
-    .section.crop_health { border-left-color: #22c55e; }
-    .section.erosion { border-left-color: #8b5cf6; }
-    .section.damage { border-left-color: #ef4444; }
-    .section.irrigation { border-left-color: #3b82f6; }
-    .section.general { border-left-color: #6b7280; }
-    
-    .section h2 { 
-      font-size: 12pt; 
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 10pt;
-    }
-    .section.crop_health h2 { color: #22c55e; }
-    .section.erosion h2 { color: #8b5cf6; }
-    .section.damage h2 { color: #ef4444; }
-    .section.irrigation h2 { color: #3b82f6; }
-    .section.general h2 { color: #6b7280; }
-    
-    .summary-box, .recommendations-box { 
-      margin-bottom: 10pt;
-    }
-    .summary-box .value, .recommendations-box .value { 
-      font-size: 9.5pt;
-      color: #333333;
-    }
-    .recommendations-box pre { 
-      white-space: pre-wrap; 
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 9pt;
-      background: #f8f8f8;
-      padding: 10pt;
-      border-radius: 4pt;
-      border: 1pt solid #e8e8e8;
-      line-height: 1.5;
-    }
-    
-    /* Images Section */
-    .images-section { margin-top: 12pt; }
-    .images-section h3 { 
-      font-size: 9pt;
-      font-weight: 600;
-      color: #666666;
-      margin-bottom: 8pt;
-      text-transform: uppercase;
-      letter-spacing: 0.3pt;
-    }
-    .images { display: flex; flex-direction: column; gap: 10pt; }
-    .image-entry { 
-      padding: 10pt; 
-      background: #f8f8f8;
-      border: 1pt solid #e8e8e8;
-      border-radius: 4pt;
-      page-break-inside: avoid;
-    }
-    .image-row { display: flex; gap: 10pt; align-items: flex-start; }
-    .image-entry img { 
-      width: 90pt; 
-      height: 70pt;
-      object-fit: cover; 
-      border-radius: 3pt; 
-      border: 1pt solid #e0e0e0;
-    }
-    .image-info { flex: 1; }
-    .image-info p { margin-bottom: 4pt; font-size: 8.5pt; }
-    .image-info p.caption { font-weight: 600; color: #1a1a1a; }
-    .image-info p.finding { color: #444444; }
-    .image-info p.recommendation { color: #666666; }
-    .image-info .label { 
-      color: #888888; 
-      font-weight: 600;
-      margin-right: 3pt;
-      font-size: 7.5pt;
-      text-transform: uppercase;
-    }
-    .confidence-row { display: flex; align-items: center; gap: 6pt; margin-top: 4pt; }
-    .confidence-badge { 
-      padding: 2pt 6pt;
-      border-radius: 8pt;
-      font-size: 8pt;
-      font-weight: 700;
-    }
-    
-    /* Footer */
-    .footer { 
-      margin-top: 25pt;
-      padding-top: 12pt;
-      border-top: 1.5pt solid #e0e0e0;
-      text-align: center;
-      color: #888888;
-      font-size: 8pt;
-    }
-    .footer .brand { color: #1e3a5f; font-weight: 600; }
-    
-    /* Avoid page breaks inside elements */
-    h1, h2, h3, .image-entry, .section { page-break-inside: avoid; }
-    img { page-break-inside: avoid; }
-    
-    @media print { 
-      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="header">
-      <div class="header-left">
-        <h1 class="report-title">FieldSpec Analysis Report</h1>
-        <p class="report-subtitle">${content.title}</p>
-      </div>
-      <div class="header-right">
-        <p class="date">${new Date(content.generatedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
-        <p class="brand">FieldSpec</p>
-      </div>
-    </div>
-    
-    <div class="meta-grid">
-      <div class="meta-item">
-        <p class="label">Project</p>
-        <p class="value">${content.projectName}</p>
-      </div>
-      <div class="meta-item">
-        <p class="label">Location</p>
-        <p class="value">${content.projectLocation || "Not specified"}</p>
-      </div>
-      <div class="meta-item">
-        <p class="label">Images Analyzed</p>
-        <p class="value">${content.totalImages}</p>
-      </div>
-      <div class="meta-item">
-        <p class="label">Sections</p>
-        <p class="value">${sections.length}</p>
-      </div>
-    </div>
-    
-    <h2 class="section-heading">Analysis Findings</h2>
-    ${sections.map((s: any) => {
-      const imagesHtml = s.images?.map((img: any) => {
-        const scoreColor = img.confidenceScore >= 0.8 ? "#22c55e" : img.confidenceScore >= 0.6 ? "#f59e0b" : "#ef4444";
-        return `
-        <div class="image-entry">
-          <div class="image-row">
-            <img src="${img.imageUrl}" alt="Analysis image" />
-            <div class="image-info">
-              <p class="caption"><span class="label">Caption</span>${img.caption || "N/A"}</p>
-              <p class="finding"><span class="label">Finding</span>${img.finding || "N/A"}</p>
-              <p class="recommendation"><span class="label">Recommendation</span>${img.recommendation || "N/A"}</p>
-              <div class="confidence-row">
-                <span class="label">Confidence</span>
-                <span class="confidence-badge" style="background-color: ${scoreColor}; color: white;">
-                  ${Math.round(img.confidenceScore * 100)}%
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>`;
-      }).join("") || "";
-      
-      return `
-        <div class="section ${s.category}">
-          <h2>${formatCategory(s.category)}</h2>
-          <div class="summary-box">
-            <p class="subsection-heading">Summary</p>
-            <p class="value">${s.summary || "N/A"}</p>
-          </div>
-          <div class="recommendations-box">
-            <p class="subsection-heading">Recommendations</p>
-            <pre>${s.recommendations || "N/A"}</pre>
-          </div>
-          ${imagesHtml ? `<div class="images-section"><h3>Analysis Images</h3><div class="images">${imagesHtml}</div></div>` : ""}
-        </div>`;
-    }).join("")}
-    
-    <div class="footer">
-      <p>Generated by <span class="brand">FieldSpec</span> - AI-Powered Field Analysis Platform</p>
-    </div>
-  </div>
+<div style="padding:30px 35px;background-color:#ffffff;">
+
+  <!-- HEADER -->
+  <table width="100%" cellpadding="0" cellspacing="0"
+    style="margin-bottom:20px;padding-bottom:14px;border-bottom:3px solid #1e3a5f;">
+    <tr>
+      <td valign="bottom">
+        <p style="font-family:Arial,sans-serif;font-size:22pt;font-weight:bold;color:#1e3a5f;letter-spacing:-0.5px;margin:0;">FieldSpec Analysis Report</p>
+        <p style="font-family:Arial,sans-serif;font-size:11pt;color:#666666;margin:4px 0 0 0;">${content.title}</p>
+      </td>
+      <td valign="bottom" align="right">
+        <p style="font-family:Arial,sans-serif;font-size:9pt;color:#666666;margin:0;">${generatedDate}</p>
+        <p style="font-family:Arial,sans-serif;font-size:12pt;font-weight:bold;color:#1e3a5f;margin:4px 0 0 0;">FieldSpec</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- METADATA -->
+  <table width="100%" cellpadding="12" cellspacing="0"
+    style="margin-bottom:20px;background-color:#f5f5f5;border:1px solid #e8e8e8;border-radius:6px;">
+    <tr>
+      <td width="25%" valign="top">
+        <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Project</p>
+        <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.projectName}</p>
+      </td>
+      <td width="25%" valign="top">
+        <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Location</p>
+        <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.projectLocation || "Not specified"}</p>
+      </td>
+      <td width="25%" valign="top">
+        <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Images Analyzed</p>
+        <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.totalImages}</p>
+      </td>
+      <td width="25%" valign="top">
+        <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Sections</p>
+        <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${sections.length}</p>
+      </td>
+    </tr>
+  </table>
+
+  <!-- FINDINGS HEADING -->
+  <p style="font-family:Arial,sans-serif;font-size:13pt;font-weight:600;color:#1a1a1a;margin:0 0 14px 0;padding-bottom:6px;border-bottom:1.5px solid #e0e0e0;">Analysis Findings</p>
+
+  <!-- SECTIONS -->
+  ${sectionsHtml}
+
+  <!-- FOOTER -->
+  <table width="100%" cellpadding="0" cellspacing="0"
+    style="margin-top:25px;padding-top:12px;border-top:1.5px solid #e0e0e0;">
+    <tr>
+      <td align="center">
+        <p style="font-family:Arial,sans-serif;font-size:8pt;color:#888888;margin:0;">
+          Generated by <span style="color:#1e3a5f;font-weight:bold;">FieldSpec</span> — AI-Powered Field Analysis Platform
+        </p>
+      </td>
+    </tr>
+  </table>
+
+</div>
 </body>
 </html>`;
 
     return NextResponse.json({
-      data: {
-        html,
-        contentType: "text/html",
-      },
+      data: { html, contentType: "text/html" },
     }, { status: 200 });
+
   } catch (error) {
     console.error("Export error:", error);
     return NextResponse.json(
