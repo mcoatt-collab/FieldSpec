@@ -455,37 +455,43 @@ export function useReportState() {
         setExportState("generating");
         try {
           const html = data.data.html;
-          console.log("HTML length:", html.length);
-          const container = document.createElement("div");
-          container.innerHTML = html;
-          container.style.position = "absolute";
-          container.style.left = "-9999px";
-          container.style.top = "0";
-          container.style.width = "800px";
-          document.body.appendChild(container);
-          console.log("Container children:", container.children.length);
+          
+          const iframe = document.createElement("iframe");
+          iframe.style.position = "fixed";
+          iframe.style.right = "0";
+          iframe.style.bottom = "0";
+          iframe.style.width = "0";
+          iframe.style.height = "0";
+          iframe.style.border = "none";
+          iframe.style.visibility = "hidden";
+          document.body.appendChild(iframe);
+          
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!iframeDoc) throw new Error("Failed to access iframe document");
+          
+          iframeDoc.open();
+          iframeDoc.write(html);
+          iframeDoc.close();
 
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 1000));
 
           const html2pdf = (await import("html2pdf.js")).default;
-          console.log("html2pdf loaded");
           const pdfOptions = {
             filename: `${editedReport?.title || "report"}.pdf`,
-            margin: [10, 10, 10, 10],
+            margin: 10,
             image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: true, letterRendering: true },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true, width: 800 },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["avoid-all", "css", "legacy"] },
           };
-          await html2pdf().set(pdfOptions).from(container).save();
-          console.log("PDF saved");
-          document.body.removeChild(container);
+          
+          await html2pdf().set(pdfOptions).from(iframeDoc.body).save();
+          document.body.removeChild(iframe);
           setExportState("success");
         } catch (err) {
           console.error("PDF generation error:", err);
-          if (document.body.lastChild?.style?.left === "-9999px") {
-            document.body.removeChild(document.body.lastChild);
-          }
+          const iframe = document.body.querySelector("iframe[style*='visibility: hidden']") as HTMLIFrameElement;
+          if (iframe) document.body.removeChild(iframe);
           throw err;
         }
       } else {
