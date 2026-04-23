@@ -54,7 +54,7 @@ export async function sendVerificationEmail(
   email: string,
   token: string
 ): Promise<boolean> {
-  const verifyUrl = `${APP_URL}/api/auth/verify-email?token=${token}`;
+  const verifyUrl = `${APP_URL}/verify-email?token=${token}`;
 
   const html = `
     <h1>Verify Your Email</h1>

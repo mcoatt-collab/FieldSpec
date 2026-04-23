@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { signup } from "@/services/auth/auth.service";
+import { signupLimiter } from "@/lib/security/rate-limit";
+import { passwordSchema } from "@/lib/security/validation";
 
 const signupSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: passwordSchema,
   name: z.string().min(1, "Name is required"),
   companyName: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || (request as any).ip || "unknown";
+    const limit = await signupLimiter(ip);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: { message: "Too many signup attempts. Please try again later.", code: "RATE_LIMITED" } },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)) } }
+      );
+    }
+
     const body = await request.json();
     const result = signupSchema.safeParse(body);
 

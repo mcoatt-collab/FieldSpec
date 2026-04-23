@@ -409,3 +409,9 @@ Allow minimal profile customisation.
 * No blocking operations on main thread
 
 ---
+
+# appearance
+
+- Read the code structure 
+- In the split container, the content doesn't fit in the container, vertically
+- Make the hieght of the split container ajust to the content hieght.

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
 import { generateCaptionWithRetry, calculateConfidenceScore } from "@/lib/ai";
 import { aiQueue, AI_JOB_QUEUE } from "@/lib/queue";
+import { aiLimiter } from "@/lib/security/rate-limit";
 
 const generateSchema = z.object({
   projectId: z.string().uuid("Invalid project ID"),
@@ -175,6 +176,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
         { status: 401 }
+      );
+    }
+
+    const limit = await aiLimiter(userId);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: { message: "AI generation rate limit exceeded. You can generate up to 20 reports per hour.", code: "RATE_LIMITED" } },
+        { status: 429 }
       );
     }
 

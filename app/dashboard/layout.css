@@ -19,8 +19,8 @@
   display: flex !important;
 }
 .dash-header-padding, .dash-main-padding {
-  padding-left: 18px;
-  padding-right: 18px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Animations */
@@ -72,7 +72,7 @@
     padding-right: 32px;
   }
   .dash-main-padding {
-    padding-left: var(--sys-spacing-spacing-lg, 32px);
-    padding-right: var(--sys-spacing-spacing-lg, 32px);
+    padding-left: 0;
+    padding-right: 0;
   }
 }

@@ -281,7 +281,8 @@ function DashboardLayoutShell({
           className="flex-1 overflow-y-auto"
           style={{
             backgroundColor: "var(--color-section-bg)",
-            padding: `${tokens.spacing.sm} ${tokens.spacing.md} ${tokens.spacing.md}`,
+            paddingTop: tokens.spacing.md,
+            paddingBottom: tokens.spacing.md,
             marginTop: "16px",
           }}
         >

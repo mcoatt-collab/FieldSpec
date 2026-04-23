@@ -128,7 +128,7 @@ export default function ClientsPage() {
   }
 
   return (
-    <div style={{ maxWidth: "1200px" }}>
+    <div style={{ maxWidth: "1200px", padding: `0 ${tokens.spacing.md}` }}>
       <style>{`
         .custom-input {
           transition: all 0.2s ease;
@@ -186,38 +186,15 @@ export default function ClientsPage() {
           box-shadow: ${tokens.elevation.level2} !important;
         }
       `}</style>
-
-      <div
-        className="animate-content"
-        style={{
-          marginBottom: tokens.spacing.xl,
-        }}
-      >
-        <h2
-          style={{
-            ...tokens.typography.headlineMedium,
-            color: tokens.colors.onSurface,
-          }}
-        >
-          Clients
-        </h2>
-        <p
-          style={{
-            ...tokens.typography.bodyMedium,
-            color: tokens.colors.onSurfaceVariant,
-            marginTop: tokens.spacing.xs,
-          }}
-        >
-          Manage your clients and their projects
-        </p>
-      </div>
-
-      <div
-        className="animate-content"
-        style={{
-          marginBottom: tokens.spacing.lg,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: tokens.spacing.xl, flexWrap: "wrap", gap: tokens.spacing.md }}>
+        <div className="animate-content">
+          <h2 style={{ ...tokens.typography.headlineMedium, color: tokens.colors.onSurface }}>
+            Clients
+          </h2>
+          <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.xs }}>
+            Manage your clients and their projects
+          </p>
+        </div>
         <button
           onClick={() => setShowCreateForm(true)}
           style={{

@@ -3,6 +3,7 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { generateToken, hashToken, isTokenExpired } from "@/lib/auth/token";
 import { signJWT } from "@/lib/auth/jwt";
 import { sendVerificationEmail, sendPasswordResetEmail } from "@/services/email/email.service";
+import { passwordSchema } from "@/lib/security/validation";
 
 const TOKEN_TYPE_EMAIL_VERIFICATION = "email_verification";
 const TOKEN_TYPE_PASSWORD_RESET = "password_reset";
@@ -40,6 +41,11 @@ export async function signup(
   companyName?: string
 ): Promise<SignupResult> {
   try {
+    const passwordResult = passwordSchema.safeParse(password);
+    if (!passwordResult.success) {
+      return { success: false, error: passwordResult.error.issues[0].message };
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -57,7 +63,7 @@ export async function signup(
         name,
         companyName,
         authProvider: "email",
-        isVerified: true,
+        isVerified: false,
       },
     });
 
@@ -155,10 +161,9 @@ export async function login(
       return { success: false, error: "Invalid credentials" };
     }
 
-    // Email verification temporarily disabled
-    // if (!user.isVerified) {
-    //   return { success: false, error: "Please verify your email first" };
-    // }
+    if (!user.isVerified) {
+      return { success: false, error: "Please verify your email first" };
+    }
 
     const isValidPassword = await verifyPassword(password, user.passwordHash);
     if (!isValidPassword) {
@@ -230,6 +235,11 @@ export async function resetPassword(
 
     if (isTokenExpired(authToken.expiresAt)) {
       return { success: false, error: "Token expired" };
+    }
+
+    const passwordResult = passwordSchema.safeParse(newPassword);
+    if (!passwordResult.success) {
+      return { success: false, error: passwordResult.error.issues[0].message };
     }
 
     const passwordHash = await hashPassword(newPassword);

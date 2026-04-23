@@ -1,12 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { tokens } from "@/lib/design-tokens";
-
-interface Project {
-  id: string;
-  name: string;
-}
+import { useProjectsStore } from "@/store/useProjectsStore";
 
 interface ImageType {
   id: string;
@@ -32,7 +28,7 @@ const CATEGORY_OPTIONS = CATEGORIES.filter(
 );
 
 export default function UploadPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { projects, loading: projectsLoading, fetchProjects } = useProjectsStore();
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [images, setImages] = useState<ImageType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +44,35 @@ export default function UploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const initialProjectLoadedRef = useRef(false);
 
+  const fetchImages = useCallback(async (projectId: string) => {
+    try {
+      const res = await fetch(`/api/images?projectId=${projectId}`);
+      const data = await res.json();
+      if (res.ok && data.data) {
+        setImages(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch images:", err);
+    }
+  }, []);
+
+  const loadInitialData = useCallback(async () => {
+    await fetchProjects();
+    setLoading(false);
+  }, [fetchProjects]);
+
   useEffect(() => {
     void loadInitialData();
-  }, []);
+  }, [loadInitialData]);
+
+  useEffect(() => {
+    if (projects.length > 0 && !selectedProjectId) {
+      const firstProjectId = projects[0].id;
+      initialProjectLoadedRef.current = true;
+      setSelectedProjectId(firstProjectId);
+      void fetchImages(firstProjectId);
+    }
+  }, [projects, selectedProjectId, fetchImages]);
 
   useEffect(() => {
     if (!selectedProjectId) return;
@@ -61,42 +83,7 @@ export default function UploadPage() {
     }
 
     void fetchImages(selectedProjectId);
-  }, [selectedProjectId]);
-
-  async function loadInitialData() {
-    try {
-      const projectsRes = await fetch("/api/projects");
-      const projectsData = await projectsRes.json();
-
-      if (projectsRes.ok && projectsData.data) {
-        const nextProjects = projectsData.data;
-        setProjects(nextProjects);
-
-        if (nextProjects.length > 0) {
-          const firstProjectId = nextProjects[0].id;
-          initialProjectLoadedRef.current = true;
-          setSelectedProjectId(firstProjectId);
-          await fetchImages(firstProjectId);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch projects:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function fetchImages(projectId: string) {
-    try {
-      const res = await fetch(`/api/images?projectId=${projectId}`);
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setImages(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch images:", err);
-    }
-  }
+  }, [selectedProjectId, fetchImages]);
 
   async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -242,7 +229,7 @@ export default function UploadPage() {
     return tokens.colors.primaryContainer;
   };
 
-  if (loading) {
+  if (loading || projectsLoading) {
     return (
       <div
         style={{
@@ -267,6 +254,7 @@ export default function UploadPage() {
     <div
       style={{
         maxWidth: "1200px",
+        padding: `0 ${tokens.spacing.md}`,
       }}
     >
       <style>{`

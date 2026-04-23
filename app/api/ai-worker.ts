@@ -147,56 +147,54 @@ async function processAIJob(job: Job<AIJobData, void, string>) {
 
     const totalImages = project.images.length;
     let processedCount = 0;
+    const BATCH_SIZE = 5;
 
-    for (const image of project.images) {
-      console.log(`[AI Worker] Processing image ${processedCount + 1}/${totalImages}`);
+    for (let i = 0; i < totalImages; i += BATCH_SIZE) {
+      const batch = project.images.slice(i, i + BATCH_SIZE);
+      console.log(`[AI Worker] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(totalImages / BATCH_SIZE)} (${batch.length} images)`);
 
-      const existingAI = await prisma.aIOutput.findUnique({
-        where: { imageId: image.id },
-      });
+      await Promise.all(batch.map(async (image) => {
+        const existingAI = await prisma.aIOutput.findUnique({
+          where: { imageId: image.id },
+        });
 
-      if (existingAI) {
-        console.log(`[AI Worker] Using cached AI result for image ${image.id}`);
-        processedCount++;
-        const baseProgress = 10;
-        const progressRange = 80;
-        const currentProgress = baseProgress + Math.floor((processedCount / totalImages) * progressRange);
-        await job.updateProgress(currentProgress);
-        continue;
-      }
+        if (existingAI) {
+          return;
+        }
 
-      const category = image.category || null;
-      const userNote = image.notes || null;
-      const hasContext = !!project.name;
+        const category = image.category || null;
+        const userNote = image.notes || null;
+        const hasContext = !!project.name;
 
-      const aiResult = await generateCaptionWithRetry({
-        category,
-        userNote,
-        context: `Project: ${project.name}`,
-      });
+        const aiResult = await generateCaptionWithRetry({
+          category,
+          userNote,
+          context: `Project: ${project.name}`,
+        });
 
-      const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
+        const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
 
-      await prisma.aIOutput.upsert({
-        where: { imageId: image.id },
-        create: {
-          imageId: image.id,
-          caption: aiResult.caption,
-          finding: aiResult.finding,
-          recommendation: aiResult.recommendation,
-          confidenceScore,
-          isEdited: false,
-        },
-        update: {
-          caption: aiResult.caption,
-          finding: aiResult.finding,
-          recommendation: aiResult.recommendation,
-          confidenceScore,
-          isEdited: false,
-        },
-      });
+        await prisma.aIOutput.upsert({
+          where: { imageId: image.id },
+          create: {
+            imageId: image.id,
+            caption: aiResult.caption,
+            finding: aiResult.finding,
+            recommendation: aiResult.recommendation,
+            confidenceScore,
+            isEdited: false,
+          },
+          update: {
+            caption: aiResult.caption,
+            finding: aiResult.finding,
+            recommendation: aiResult.recommendation,
+            confidenceScore,
+            isEdited: false,
+          },
+        });
+      }));
 
-      processedCount++;
+      processedCount += batch.length;
       const baseProgress = 10;
       const progressRange = 80;
       const currentProgress = baseProgress + Math.floor((processedCount / totalImages) * progressRange);

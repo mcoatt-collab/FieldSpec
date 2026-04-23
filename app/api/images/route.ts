@@ -89,35 +89,50 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get("projectId");
+    const limit = parseInt(searchParams.get("limit") || "50");
+    const offset = parseInt(searchParams.get("offset") || "0");
 
-    const cacheKey = cache.buildKey("images", projectId || "all", userId);
+    const cacheKey = cache.buildKey("images", `${projectId || "all"}_${userId}_${limit}_${offset}`);
 
-    const images = await withCache(cacheKey, async () => {
-      const where: { project: { userId: string; id?: string } } = {
+    const data = await withCache(cacheKey, async () => {
+      const where: any = {
         project: { userId },
       };
 
       if (projectId) {
-        where.project.id = projectId;
+        where.projectId = projectId;
       }
 
-      return prisma.image.findMany({
-        where,
-        select: {
-          id: true,
-          url: true,
-          thumbnailUrl: true,
-          category: true,
-          notes: true,
-          gpsLat: true,
-          gpsLng: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: "desc" },
-      });
+      const [images, total] = await Promise.all([
+        prisma.image.findMany({
+          where,
+          select: {
+            id: true,
+            url: true,
+            thumbnailUrl: true,
+            category: true,
+            notes: true,
+            gpsLat: true,
+            gpsLng: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+          take: limit,
+          skip: offset,
+        }),
+        prisma.image.count({ where }),
+      ]);
+      return { images, total };
     }, 30);
 
-    return NextResponse.json({ data: images }, { status: 200 });
+    return NextResponse.json({ 
+      data: data.images,
+      meta: {
+        total: data.total,
+        limit,
+        offset,
+      }
+    }, { status: 200 });
   } catch (error) {
     console.error("GET images error:", error);
     return NextResponse.json(
