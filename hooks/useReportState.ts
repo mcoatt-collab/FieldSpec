@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDashboardUser, type DashboardUser } from "@/components/dashboard/DashboardUserProvider";
 import { useProjectsStore } from "@/store/useProjectsStore";
+import { useRouter } from "next/navigation";
 
 export interface Project {
   id: string;
@@ -451,17 +452,31 @@ export function useReportState() {
 
       const data = await res.json();
       if (data.data?.html) {
-        const html = data.data.html;
-        const blob = new Blob([html], { type: "text/html" });
-        const url = URL.createObjectURL(blob);
-        setExportedFileUrl(url);
-        setExportState("success");
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${editedReport?.title || "report"}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        setExportState("generating");
+        try {
+          const html = data.data.html;
+          const container = document.createElement("div");
+          container.innerHTML = html;
+          container.style.position = "absolute";
+          container.style.left = "-9999px";
+          container.style.top = "0";
+          document.body.appendChild(container);
+
+          const html2pdf = (await import("html2pdf.js")).default;
+          const pdfOptions = {
+            filename: `${editedReport?.title || "report"}.pdf`,
+            margin: 10,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          };
+          await html2pdf().set(pdfOptions).from(container).save();
+          document.body.removeChild(container);
+          setExportState("success");
+        } catch (err) {
+          document.body.removeChild(document.body.lastChild!);
+          throw err;
+        }
       } else {
         throw new Error("Invalid response from server");
       }
