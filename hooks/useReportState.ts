@@ -456,7 +456,12 @@ export function useReportState() {
         const url = URL.createObjectURL(blob);
         setExportedFileUrl(url);
         setExportState("success");
-        window.open(url, "_blank");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${editedReport?.title || "report"}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } else {
         throw new Error("Invalid response from server");
       }
