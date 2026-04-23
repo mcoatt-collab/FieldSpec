@@ -10,7 +10,6 @@ interface FormFields {
   name: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 // Describes the shape of the validation errors object (same keys, all strings)
@@ -66,13 +65,6 @@ function validateFields(fields: FormFields): FormErrors {
     errors.password = "Password must contain at least one special character.";
   }
 
-  // Confirm password: must match password
-  if (!fields.confirmPassword) {
-    errors.confirmPassword = "Please confirm your password.";
-  } else if (fields.confirmPassword !== fields.password) {
-    errors.confirmPassword = "Passwords do not match.";
-  }
-
   return errors;
 }
 
@@ -86,14 +78,12 @@ export default function SignupPage() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   // ── 5b. UI / FEEDBACK STATE ─────────────────────────────────────────────────
   const [errors, setErrors]           = useState<FormErrors>({});       // per-field error messages
   const [touched, setTouched]         = useState<Partial<Record<keyof FormFields, boolean>>>({}); // which fields user has visited
   const [showPassword, setShowPassword]           = useState(false); // toggle password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [serverError, setServerError] = useState("");   // error returned from the API
   const [success, setSuccess]         = useState(false); // did signup succeed?
   const [loading, setLoading]         = useState(false); // is a network request in flight?
@@ -174,7 +164,7 @@ export default function SignupPage() {
     e.preventDefault(); // prevent the browser from reloading the page
 
     // Mark all fields touched so all errors become visible on submit
-    setTouched({ name: true, email: true, password: true, confirmPassword: true });
+    setTouched({ name: true, email: true, password: true });
 
     // Run full validation before sending to server
     const validationErrors = validateFields(fields);
@@ -221,7 +211,7 @@ export default function SignupPage() {
   // ── 5i. SUCCESS SCREEN ──────────────────────────────────────────────────────
   if (success) {
     return (
-      <div className="w-full max-w-[440px] p-lg bg-surface rounded-md shadow-level-2 text-center">
+      <div className="w-full max-w-[440px] p-lg bg-[var(--ref-primary-primary98)] rounded-md text-center">
         <div className="text-[48px] mb-md text-primary">✉</div>
         <h1 className="text-on-surface mb-xs text-title-medium">Check Your Email</h1>
         <p className="text-on-surface-variant mb-lg text-body-medium">
@@ -239,9 +229,9 @@ export default function SignupPage() {
 
   // ── 5j. FORM RENDER ─────────────────────────────────────────────────────────
   return (
-    <div className="w-full max-w-[440px] p-lg bg-surface rounded-md shadow-level-2">
-      <h1 className="text-center mb-xs text-on-surface text-title-medium">Create Account</h1>
-      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
+    <div className="w-full max-w-[440px] p-lg bg-[var(--ref-primary-primary98)] rounded-md">
+      <h1 className="text-center text-on-surface text-title-small" style={{ fontSize: "var(--sys-typescale-title-small-fontsize)", lineHeight: "var(--sys-typescale-title-small-lineheight)", fontWeight: 500, letterSpacing: "var(--sys-typescale-title-small-letterspacing)", marginBottom: "1.5px" }}>Create Account</h1>
+      <p className="text-center text-on-surface-variant text-body-medium" style={{ marginBottom: "1rem" }}>
         Get started with FieldSpec
       </p>
 
@@ -262,7 +252,7 @@ export default function SignupPage() {
             autoComplete="name"
             aria-describedby={errors.name ? "name-error" : undefined}
             aria-invalid={!!errors.name}
-            className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 ${
+            className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 hover:bg-[var(--ref-primary-primary95)] transition-colors duration-200 ${
               touched.name && errors.name
                 ? "border-error focus:ring-error"
                 : "border-outline focus:ring-primary"
@@ -290,7 +280,7 @@ export default function SignupPage() {
             autoComplete="email"
             aria-describedby={errors.email ? "email-error" : undefined}
             aria-invalid={!!errors.email}
-            className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 ${
+            className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 hover:bg-[var(--ref-primary-primary95)] transition-colors duration-200 ${
               touched.email && errors.email
                 ? "border-error focus:ring-error"
                 : "border-outline focus:ring-primary"
@@ -319,7 +309,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               aria-describedby="password-strength password-error"
               aria-invalid={!!errors.password}
-              className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 ${
+              className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 hover:bg-[var(--ref-primary-primary95)] transition-colors duration-200 ${
                 touched.password && errors.password
                   ? "border-error focus:ring-error"
                   : "border-outline focus:ring-primary"
@@ -407,63 +397,6 @@ export default function SignupPage() {
           </ul>
         </div>
 
-        {/* ── CONFIRM PASSWORD FIELD ── */}
-        <div className="mb-lg">
-          <label htmlFor="confirmPassword" className="block mb-xs text-on-surface text-label-medium">
-            Confirm Password <span className="text-primary">*</span>
-          </label>
-          <div className="relative">
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              value={fields.confirmPassword}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              autoComplete="new-password"
-              aria-describedby={errors.confirmPassword ? "confirm-error" : undefined}
-              aria-invalid={!!errors.confirmPassword}
-              className={`w-full box-border px-md py-sm border rounded-sm bg-surface text-on-surface text-body-medium focus:outline-none focus:ring-2 ${
-                touched.confirmPassword && errors.confirmPassword
-                  ? "border-error focus:ring-error"
-                  : "border-outline focus:ring-primary"
-              }`}
-              style={{ paddingRight: "2.75rem" }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((v) => !v)}
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-              style={{
-                position: "absolute", right: "0.75rem", top: "50%",
-                transform: "translateY(-50%)", background: "none",
-                border: "none", cursor: "pointer", color: "inherit", padding: 0,
-                display: "flex", alignItems: "center",
-              }}
-            >
-              {showConfirmPassword ? (
-                /* Eye-Off: password is visible, click to hide */
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
-              ) : (
-                /* Eye: password is hidden, click to show */
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              )}
-            </button>
-          </div>
-          {touched.confirmPassword && errors.confirmPassword && (
-            <p id="confirm-error" role="alert" className="mt-xs text-body-small" style={{ color: "var(--color-error, #ef4444)" }}>
-              {errors.confirmPassword}
-            </p>
-          )}
-        </div>
-
         {/* ── SERVER / API ERROR ── */}
         {serverError && (
           <div role="alert" className="p-md bg-error-container text-on-error-container rounded-sm mb-md text-body-small">
@@ -475,7 +408,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
+          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large border-none outline-none focus:outline-none ring-0 focus:ring-0 active:outline-none hover:bg-[var(--ref-primary-primary95)] hover:text-primary transition-colors duration-200"
         >
           {loading ? "Creating account…" : "Create Account"}
         </button>
