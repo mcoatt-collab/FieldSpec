@@ -19,20 +19,29 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const clients = await prisma.client.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        name: true,
-        company: true,
-        contactInfo: true,
-        createdAt: true,
-        _count: {
-          select: { projects: true },
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50", 10), 100);
+    const offset = parseInt(searchParams.get("offset") || "0", 10);
+
+    const [clients, total] = await Promise.all([
+      prisma.client.findMany({
+        where: { userId },
+        select: {
+          id: true,
+          name: true,
+          company: true,
+          contactInfo: true,
+          createdAt: true,
+          _count: {
+            select: { projects: true },
+          },
         },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: offset,
+      }),
+      prisma.client.count({ where: { userId } }),
+    ]);
 
     const formattedClients = clients.map(c => ({
       id: c.id,
@@ -43,7 +52,14 @@ export async function GET(request: NextRequest) {
       projectCount: c._count.projects,
     }));
 
-    return NextResponse.json({ data: formattedClients }, { status: 200 });
+    return NextResponse.json({ 
+      data: formattedClients,
+      meta: {
+        total,
+        limit,
+        offset,
+      }
+    }, { status: 200 });
   } catch (error) {
     console.error("GET /api/clients error:", error);
     return NextResponse.json(

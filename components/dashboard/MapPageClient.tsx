@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { tokens } from "@/lib/design-tokens";
+import { useProjectsStore } from "@/store/useProjectsStore";
 
 type MapboxModule = typeof import("mapbox-gl");
 type GeoJSONFeature = {
@@ -391,26 +392,28 @@ export default function MapPageClient() {
 
         const formData = new FormData();
         formData.append("file", blob, "map-snapshot.png");
-        formData.append("upload_preset", "fieldspec");
+        formData.append("projectId", selectedProjectId);
 
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${"dbboy7eg1"}/image/upload`,
-          { method: "POST", body: formData }
-        );
+        const res = await fetch("/api/upload/image", {
+          method: "POST",
+          body: formData,
+        });
 
         if (res.ok) {
           const data = await res.json();
-          const snapshotUrl = data.secure_url;
+          const snapshotUrl = data.data?.url || data.data?.thumbnailUrl;
 
-          const projectRes = await fetch(`/api/projects/${selectedProjectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mapSnapshotUrl: snapshotUrl }),
-          });
+          if (snapshotUrl) {
+            const projectRes = await fetch(`/api/projects/${selectedProjectId}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ mapSnapshotUrl: snapshotUrl }),
+            });
 
-          if (projectRes.ok) {
-            setSnapshotSaved(true);
-            setTimeout(() => setSnapshotSaved(false), 3000);
+            if (projectRes.ok) {
+              setSnapshotSaved(true);
+              setTimeout(() => setSnapshotSaved(false), 3000);
+            }
           }
         }
         setSavingSnapshot(false);

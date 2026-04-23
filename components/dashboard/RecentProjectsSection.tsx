@@ -21,6 +21,11 @@ export function RecentProjectsSection({ projects }: RecentProjectsSectionProps) 
   const [dateSort, setDateSort] = useState<DateSort>("newest");
   const [hoveredTableIndex, setHoveredTableIndex] = useState<number | null>(null);
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
+  const [searchHovered, setSearchHovered] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [sortHovered, setSortHovered] = useState(false);
+  const [sortFocused, setSortFocused] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
 
   const hasActiveFilters = statusFilter !== "all" || searchQuery !== "";
 
@@ -126,9 +131,11 @@ export function RecentProjectsSection({ projects }: RecentProjectsSectionProps) 
     >
       <div
         className="flex items-center gap-xs rounded-md border flex-1 min-w-[300px] max-w-sm"
+        onMouseEnter={() => setSearchHovered(true)}
+        onMouseLeave={() => setSearchHovered(false)}
         style={{
           backgroundColor: tokens.colors.surfaceContainerLow,
-          borderColor: tokens.colors.outlineVariant,
+          borderColor: searchHovered || searchFocused ? tokens.colors.outline : tokens.colors.outlineVariant,
           borderWidth: "1px",
           borderStyle: "solid",
           borderRadius: tokens.radius.md,
@@ -136,6 +143,8 @@ export function RecentProjectsSection({ projects }: RecentProjectsSectionProps) 
           paddingRight: tokens.spacing.md,
           paddingTop: tokens.spacing.xs,
           paddingBottom: tokens.spacing.xs,
+          transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+          boxShadow: searchFocused ? `0 0 0 2px ${tokens.colors.outlineVariant}` : "none",
         }}
       >
         <span
@@ -149,6 +158,8 @@ export function RecentProjectsSection({ projects }: RecentProjectsSectionProps) 
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
           className="flex-1 bg-transparent border-0 text-body-medium"
           style={{ 
             color: tokens.colors.onSurface, 
@@ -177,52 +188,139 @@ export function RecentProjectsSection({ projects }: RecentProjectsSectionProps) 
         )}
       </div>
 
-      <div 
-        className="flex items-center"
+<div
+        className="flex items-center gap-xs rounded-md border"
+        onMouseEnter={() => setSortHovered(true)}
+        onMouseLeave={() => setSortHovered(false)}
+        onClick={() => setSortOpen(!sortOpen)}
         style={{
           position: "relative",
           backgroundColor: tokens.colors.surfaceContainerLow,
-          borderColor: tokens.colors.outlineVariant,
+          borderColor: sortHovered || sortFocused || sortOpen ? tokens.colors.outline : tokens.colors.outlineVariant,
           borderWidth: "1px",
           borderStyle: "solid",
           borderRadius: tokens.radius.md,
           paddingLeft: tokens.spacing.md,
-          paddingRight: tokens.spacing.xl,
+          paddingRight: tokens.spacing.md,
           paddingTop: tokens.spacing.xs,
           paddingBottom: tokens.spacing.xs,
+          transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+          boxShadow: sortFocused || sortOpen ? `0 0 0 2px ${tokens.colors.outlineVariant}` : "none",
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
-        <select
-          value={dateSort}
-          onChange={(e) => setDateSort(e.target.value as DateSort)}
-          className="text-label-medium cursor-pointer bg-transparent"
+        <span
+          className="text-label-medium"
           style={{
-            border: "none",
             color: tokens.colors.onSurfaceVariant,
-            outline: "none",
-            appearance: "none",
-            WebkitAppearance: "none",
-            MozAppearance: "none",
-            paddingTop: tokens.spacing.xs,
-            paddingBottom: tokens.spacing.xs,
+            flex: 1,
           }}
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-        </select>
+          {dateSort === "newest" ? "Newest" : "Oldest"}
+        </span>
         <span
           className="material-icons"
           style={{
             fontSize: tokens.typography.titleMedium.fontSize,
             color: tokens.colors.onSurfaceVariant,
-            position: "absolute",
-            right: tokens.spacing.sm,
-            pointerEvents: "none",
+            transition: "transform 0.2s ease",
+            transform: sortOpen ? "rotate(180deg)" : "rotate(0deg)",
           }}
         >
           expand_more
         </span>
+        {sortOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              marginTop: tokens.spacing.xs,
+              backgroundColor: tokens.colors.surface,
+              borderColor: tokens.colors.outlineVariant,
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderRadius: tokens.radius.md,
+              boxShadow: tokens.elevation.level2,
+              overflow: "hidden",
+              zIndex: 100,
+            }}
+          >
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setDateSort("newest");
+                setSortOpen(false);
+                setSortFocused(false);
+              }}
+              style={{
+                padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                backgroundColor: dateSort === "newest" ? tokens.colors.primaryContainer : "transparent",
+                color: dateSort === "newest" ? tokens.colors.onPrimaryContainer : tokens.colors.onSurfaceVariant,
+                transition: "background-color 0.15s ease",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                if (dateSort !== "newest") {
+                  e.currentTarget.style.backgroundColor = tokens.colors.surfaceContainerHigh;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (dateSort !== "newest") {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }
+              }}
+            >
+              Newest
+            </div>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setDateSort("oldest");
+                setSortOpen(false);
+                setSortFocused(false);
+              }}
+              style={{
+                padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                backgroundColor: dateSort === "oldest" ? tokens.colors.primaryContainer : "transparent",
+                color: dateSort === "oldest" ? tokens.colors.onPrimaryContainer : tokens.colors.onSurfaceVariant,
+                transition: "background-color 0.15s ease",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                if (dateSort !== "oldest") {
+                  e.currentTarget.style.backgroundColor = tokens.colors.surfaceContainerHigh;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (dateSort !== "oldest") {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }
+              }}
+            >
+              Oldest
+            </div>
+          </div>
+        )}
       </div>
+      {sortOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 50,
+          }}
+          onClick={() => {
+            setSortOpen(false);
+            setSortFocused(false);
+          }}
+        />
+      )}
     </div>
   );
 

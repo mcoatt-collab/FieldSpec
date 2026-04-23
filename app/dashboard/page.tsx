@@ -9,10 +9,10 @@ import { StatsCards } from "@/components/dashboard/StatsCards";
 import { InsightPreviewCard } from "@/components/dashboard/InsightPreviewCard";
 import { MapPreview } from "@/components/dashboard/MapPreview";
 import { EmptyState } from "@/components/dashboard/EmptyState";
+import { useProjectsStore } from "@/store/useProjectsStore";
 import {
   mockJobs,
   mockInsight,
-  mockStats,
   type Job,
   type Project,
   type Insight,
@@ -20,6 +20,7 @@ import {
 } from "@/components/dashboard/mockData";
 
 export default function DashboardPage() {
+  const { projects, loading: projectsLoading, fetchProjects } = useProjectsStore();
   const [stats, setStats] = useState<Stats>({
     totalProjects: 0,
     imagesProcessed: 0,
@@ -27,57 +28,34 @@ export default function DashboardPage() {
     reportsInProgress: 0,
   });
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [insight, setInsight] = useState<Insight | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchDashboardData() {
-      try {
-        const res = await fetch("/api/projects");
-        if (res.ok) {
-          const json = await res.json();
-          const projectsData = json.data || [];
+    fetchProjects();
+  }, [fetchProjects]);
 
-          const totalProjects = projectsData.length;
-          const totalImages = projectsData.reduce(
-            (sum: number, p: any) => sum + (p.photoCount || 0),
-            0
-          );
-          const reportsGenerated = projectsData.filter(
-            (p: any) => p.status === "exported"
-          ).length;
-          const reportsInProgress = projectsData.filter(
-            (p: any) => p.status === "report_generated"
-          ).length;
+  useEffect(() => {
+    if (projects.length > 0) {
+      const totalProjects = projects.length;
+      const totalImages = projects.reduce(
+        (sum: number, p: any) => sum + (p.photoCount || 0),
+        0
+      );
+      const reportsGenerated = projects.filter(
+        (p: any) => p.status === "exported"
+      ).length;
+      const reportsInProgress = projects.filter(
+        (p: any) => p.status === "report_generated"
+      ).length;
 
-          setStats({
-            totalProjects,
-            imagesProcessed: totalImages,
-            reportsGenerated,
-            reportsInProgress,
-          });
-
-          const mappedProjects: Project[] = projectsData.slice(0, 5).map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            imageCount: p.photoCount || 0,
-            status: p.status || "draft",
-            createdAt: new Date(p.createdAt),
-            clientName: p.clientName,
-          }));
-
-          setProjects(mappedProjects);
-        }
-      } catch (err) {
-        console.error("Failed to fetch dashboard data", err);
-      } finally {
-        setIsLoading(false);
-      }
+      setStats({
+        totalProjects,
+        imagesProcessed: totalImages,
+        reportsGenerated,
+        reportsInProgress,
+      });
     }
-
-    fetchDashboardData();
-  }, []);
+  }, [projects]);
 
   useEffect(() => {
     setJobs(mockJobs);
@@ -86,7 +64,7 @@ export default function DashboardPage() {
 
   const hasProjects = projects.length > 0;
 
-  if (isLoading) {
+  if (projectsLoading && projects.length === 0) {
     return (
       <div style={{ maxWidth: "1200px", paddingLeft: tokens.spacing.md, paddingRight: tokens.spacing.md }}>
         <div style={{ marginBottom: tokens.spacing.xl }}>
@@ -127,6 +105,15 @@ export default function DashboardPage() {
     );
   }
 
+  const mappedProjects: Project[] = projects.slice(0, 5).map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    imageCount: p.photoCount || 0,
+    status: p.status || "draft",
+    createdAt: new Date(p.createdAt),
+    clientName: p.clientName,
+  }));
+
   return (
     <div style={{ maxWidth: "1200px", paddingLeft: tokens.spacing.md, paddingRight: tokens.spacing.md }}>
       <div style={{ marginBottom: tokens.spacing.xl }}>
@@ -161,7 +148,7 @@ export default function DashboardPage() {
         </section>
 
         <section style={{ marginBottom: tokens.spacing.lg }}>
-          <RecentProjectsSection projects={projects} />
+          <RecentProjectsSection projects={mappedProjects} />
         </section>
 
         <section style={{ marginBottom: tokens.spacing.lg }}>
