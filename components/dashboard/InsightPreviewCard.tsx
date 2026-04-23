@@ -17,16 +17,12 @@ export function InsightPreviewCard({ insight }: InsightPreviewCardProps) {
     return null;
   }
 
-  const getConfidenceColor = (score: number) => {
-    if (score >= 80) return "var(--sys-tertiary)";
-    if (score >= 60) return "var(--sys-secondary)";
-    return "var(--sys-error)";
-  };
+  const getConfidenceColor = () => "var(--sys-secondary)";
 
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm, marginBottom: tokens.spacing.md }}>
-        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize, color: "var(--sys-tertiary)" }}>
+        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize, color: "var(--sys-secondary)" }}>
           auto_awesome
         </span>
         <span
@@ -86,7 +82,7 @@ export function InsightPreviewCard({ insight }: InsightPreviewCardProps) {
               <div style={{ display: "flex", alignItems: "center", gap: tokens.spacing.sm }}>
                 <span
                   style={{ 
-                    color: tokens.colors.onSurfaceVariant, 
+                    color: "var(--sys-secondary)", 
                     fontSize: tokens.typography.labelMedium.fontSize,
                     fontWeight: tokens.typography.labelMedium.fontWeight,
                   }}
@@ -95,8 +91,8 @@ export function InsightPreviewCard({ insight }: InsightPreviewCardProps) {
                 </span>
                 <span
                   style={{
-                    backgroundColor: `${getConfidenceColor(insight.confidenceScore)}20`,
-                    color: getConfidenceColor(insight.confidenceScore),
+                    backgroundColor: "var(--sys-secondary-container)",
+                    color: "var(--sys-on-secondary-container)",
                     paddingLeft: tokens.spacing.sm,
                     paddingRight: tokens.spacing.sm,
                     paddingTop: tokens.spacing.xs,
