@@ -439,18 +439,26 @@ export function useReportState() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error?.message || "Export failed");
+        let errorMsg = "Export failed";
+        try {
+          const data = await res.json();
+          errorMsg = data.error?.message || errorMsg;
+        } catch {
+          errorMsg = `Export failed (${res.status})`;
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await res.json();
-      if (data.data?.jobId) {
-        setExportState("generating");
-        pollExportStatus(data.data.jobId);
-      } else if (data.data?.url) {
-        setExportedFileUrl(data.data.url);
+      if (data.data?.html) {
+        const html = data.data.html;
+        const blob = new Blob([html], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        setExportedFileUrl(url);
         setExportState("success");
-        window.open(data.data.url, "_blank");
+        window.open(url, "_blank");
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (err) {
       setExportError(err instanceof Error ? err.message : "Export failed");

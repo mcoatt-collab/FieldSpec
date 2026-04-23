@@ -99,10 +99,12 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`;
 
-    return new NextResponse(html, {
-      status: 200,
-      headers: { "Content-Type": "text/html" },
-    });
+    return NextResponse.json({
+      data: {
+        html,
+        contentType: "text/html",
+      },
+    }, { status: 200 });
   } catch (error) {
     console.error("Export error:", error);
     return NextResponse.json(
