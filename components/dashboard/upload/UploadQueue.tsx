@@ -1,62 +1,243 @@
 "use client";
 
 import React from "react";
+import { tokens } from "@/lib/design-tokens";
+import BrokenImageOutlinedIcon from "@mui/icons-material/BrokenImageOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 export interface UploadItem {
   id: string;
   name: string;
   progress: number;
-  status: "uploading" | "completed" | "failed";
+  status: "pending" | "uploading" | "completed" | "failed";
 }
 
 interface UploadQueueProps {
   items: UploadItem[];
+  onRemoveItem: (id: string) => void;
+  onClearCompleted: () => void;
 }
 
-export function UploadQueue({ items }: UploadQueueProps) {
+const STATUS_COLORS: Record<UploadItem["status"], string> = {
+  pending: tokens.colors.onSurfaceVariant,
+  uploading: tokens.colors.primary,
+  completed: "var(--ref-key-success-key-color)",
+  failed: tokens.colors.error,
+};
+
+const PROGRESS_COLORS: Record<UploadItem["status"], string> = {
+  pending: tokens.colors.outlineVariant,
+  uploading: tokens.colors.primary,
+  completed: "var(--ref-key-success-key-color)",
+  failed: tokens.colors.error,
+};
+
+export function UploadQueue({
+  items,
+  onRemoveItem,
+  onClearCompleted,
+}: UploadQueueProps) {
   if (items.length === 0) return null;
 
-  const uploadingCount = items.filter(i => i.status === "uploading").length;
+  const uploadingCount = items.filter((item) => item.status === "uploading").length;
 
   return (
-    <div className="mt-md bg-surface border border-outline-variant rounded-lg overflow-hidden shadow-level1">
-      <div className="bg-surface-container px-md py-sm border-b border-outline-variant flex items-center justify-between">
-        <h4 className="text-label-large font-bold text-on-surface">
-          Upload Queue {uploadingCount > 0 && <span className="text-primary ml-xs">({uploadingCount} active)</span>}
-        </h4>
-        <span className="text-body-small text-on-surface-variant">
-          {items.length} files total
-        </span>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: tokens.spacing.md,
+        padding: tokens.spacing.md,
+        borderRadius: tokens.radius.lg,
+        border: `1px solid ${tokens.colors.outlineVariant}`,
+        backgroundColor: tokens.colors.surface,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: tokens.spacing.sm,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: tokens.spacing.xs,
+            color: tokens.colors.onSurface,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: tokens.typography.titleMedium.fontFamily,
+              fontSize: tokens.typography.titleMedium.fontSize,
+              fontWeight: tokens.typography.titleMedium.fontWeight,
+              lineHeight: tokens.typography.titleMedium.lineHeight,
+              letterSpacing: tokens.typography.titleMedium.letterSpacing,
+            }}
+          >
+            Upload Queue
+          </span>
+          <span
+            style={{
+              color: tokens.colors.onSurfaceVariant,
+              fontFamily: tokens.typography.bodyMedium.fontFamily,
+              fontSize: tokens.typography.bodyMedium.fontSize,
+              fontWeight: tokens.typography.bodyMedium.fontWeight,
+              lineHeight: tokens.typography.bodyMedium.lineHeight,
+              letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+            }}
+          >
+            ({uploadingCount} / {items.length} uploading)
+          </span>
+        </div>
+
+        <button
+          onClick={onClearCompleted}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: tokens.colors.primary,
+            cursor: "pointer",
+            fontFamily: tokens.typography.labelLarge.fontFamily,
+            fontSize: tokens.typography.labelLarge.fontSize,
+            fontWeight: tokens.typography.labelLarge.fontWeight,
+            lineHeight: tokens.typography.labelLarge.lineHeight,
+            letterSpacing: tokens.typography.labelLarge.letterSpacing,
+          }}
+        >
+          Clear Completed
+        </button>
       </div>
-      
-      <div className="max-height-[240px] overflow-y-auto">
-        {items.map((item) => (
-          <div key={item.id} className="px-md py-sm border-b border-outline-variant last:border-0 flex items-center gap-md">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-xs">
-                <span className="text-body-small font-medium truncate text-on-surface">{item.name}</span>
-                <span className={`text-[10px] font-bold uppercase tracking-wider
-                  ${item.status === "completed" ? "text-success" : item.status === "failed" ? "text-error" : "text-primary"}
-                `}>
-                  {item.status}
-                </span>
-              </div>
-              
-              <div className="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
-                <div 
-                  className={`h-full transition-all duration-300 rounded-full
-                    ${item.status === "completed" ? "bg-success" : item.status === "failed" ? "bg-error" : "bg-primary"}
-                  `}
-                  style={{ width: `${item.progress}%` }}
+
+      <div
+        style={{
+          display: "flex",
+          maxHeight: `calc(${tokens.spacing.xxl} * 3)`,
+          flexDirection: "column",
+          overflowY: "auto",
+          borderRadius: tokens.radius.md,
+          border: `1px solid ${tokens.colors.outlineVariant}`,
+        }}
+      >
+        {items.map((item, index) => (
+          <div
+            key={item.id}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto minmax(0, 1fr) auto auto auto",
+              alignItems: "center",
+              gap: tokens.spacing.md,
+              paddingInline: tokens.spacing.md,
+              paddingBlock: tokens.spacing.sm,
+              borderTop:
+                index === 0 ? "none" : `1px solid ${tokens.colors.outlineVariant}`,
+              backgroundColor: tokens.colors.surface,
+            }}
+          >
+            <BrokenImageOutlinedIcon
+              style={{ color: tokens.colors.onSurfaceVariant }}
+            />
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(0, 1fr)",
+                gap: tokens.spacing.xs,
+                minWidth: 0,
+              }}
+            >
+              <span
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.bodyMedium.fontFamily,
+                  fontSize: tokens.typography.bodyMedium.fontSize,
+                  fontWeight: tokens.typography.bodyMedium.fontWeight,
+                  lineHeight: tokens.typography.bodyMedium.lineHeight,
+                  letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+                }}
+              >
+                {item.name}
+              </span>
+
+              <div
+                style={{
+                  width: "100%",
+                  overflow: "hidden",
+                  borderRadius: tokens.radius.pill,
+                  backgroundColor: tokens.colors.surfaceContainer,
+                }}
+              >
+                <div
+                  style={{
+                    height: tokens.spacing.sm,
+                    width: `${item.progress}%`,
+                    borderRadius: tokens.radius.pill,
+                    backgroundColor: PROGRESS_COLORS[item.status],
+                    transition: "width 160ms ease",
+                  }}
                 />
               </div>
             </div>
-            
-            {item.status === "completed" && (
-              <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            )}
+
+            <span
+              style={{
+                color: tokens.colors.onSurface,
+                fontFamily: tokens.typography.labelLarge.fontFamily,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
+              }}
+            >
+              {item.progress}%
+            </span>
+
+            <span
+              style={{
+                color: STATUS_COLORS[item.status],
+                fontFamily: tokens.typography.labelLarge.fontFamily,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+            </span>
+
+            <button
+              onClick={() => onRemoveItem(item.id)}
+              aria-label={`Remove ${item.name} from upload queue`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: tokens.spacing.xs,
+                border: "none",
+                borderRadius: tokens.radius.sm,
+                backgroundColor: "transparent",
+                color:
+                  item.status === "completed"
+                    ? "var(--ref-key-success-key-color)"
+                    : tokens.colors.onSurface,
+                cursor: "pointer",
+              }}
+            >
+              {item.status === "completed" ? (
+                <CheckCircleOutlineOutlinedIcon />
+              ) : (
+                <CloseOutlinedIcon />
+              )}
+            </button>
           </div>
         ))}
       </div>

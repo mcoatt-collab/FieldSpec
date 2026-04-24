@@ -2,6 +2,7 @@
 
 import React from "react";
 import { tokens } from "@/lib/design-tokens";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const CATEGORIES = [
   { value: "all", label: "All" },
@@ -14,15 +15,15 @@ const CATEGORIES = [
 ];
 
 const STATUSES = [
-  { value: "all", label: "All Status" },
+  { value: "all", label: "All" },
   { value: "processing", label: "Processing" },
   { value: "completed", label: "Completed" },
   { value: "failed", label: "Failed" },
 ];
 
 const SORTS = [
-  { value: "newest", label: "Newest First" },
-  { value: "oldest", label: "Oldest First" },
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
 ];
 
 interface FilterBarProps {
@@ -32,6 +33,60 @@ interface FilterBarProps {
   setStatus: (val: string) => void;
   sort: string;
   setSort: (val: string) => void;
+  query: string;
+  setQuery: (val: string) => void;
+}
+
+function renderFilterButton(
+  value: string,
+  label: string,
+  activeValue: string,
+  onClick: (value: string) => void,
+) {
+  const isActive = activeValue === value;
+
+  return (
+    <button
+      key={value}
+      onClick={() => onClick(value)}
+      style={{
+        paddingInline: tokens.spacing.md,
+        paddingBlock: tokens.spacing.sm,
+        borderRadius: tokens.radius.sm,
+        border: `1px solid ${isActive ? tokens.colors.primary : tokens.colors.outlineVariant}`,
+        backgroundColor: isActive
+          ? "color-mix(in srgb, var(--sys-primary) 12%, transparent)"
+          : tokens.colors.surface,
+        color: isActive ? tokens.colors.primary : tokens.colors.onSurface,
+        cursor: "pointer",
+        fontFamily: tokens.typography.labelLarge.fontFamily,
+        fontSize: tokens.typography.labelLarge.fontSize,
+        fontWeight: tokens.typography.labelLarge.fontWeight,
+        lineHeight: tokens.typography.labelLarge.lineHeight,
+        letterSpacing: tokens.typography.labelLarge.letterSpacing,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function renderLabel(text: string) {
+  return (
+    <span
+      style={{
+        color: tokens.colors.onSurface,
+        fontFamily: tokens.typography.titleSmall.fontFamily,
+        fontSize: tokens.typography.titleSmall.fontSize,
+        fontWeight: tokens.typography.titleSmall.fontWeight,
+        lineHeight: tokens.typography.titleSmall.lineHeight,
+        letterSpacing: tokens.typography.titleSmall.letterSpacing,
+      }}
+    >
+      {text}
+    </span>
+  );
 }
 
 export function FilterBar({
@@ -41,75 +96,136 @@ export function FilterBar({
   setStatus,
   sort,
   setSort,
+  query,
+  setQuery,
 }: FilterBarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-md py-md border-b border-outline-variant">
-      <div className="flex flex-col gap-xs">
-        <label className="text-label-small font-bold uppercase text-on-surface-variant tracking-wider"> {/* Changed from text-[10px] to text-label-small */}
-          Category
-        </label>
-        <div className="flex flex-wrap gap-xs">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.value}
-              onClick={() => setCategory(cat.value)}
-              className={`px-sm py-1 rounded-md border transition-all
-                ${category === cat.value 
-                  ? "bg-primary text-on-primary border-primary" 
-                  : "bg-surface text-on-surface border-outline-variant hover:border-primary/50"}
-              `}
-              style={{
-                fontSize: tokens.typography.bodySmall.fontSize, // Use body-small (12px) for button text
-                fontWeight: tokens.typography.bodySmall.fontWeight,
-              }}
-            >
-              {cat.label}
-            </button>
-          ))}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))",
+        gap: tokens.spacing.md,
+        padding: tokens.spacing.md,
+        borderRadius: tokens.radius.lg,
+        border: `1px solid ${tokens.colors.outlineVariant}`,
+        backgroundColor: tokens.colors.surface,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.sm,
+        }}
+      >
+        {renderLabel("Categories")}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: tokens.spacing.sm,
+          }}
+        >
+          {CATEGORIES.map((item) =>
+            renderFilterButton(item.value, item.label, category, setCategory),
+          )}
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-md ml-auto">
-        <div className="flex flex-col gap-xs">
-          <label className="text-label-small font-bold uppercase text-on-surface-variant tracking-wider"> {/* Changed from text-[10px] to text-label-small */}
-            Processing Status
-          </label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="bg-surface border border-outline-variant rounded-md px-sm py-1 outline-none focus:border-primary"
-            style={{
-              fontSize: tokens.typography.bodySmall.fontSize, // Use body-small (12px) for select text
-              fontWeight: tokens.typography.bodySmall.fontWeight,
-            }}
-          >
-            {STATUSES.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.sm,
+        }}
+      >
+        {renderLabel("Status")}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: tokens.spacing.sm,
+          }}
+        >
+          {STATUSES.map((item) =>
+            renderFilterButton(item.value, item.label, status, setStatus),
+          )}
         </div>
+      </div>
 
-        <div className="flex flex-col gap-xs">
-          <label className="text-label-small font-bold uppercase text-on-surface-variant tracking-wider"> {/* Changed from text-[10px] to text-label-small */}
-            Sort By
-          </label>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.sm,
+        }}
+      >
+        {renderLabel("Sort")}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: tokens.spacing.sm,
+          }}
+        >
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="bg-surface border border-outline-variant rounded-md px-sm py-1 outline-none focus:border-primary"
             style={{
-              fontSize: tokens.typography.bodySmall.fontSize, // Use body-small (12px) for select text
-              fontWeight: tokens.typography.bodySmall.fontWeight,
+              minWidth: "fit-content",
+              paddingInline: tokens.spacing.md,
+              paddingBlock: tokens.spacing.sm,
+              borderRadius: tokens.radius.sm,
+              border: `1px solid ${tokens.colors.outlineVariant}`,
+              backgroundColor: tokens.colors.surface,
+              color: tokens.colors.onSurface,
+              outline: "none",
+              fontFamily: tokens.typography.labelLarge.fontFamily,
+              fontSize: tokens.typography.labelLarge.fontSize,
+              fontWeight: tokens.typography.labelLarge.fontWeight,
+              lineHeight: tokens.typography.labelLarge.lineHeight,
+              letterSpacing: tokens.typography.labelLarge.letterSpacing,
             }}
           >
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
+            {SORTS.map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.label}
               </option>
             ))}
           </select>
+
+          <label
+            style={{
+              display: "flex",
+              flex: 1,
+              minWidth: "min(100%, 16rem)",
+              alignItems: "center",
+              gap: tokens.spacing.sm,
+              paddingInline: tokens.spacing.md,
+              borderRadius: tokens.radius.sm,
+              border: `1px solid ${tokens.colors.outlineVariant}`,
+              backgroundColor: tokens.colors.surface,
+            }}
+          >
+            <SearchOutlinedIcon style={{ color: tokens.colors.onSurfaceVariant }} />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search images..."
+              style={{
+                width: "100%",
+                border: "none",
+                outline: "none",
+                backgroundColor: "transparent",
+                color: tokens.colors.onSurface,
+                fontFamily: tokens.typography.bodyMedium.fontFamily,
+                fontSize: tokens.typography.bodyMedium.fontSize,
+                fontWeight: tokens.typography.bodyMedium.fontWeight,
+                lineHeight: tokens.typography.bodyMedium.lineHeight,
+                letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+              }}
+            />
+          </label>
         </div>
       </div>
     </div>

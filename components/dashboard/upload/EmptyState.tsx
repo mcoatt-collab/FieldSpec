@@ -2,6 +2,8 @@
 
 import React from "react";
 import { tokens } from "@/lib/design-tokens";
+import InboxOutlinedIcon from "@mui/icons-material/InboxOutlined";
+import SearchOffOutlinedIcon from "@mui/icons-material/SearchOffOutlined";
 
 interface EmptyStateProps {
   type: "no_images" | "no_results";
@@ -9,38 +11,97 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ type, onAction }: EmptyStateProps) {
-  return (
-    <div className="flex flex-col items-center justify-center p-xxl text-center bg-surface-container/30 border border-outline-variant border-dashed rounded-lg">
-      <div className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center mb-md"> {/* Icon container size matches dashboard EmptyState w-8 h-8 */}
-        <svg className="w-5 h-5 text-on-surface-variant opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"> {/* Icon size adjusted to w-5 h-5 */}
-          {type === "no_images" ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          )}
-        </svg>
-      </div>
-      
-      <h3 className="text-title-large text-on-surface mb-xs"> {/* title-large (22px) is consistent with other component titles */}
-        {type === "no_images" ? "Upload images to get started" : "No images found"}
-      </h3>
-      
-      <p className="text-body-medium text-on-surface-variant mb-lg max-w-xs"> {/* body-medium (14px) is consistent */}
-        {type === "no_images" 
-          ? "Your project is currently empty. Start by uploading drone survey images for AI analysis." 
-          : "No images match your current filter settings. Try clearing filters to see all images."
-        }
-      </p>
+  const isNoImages = type === "no_images";
+  const Icon = isNoImages ? InboxOutlinedIcon : SearchOffOutlinedIcon;
 
-      {onAction && (
-        <button 
-          onClick={onAction}
-          className="bg-primary text-on-primary px-lg py-sm rounded-md font-bold hover:shadow-level2 transition-all"
-          style={{ fontSize: tokens.typography.labelLarge.fontSize }} // labelLarge (14px) for CTA buttons
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: tokens.spacing.lg,
+        width: "100%",
+        padding: tokens.spacing.xl,
+        borderRadius: tokens.radius.lg,
+        border: `1px dashed ${tokens.colors.outlineVariant}`,
+        backgroundColor: tokens.colors.surface,
+      }}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: tokens.spacing.md,
+          borderRadius: tokens.radius.pill,
+          backgroundColor: tokens.colors.surfaceContainer,
+          color: tokens.colors.onSurfaceVariant,
+        }}
+      >
+        <Icon />
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          gap: tokens.spacing.xs,
+        }}
+      >
+        <h3
+          style={{
+            color: tokens.colors.onSurface,
+            fontFamily: tokens.typography.titleMedium.fontFamily,
+            fontSize: tokens.typography.titleMedium.fontSize,
+            fontWeight: tokens.typography.titleMedium.fontWeight,
+            lineHeight: tokens.typography.titleMedium.lineHeight,
+            letterSpacing: tokens.typography.titleMedium.letterSpacing,
+          }}
         >
-          {type === "no_images" ? "Upload Images" : "Clear All Filters"}
-        </button>
-      )}
+          {isNoImages ? "Upload images to get started" : "No images found"}
+        </h3>
+
+        <p
+          style={{
+            color: tokens.colors.onSurfaceVariant,
+            fontFamily: tokens.typography.bodyMedium.fontFamily,
+            fontSize: tokens.typography.bodyMedium.fontSize,
+            fontWeight: tokens.typography.bodyMedium.fontWeight,
+            lineHeight: tokens.typography.bodyMedium.lineHeight,
+            letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+          }}
+        >
+          {isNoImages
+            ? "Drag and drop your images here or click to browse."
+            : "Try adjusting your filters or search."}
+        </p>
+
+        {onAction && (
+          <div>
+            <button
+              onClick={onAction}
+              style={{
+                marginTop: tokens.spacing.sm,
+                paddingInline: tokens.spacing.lg,
+                paddingBlock: tokens.spacing.sm,
+                borderRadius: tokens.radius.md,
+                border: `1px solid ${tokens.colors.outline}`,
+                backgroundColor: tokens.colors.surface,
+                color: tokens.colors.onSurface,
+                cursor: "pointer",
+                fontFamily: tokens.typography.labelLarge.fontFamily,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
+              }}
+            >
+              {isNoImages ? "Upload Images" : "Clear Filters"}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

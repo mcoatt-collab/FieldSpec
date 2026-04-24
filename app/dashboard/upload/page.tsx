@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { tokens } from "@/lib/design-tokens";
+import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import { useProjectsStore } from "@/store/useProjectsStore";
 import { UploadZone } from "@/components/dashboard/upload/UploadZone";
-import { UploadQueue, UploadItem } from "@/components/dashboard/upload/UploadQueue";
+import {
+  UploadQueue,
+  UploadItem,
+} from "@/components/dashboard/upload/UploadQueue";
 import { FilterBar } from "@/components/dashboard/upload/FilterBar";
 import { BulkActionBar } from "@/components/dashboard/upload/BulkActionBar";
 import { ImageCard } from "@/components/dashboard/upload/ImageCard";
@@ -21,25 +28,24 @@ interface ImageType {
 }
 
 export default function UploadPage() {
-  const { projects, loading: projectsLoading, fetchProjects } = useProjectsStore();
+  const {
+    projects,
+    loading: projectsLoading,
+    fetchProjects,
+  } = useProjectsStore();
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [images, setImages] = useState<ImageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
-  // Filtering & Sorting State
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
-  
-  // Selection State
-  const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(new Set());
-  
-  // Upload State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  
-  // Modal State
   const [editingImage, setEditingImage] = useState<ImageType | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -48,6 +54,7 @@ export default function UploadPage() {
     try {
       const res = await fetch(`/api/images?projectId=${projectId}`);
       const data = await res.json();
+
       if (res.ok && data.data) {
         setImages(data.data);
       }
@@ -62,6 +69,7 @@ export default function UploadPage() {
       await fetchProjects();
       setLoading(false);
     };
+
     loadData();
   }, [fetchProjects]);
 
@@ -80,36 +88,46 @@ export default function UploadPage() {
 
   const handleUpload = async (files: FileList) => {
     if (!selectedProjectId) return;
-    
+
     setIsUploading(true);
     setError("");
-    
-    const newItems: UploadItem[] = Array.from(files).map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
+
+    const newItems: UploadItem[] = Array.from(files).map((file) => ({
+      id: Math.random().toString(36).slice(2, 11),
       name: file.name,
       progress: 0,
-      status: "uploading"
+      status: "pending",
     }));
-    
-    setUploadQueue(prev => [...newItems, ...prev]);
 
-    // Upload files sequentially for progress tracking simulation
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const itemId = newItems[i].id;
-      
+    setUploadQueue((prev) => [...newItems, ...prev]);
+
+    for (const item of newItems) {
+      setUploadQueue((prev) =>
+        prev.map((queueItem) =>
+          queueItem.id === item.id
+            ? { ...queueItem, status: "uploading" }
+            : queueItem,
+        ),
+      );
+    }
+
+    for (let index = 0; index < files.length; index += 1) {
+      const file = files[index];
+      const itemId = newItems[index].id;
+
       try {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("projectId", selectedProjectId);
 
-        // Mock progress update
         const progressInterval = setInterval(() => {
-          setUploadQueue(prev => prev.map(item => 
-            item.id === itemId && item.progress < 90 
-              ? { ...item, progress: item.progress + 10 } 
-              : item
-          ));
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId && item.progress < 90
+                ? { ...item, progress: item.progress + 10, status: "uploading" }
+                : item,
+            ),
+          );
         }, 200);
 
         const res = await fetch("/api/upload/image", {
@@ -121,27 +139,43 @@ export default function UploadPage() {
         const data = await res.json();
 
         if (res.ok && data.data) {
-          setUploadQueue(prev => prev.map(item => 
-            item.id === itemId ? { ...item, progress: 100, status: "completed" } : item
-          ));
-          setImages(prev => [data.data, ...prev]);
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId
+                ? { ...item, progress: 100, status: "completed" }
+                : item,
+            ),
+          );
+          setImages((prev) => [data.data, ...prev]);
         } else {
-          setUploadQueue(prev => prev.map(item => 
-            item.id === itemId ? { ...item, status: "failed" } : item
-          ));
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId ? { ...item, status: "failed" } : item,
+            ),
+          );
         }
       } catch (err) {
-        setUploadQueue(prev => prev.map(item => 
-          item.id === itemId ? { ...item, status: "failed" } : item
-        ));
+        setUploadQueue((prev) =>
+          prev.map((item) =>
+            item.id === itemId ? { ...item, status: "failed" } : item,
+          ),
+        );
       }
     }
-    
+
     setIsUploading(false);
   };
 
+  const handleRemoveUploadItem = (id: string) => {
+    setUploadQueue((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleClearCompletedUploads = () => {
+    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+  };
+
   const handleSelectImage = (id: string, selected: boolean) => {
-    setSelectedImageIds(prev => {
+    setSelectedImageIds((prev) => {
       const next = new Set(prev);
       if (selected) next.add(id);
       else next.delete(id);
@@ -153,7 +187,9 @@ export default function UploadPage() {
     if (selectedImageIds.size === filteredAndSortedImages.length) {
       setSelectedImageIds(new Set());
     } else {
-      setSelectedImageIds(new Set(filteredAndSortedImages.map(img => img.id)));
+      setSelectedImageIds(
+        new Set(filteredAndSortedImages.map((image) => image.id)),
+      );
     }
   };
 
@@ -164,9 +200,12 @@ export default function UploadPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category }),
       });
+
       if (res.ok) {
         const data = await res.json();
-        setImages(prev => prev.map(img => img.id === imageId ? data.data : img));
+        setImages((prev) =>
+          prev.map((image) => (image.id === imageId ? data.data : image)),
+        );
       }
     } catch (err) {
       setError("Failed to update category");
@@ -175,17 +214,25 @@ export default function UploadPage() {
 
   const handleSaveNotes = async () => {
     if (!editingImage) return;
+
     setSaving(true);
+
     try {
       const res = await fetch(`/api/images/${editingImage.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notes: editingImage.notes || "" }),
       });
+
       if (res.ok) {
         const data = await res.json();
-        setImages(prev => prev.map(img => img.id === editingImage.id ? data.data : img));
+        setImages((prev) =>
+          prev.map((image) =>
+            image.id === editingImage.id ? data.data : image,
+          ),
+        );
         setSaveSuccess(true);
+
         setTimeout(() => {
           setEditingImage(null);
           setSaveSuccess(false);
@@ -200,11 +247,13 @@ export default function UploadPage() {
 
   const handleDeleteImage = async (imageId: string) => {
     if (!confirm("Are you sure you want to delete this image?")) return;
+
     try {
       const res = await fetch(`/api/images/${imageId}`, { method: "DELETE" });
+
       if (res.ok) {
-        setImages(prev => prev.filter(img => img.id !== imageId));
-        setSelectedImageIds(prev => {
+        setImages((prev) => prev.filter((image) => image.id !== imageId));
+        setSelectedImageIds((prev) => {
           const next = new Set(prev);
           next.delete(imageId);
           return next;
@@ -217,10 +266,11 @@ export default function UploadPage() {
 
   const handleBulkDelete = async () => {
     if (!confirm(`Delete ${selectedImageIds.size} images?`)) return;
-    // Sequential delete for simplicity in this mock, ideally a bulk API endpoint
+
     for (const id of Array.from(selectedImageIds)) {
       await handleDeleteImage(id);
     }
+
     setSelectedImageIds(new Set());
   };
 
@@ -228,197 +278,572 @@ export default function UploadPage() {
     for (const id of Array.from(selectedImageIds)) {
       await handleCategoryChange(id, category);
     }
+
     setSelectedImageIds(new Set());
   };
 
   const handleReprocess = (id: string) => {
-    // Mock reprocessing state
-    setImages(prev => prev.map(img => img.id === id ? { ...img, status: "processing" as StatusType } : img));
+    setImages((prev) =>
+      prev.map((image) =>
+        image.id === id
+          ? { ...image, status: "processing" as StatusType }
+          : image,
+      ),
+    );
+
     setTimeout(() => {
-      setImages(prev => prev.map(img => img.id === id ? { ...img, status: "completed" as StatusType } : img));
+      setImages((prev) =>
+        prev.map((image) =>
+          image.id === id
+            ? { ...image, status: "completed" as StatusType }
+            : image,
+        ),
+      );
     }, 3000);
   };
 
   const filteredAndSortedImages = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
     return images
-      .filter(img => {
-        const matchesCategory = categoryFilter === "all" 
-          ? true 
-          : categoryFilter === "untagged" 
-            ? (!img.category || img.category === "general")
-            : img.category === categoryFilter;
-        
-        const status = img.status || "completed";
-        const matchesStatus = statusFilter === "all" ? true : status === statusFilter;
-        
-        return matchesCategory && matchesStatus;
+      .filter((image) => {
+        const matchesCategory =
+          categoryFilter === "all"
+            ? true
+            : categoryFilter === "untagged"
+              ? !image.category || image.category === "general"
+              : image.category === categoryFilter;
+
+        const status = image.status || "completed";
+        const matchesStatus =
+          statusFilter === "all" ? true : status === statusFilter;
+
+        const matchesQuery =
+          normalizedQuery.length === 0
+            ? true
+            : [
+                image.id,
+                image.category,
+                image.notes || "",
+                image.createdAt,
+              ]
+                .join(" ")
+                .toLowerCase()
+                .includes(normalizedQuery);
+
+        return matchesCategory && matchesStatus && matchesQuery;
       })
-      .sort((a, b) => {
-        const dateA = new Date(a.createdAt).getTime();
-        const dateB = new Date(b.createdAt).getTime();
-        return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+      .sort((first, second) => {
+        const firstDate = new Date(first.createdAt).getTime();
+        const secondDate = new Date(second.createdAt).getTime();
+        return sortOrder === "newest"
+          ? secondDate - firstDate
+          : firstDate - secondDate;
       });
-  }, [images, categoryFilter, statusFilter, sortOrder]);
+  }, [images, categoryFilter, statusFilter, sortOrder, searchQuery]);
 
   if (loading || projectsLoading) {
-    return <div className="p-xl text-center text-on-surface-variant">Loading Workspace...</div>;
+    return (
+      <div
+        style={{
+          padding: tokens.spacing.xl,
+          textAlign: "center",
+          color: tokens.colors.onSurfaceVariant,
+        }}
+      >
+        Loading workspace...
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-md pb-xxl">
-      {/* Header */}
-      <div className="mb-xl">
-        <h1
-                  style={{
-                    color: tokens.colors.onSurface,
-                    fontSize: tokens.typography.headlineSmall.fontSize, // Changed from headlineMedium
-                    fontWeight: tokens.typography.headlineSmall.fontWeight, // Changed from headlineMedium
-                    marginBottom: tokens.spacing.xs,
-                  }}
-                >
-                  Upload & Workflow
-                </h1>
-                <p
-                  style={{ 
-                    color: tokens.colors.onSurfaceVariant, 
-                    fontSize: tokens.typography.bodyMedium.fontSize, // Consistent with dashboard
-                    marginTop: tokens.spacing.xs,
-                  }}
-                  >
-                  Manage large batches of images and AI processing status.
-                  </p>          }}
+    <div
+      style={{
+        width: "100%",
+        paddingBottom: tokens.spacing.xxl,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.lg,
+          padding: tokens.spacing.md,
+          borderRadius: tokens.radius.xl,
+          border: `1px solid ${tokens.colors.outline}`,
+          backgroundColor: tokens.colors.surface,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: tokens.spacing.lg,
+          }}
         >
-          Manage large batches of images and AI processing status.
-        </p>
-      </div>
-
-      {projects.length === 0 ? (
-        <EmptyState type="no_images" onAction={() => window.location.href = "/dashboard/projects"} />
-      ) : (
-        <div className="space-y-lg">
-          {/* Project Selection */}
-          <div className="flex items-center gap-md bg-surface-container/50 p-sm rounded-lg border border-outline-variant">
-            <label className="text-label-large font-bold text-on-surface px-sm">Active Project</label>
-            <select
-              value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="bg-surface border border-outline-variant rounded-md px-md py-1.5 text-body-large outline-none focus:border-primary min-w-[240px]"
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: tokens.spacing.md,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: tokens.spacing.xs,
+              }}
             >
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
-          </div>
+              <h1
+                style={{
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.headlineSmall.fontFamily,
+                  fontSize: tokens.typography.headlineSmall.fontSize,
+                  fontWeight: tokens.typography.headlineSmall.fontWeight,
+                  lineHeight: tokens.typography.headlineSmall.lineHeight,
+                  letterSpacing: tokens.typography.headlineSmall.letterSpacing,
+                }}
+              >
+                Upload & Manage
+              </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-xl">
-            {/* Left Column: Upload & Queue */}
-            <div className="lg:col-span-1 space-y-md">
-              <UploadZone onUpload={handleUpload} isUploading={isUploading} />
-              <UploadQueue items={uploadQueue} />
+              <p
+                style={{
+                  color: tokens.colors.onSurfaceVariant,
+                  fontFamily: tokens.typography.bodyLarge.fontFamily,
+                  fontSize: tokens.typography.bodyLarge.fontSize,
+                  fontWeight: tokens.typography.bodyLarge.fontWeight,
+                  lineHeight: tokens.typography.bodyLarge.lineHeight,
+                  letterSpacing: tokens.typography.bodyLarge.letterSpacing,
+                }}
+              >
+                Upload and organize field inspection images
+              </p>
             </div>
 
-            {/* Right Column: Management Grid */}
-            <div className="lg:col-span-2 space-y-md">
-              <FilterBar 
-                category={categoryFilter} setCategory={setCategoryFilter}
-                status={statusFilter} setStatus={setStatusFilter}
-                sort={sortOrder} setSort={setSortOrder}
+            <button
+              onClick={() => window.open("/docs/upload-guide", "_blank")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: tokens.spacing.sm,
+                paddingInline: tokens.spacing.md,
+                paddingBlock: tokens.spacing.sm,
+                borderRadius: tokens.radius.md,
+                border: `1px solid ${tokens.colors.outline}`,
+                backgroundColor: tokens.colors.surface,
+                color: tokens.colors.onSurface,
+                cursor: "pointer",
+                fontFamily: tokens.typography.labelLarge.fontFamily,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
+              }}
+            >
+              <UploadFileOutlinedIcon />
+              Upload Guide
+            </button>
+          </div>
+
+          <div style={{ borderTop: `1px dashed ${tokens.colors.outlineVariant}` }} />
+
+          {projects.length === 0 ? (
+            <EmptyState
+              type="no_images"
+              onAction={() => (window.location.href = "/dashboard/projects")}
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: tokens.spacing.lg,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  gap: tokens.spacing.md,
+                }}
+              >
+                <span
+                  style={{
+                    color: tokens.colors.onSurface,
+                    fontFamily: tokens.typography.titleMedium.fontFamily,
+                    fontSize: tokens.typography.titleMedium.fontSize,
+                    fontWeight: tokens.typography.titleMedium.fontWeight,
+                    lineHeight: tokens.typography.titleMedium.lineHeight,
+                    letterSpacing: tokens.typography.titleMedium.letterSpacing,
+                  }}
+                >
+                  Project:
+                </span>
+
+                <label
+                  style={{
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    minWidth: "min(100%, 20rem)",
+                  }}
+                >
+                  <select
+                    value={selectedProjectId}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    style={{
+                      width: "100%",
+                      appearance: "none",
+                      paddingInline: tokens.spacing.md,
+                      paddingBlock: tokens.spacing.sm,
+                      paddingRight: tokens.spacing.xl,
+                      borderRadius: tokens.radius.md,
+                      border: `1px solid ${tokens.colors.outline}`,
+                      backgroundColor: tokens.colors.surface,
+                      color: tokens.colors.onSurface,
+                      cursor: "pointer",
+                      outline: "none",
+                      fontFamily: tokens.typography.bodyLarge.fontFamily,
+                      fontSize: tokens.typography.bodyLarge.fontSize,
+                      fontWeight: tokens.typography.bodyLarge.fontWeight,
+                      lineHeight: tokens.typography.bodyLarge.lineHeight,
+                      letterSpacing: tokens.typography.bodyLarge.letterSpacing,
+                    }}
+                  >
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <KeyboardArrowDownOutlinedIcon
+                    style={{
+                      position: "absolute",
+                      right: tokens.spacing.sm,
+                      pointerEvents: "none",
+                      color: tokens.colors.onSurfaceVariant,
+                    }}
+                  />
+                </label>
+              </div>
+
+              <div style={{ borderTop: `1px dashed ${tokens.colors.outlineVariant}` }} />
+
+              <FilterBar
+                category={categoryFilter}
+                setCategory={setCategoryFilter}
+                status={statusFilter}
+                setStatus={setStatusFilter}
+                sort={sortOrder}
+                setSort={setSortOrder}
+                query={searchQuery}
+                setQuery={setSearchQuery}
               />
 
-              <div className="flex items-center justify-between min-h-[40px]">
-                <div className="flex items-center gap-md">
-                  <button 
-                    onClick={handleSelectAll}
-                    className="text-label-medium text-primary hover:underline font-bold"
-                  >
-                    {selectedImageIds.size === filteredAndSortedImages.length && filteredAndSortedImages.length > 0 
-                      ? "Deselect All" 
-                      : "Select All"
-                    }
-                  </button>
-                  <span className="text-body-small text-on-surface-variant">
-                    Showing {filteredAndSortedImages.length} images
-                  </span>
-                </div>
-                
-                <BulkActionBar 
-                  selectedCount={selectedImageIds.size}
-                  onClearSelection={() => setSelectedImageIds(new Set())}
-                  onBulkDelete={handleBulkDelete}
-                  onBulkCategorize={handleBulkCategorize}
-                  onBulkReprocess={() => selectedImageIds.forEach(id => handleReprocess(id))}
+              <div style={{ borderTop: `1px dashed ${tokens.colors.outlineVariant}` }} />
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 24rem), 1fr))",
+                  gap: tokens.spacing.md,
+                }}
+              >
+                <UploadZone onUpload={handleUpload} isUploading={isUploading} />
+                <UploadQueue
+                  items={uploadQueue}
+                  onRemoveItem={handleRemoveUploadItem}
+                  onClearCompleted={handleClearCompletedUploads}
                 />
               </div>
 
+              <BulkActionBar
+                totalCount={filteredAndSortedImages.length}
+                selectedCount={selectedImageIds.size}
+                allSelected={
+                  filteredAndSortedImages.length > 0 &&
+                  selectedImageIds.size === filteredAndSortedImages.length
+                }
+                onToggleSelectAll={handleSelectAll}
+                onClearSelection={() => setSelectedImageIds(new Set())}
+                onBulkDelete={handleBulkDelete}
+                onBulkCategorize={handleBulkCategorize}
+                onBulkReprocess={() =>
+                  selectedImageIds.forEach((id) => handleReprocess(id))
+                }
+              />
+
               {filteredAndSortedImages.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-md">
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(auto-fill, minmax(calc(${tokens.spacing.xxl} * 3), 1fr))`,
+                    gap: tokens.spacing.md,
+                    padding: tokens.spacing.sm,
+                    borderRadius: tokens.radius.lg,
+                    border: `1px dashed ${tokens.colors.outlineVariant}`,
+                    backgroundColor: tokens.colors.surface,
+                  }}
+                >
                   {filteredAndSortedImages.map((image) => (
-                    <ImageCard 
+                    <ImageCard
                       key={image.id}
                       image={image}
                       isSelected={selectedImageIds.has(image.id)}
                       onSelect={handleSelectImage}
                       onCategoryChange={handleCategoryChange}
-                      onEditNote={setEditingImage}
+                      onEditNote={(selectedImage) =>
+                        setEditingImage(selectedImage as ImageType)
+                      }
                       onDelete={handleDeleteImage}
                       onReprocess={handleReprocess}
                     />
                   ))}
                 </div>
-              ) : (
-                <EmptyState 
-                  type={images.length === 0 ? "no_images" : "no_results"} 
-                  onAction={() => {
-                    setCategoryFilter("all");
-                    setStatusFilter("all");
+              ) : null}
+
+              {(images.length === 0 || filteredAndSortedImages.length === 0) && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 20rem), 1fr))",
+                    gap: tokens.spacing.md,
                   }}
-                />
+                >
+                  {images.length === 0 ? (
+                    <EmptyState
+                      type="no_images"
+                      onAction={() =>
+                        document.getElementById("file-upload")?.click()
+                      }
+                    />
+                  ) : null}
+
+                  {images.length > 0 && filteredAndSortedImages.length === 0 ? (
+                    <EmptyState
+                      type="no_results"
+                      onAction={() => {
+                        setCategoryFilter("all");
+                        setStatusFilter("all");
+                        setSearchQuery("");
+                      }}
+                    />
+                  ) : null}
+                </div>
               )}
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
-      {/* Note Edit Modal */}
       {editingImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-md" onClick={() => setEditingImage(null)}>
-          <div className="bg-surface w-full max-w-md rounded-xl shadow-level4 p-xl animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-lg">
-              <h3 className="text-headline-small text-on-surface">Image Notes</h3>
-              <button onClick={() => setEditingImage(null)} className="p-1 hover:bg-surface-variant rounded-full">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor:
+              "color-mix(in srgb, var(--sys-add-on-surface-roles-scrim) 56%, transparent)",
+            backdropFilter: `blur(${tokens.spacing.xs})`,
+            padding: tokens.spacing.md,
+          }}
+          onClick={() => setEditingImage(null)}
+        >
+          <div
+            style={{
+              backgroundColor: tokens.colors.surface,
+              width: "100%",
+              maxWidth: "28rem",
+              borderRadius: tokens.radius.xl,
+              boxShadow: tokens.elevation.level4,
+              padding: tokens.spacing.xl,
+              animation: "zoomIn 0.2s ease-out",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: tokens.spacing.lg,
+              }}
+            >
+              <h3
+                style={{
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.headlineSmall.fontFamily,
+                  fontSize: tokens.typography.headlineSmall.fontSize,
+                  fontWeight: tokens.typography.headlineSmall.fontWeight,
+                  lineHeight: tokens.typography.headlineSmall.lineHeight,
+                  letterSpacing: tokens.typography.headlineSmall.letterSpacing,
+                }}
+              >
+                Image Notes
+              </h3>
+
+              <button
+                onClick={() => setEditingImage(null)}
+                style={{
+                  padding: tokens.spacing.sm,
+                  background: "none",
+                  border: "none",
+                  borderRadius: tokens.radius.pill,
+                  cursor: "pointer",
+                  color: tokens.colors.onSurface,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    tokens.colors.surfaceVariant;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                <CloseIcon
+                  style={{ fontSize: tokens.typography.labelLarge.fontSize }}
+                />
               </button>
             </div>
 
-            <div className="relative aspect-video rounded-lg overflow-hidden mb-lg bg-surface-container">
-              <img src={editingImage.thumbnailUrl} alt="" className="w-full h-full object-cover" />
+            <div
+              style={{
+                position: "relative",
+                aspectRatio: "16 / 9",
+                borderRadius: tokens.radius.lg,
+                overflow: "hidden",
+                marginBottom: tokens.spacing.lg,
+                backgroundColor: tokens.colors.surfaceContainer,
+              }}
+            >
+              <img
+                src={editingImage.thumbnailUrl}
+                alt=""
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
             </div>
 
             <textarea
               value={editingImage.notes || ""}
-              onChange={(e) => setEditingImage({ ...editingImage, notes: e.target.value })}
+              onChange={(e) =>
+                setEditingImage({ ...editingImage, notes: e.target.value })
+              }
               placeholder="Add observation details or AI corrections..."
-              className="w-full h-32 bg-surface-container-low border border-outline rounded-lg p-md text-on-surface outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
+              style={{
+                width: "100%",
+                minHeight: `calc(${tokens.spacing.xxl} * 2)`,
+                backgroundColor: tokens.colors.surfaceContainerLow,
+                border: `1px solid ${tokens.colors.outline}`,
+                borderRadius: tokens.radius.lg,
+                padding: tokens.spacing.md,
+                color: tokens.colors.onSurface,
+                outline: "none",
+                transition: "all 0.2s ease",
+                resize: "none",
+                fontFamily: tokens.typography.bodyMedium.fontFamily,
+                fontSize: tokens.typography.bodyMedium.fontSize,
+                fontWeight: tokens.typography.bodyMedium.fontWeight,
+                lineHeight: tokens.typography.bodyMedium.lineHeight,
+                letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.primary;
+                e.currentTarget.style.boxShadow = `0 0 0 1px ${tokens.colors.primary}`;
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.outline;
+                e.currentTarget.style.boxShadow = "none";
+              }}
               autoFocus
             />
-            
-            <div className="flex justify-end gap-md mt-xl">
-              <button 
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: tokens.spacing.md,
+                marginTop: tokens.spacing.xl,
+              }}
+            >
+              <button
                 onClick={() => setEditingImage(null)}
-                className="px-lg py-2 text-on-surface font-bold hover:bg-surface-variant rounded-md transition-colors"
+                style={{
+                  paddingInline: tokens.spacing.lg,
+                  paddingBlock: tokens.spacing.sm,
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.labelLarge.fontFamily,
+                  fontSize: tokens.typography.labelLarge.fontSize,
+                  fontWeight: tokens.typography.labelLarge.fontWeight,
+                  lineHeight: tokens.typography.labelLarge.lineHeight,
+                  letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                  background: "none",
+                  border: "none",
+                  borderRadius: tokens.radius.md,
+                  cursor: "pointer",
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    tokens.colors.surfaceVariant;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
               >
                 Cancel
               </button>
-              <button 
+
+              <button
                 onClick={handleSaveNotes}
                 disabled={saving}
-                className={`px-lg py-2 rounded-md font-bold text-on-primary shadow-level1 transition-all
-                  ${saveSuccess ? "bg-success" : "bg-primary hover:shadow-level2"}
-                `}
+                style={{
+                  paddingInline: tokens.spacing.lg,
+                  paddingBlock: tokens.spacing.sm,
+                  borderRadius: tokens.radius.md,
+                  fontFamily: tokens.typography.labelLarge.fontFamily,
+                  fontSize: tokens.typography.labelLarge.fontSize,
+                  fontWeight: tokens.typography.labelLarge.fontWeight,
+                  lineHeight: tokens.typography.labelLarge.lineHeight,
+                  letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                  color: tokens.colors.onPrimary,
+                  backgroundColor: saveSuccess
+                    ? "var(--ref-key-success-key-color)"
+                    : tokens.colors.primary,
+                  boxShadow: saveSuccess ? "none" : tokens.elevation.level1,
+                  border: "none",
+                  cursor: saving ? "not-allowed" : "pointer",
+                  opacity: saving ? 0.7 : 1,
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (!saving && !saveSuccess) {
+                    e.currentTarget.style.boxShadow = tokens.elevation.level2;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!saving && !saveSuccess) {
+                    e.currentTarget.style.boxShadow = tokens.elevation.level1;
+                  }
+                }}
               >
-                {saving ? "Saving..." : saveSuccess ? "Saved ✓" : "Save Changes"}
+                {saving
+                  ? "Saving..."
+                  : saveSuccess
+                    ? "Saved"
+                    : "Save Changes"}
               </button>
             </div>
           </div>
@@ -426,9 +851,50 @@ export default function UploadPage() {
       )}
 
       {error && (
-        <div className="fixed bottom-lg right-lg bg-error text-on-error px-lg py-md rounded-lg shadow-level3 flex items-center gap-md animate-in slide-in-from-right">
+        <div
+          style={{
+            position: "fixed",
+            bottom: tokens.spacing.lg,
+            right: tokens.spacing.lg,
+            backgroundColor: tokens.colors.error,
+            color: tokens.colors.onError,
+            paddingInline: tokens.spacing.lg,
+            paddingBlock: tokens.spacing.md,
+            borderRadius: tokens.radius.lg,
+            boxShadow: tokens.elevation.level3,
+            display: "flex",
+            alignItems: "center",
+            gap: tokens.spacing.md,
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
           <span>{error}</span>
-          <button onClick={() => setError("")} className="hover:bg-white/20 p-1 rounded">✕</button>
+          <button
+            onClick={() => setError("")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "inherit",
+              cursor: "pointer",
+              padding: tokens.spacing.sm,
+              borderRadius: tokens.radius.sm,
+              fontSize: tokens.typography.titleLarge.fontSize,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor =
+                "color-mix(in srgb, var(--sys-on-error) 16%, transparent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <CloseIcon
+              style={{
+                fontSize: tokens.typography.labelLarge.fontSize,
+                color: "inherit",
+              }}
+            />
+          </button>
         </div>
       )}
     </div>

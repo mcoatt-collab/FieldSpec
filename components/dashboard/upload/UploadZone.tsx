@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { tokens } from "@/lib/design-tokens";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 
 interface UploadZoneProps {
   onUpload: (files: FileList) => void;
@@ -23,6 +24,7 @@ export function UploadZone({ onUpload, isUploading }: UploadZoneProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       onUpload(e.dataTransfer.files);
     }
@@ -33,36 +35,88 @@ export function UploadZone({ onUpload, isUploading }: UploadZoneProps) {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`relative border-2 border-dashed rounded-lg p-xxl text-center transition-all duration-200 cursor-pointer
-        ${isDragging ? "bg-primary/10 border-primary" : "bg-primary-container/20 border-outline-variant hover:bg-primary-container/30 hover:border-primary/50"}
-        ${isUploading ? "opacity-60 cursor-not-allowed" : ""}
-      `}
-      onClick={() => !isUploading && document.getElementById("file-upload")?.click()}
+      onClick={() =>
+        !isUploading && document.getElementById("file-upload")?.click()
+      }
+      style={{
+        display: "flex",
+        minHeight: `calc(${tokens.spacing.xxl} * 3)`,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: tokens.spacing.xl,
+        borderRadius: tokens.radius.lg,
+        border: `1px dashed ${isDragging ? tokens.colors.primary : tokens.colors.outlineVariant}`,
+        backgroundColor: isDragging
+          ? "color-mix(in srgb, var(--sys-primary) 8%, transparent)"
+          : tokens.colors.surface,
+        cursor: isUploading ? "not-allowed" : "pointer",
+        opacity: isUploading ? "0.64" : "1",
+        transition:
+          "background-color 160ms ease, border-color 160ms ease, opacity 160ms ease",
+      }}
     >
       <input
         id="file-upload"
         type="file"
         multiple
-        className="hidden"
+        style={{ display: "none" }}
         onChange={(e) => e.target.files && onUpload(e.target.files)}
         disabled={isUploading}
       />
-      
-      <div className="flex flex-col items-center">
-        <svg
-          className={`w-10 h-10 mb-md fill-primary`} /* Changed from w-12 h-12 to w-10 h-10 */
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-        </svg>
 
-        <h3 className="text-title-large text-primary mb-xs"> {/* Kept title-large, consistent with other component titles */}
-          {isUploading ? "Uploading Batch..." : "Drop your images here, or browse"}
-        </h3>
-        
-        <p className="text-body-small text-on-surface-variant opacity-80"> {/* Kept body-small */}
-          Supports: PNG, JPG, JPEG, WEBP. Handling batches up to 500 images.
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: tokens.spacing.sm,
+          textAlign: "center",
+        }}
+      >
+        <CloudUploadOutlinedIcon
+          style={{
+            color: tokens.colors.onSurface,
+            fontSize: `calc(${tokens.spacing.xxl} - ${tokens.spacing.sm})`,
+          }}
+        />
+
+        <div
+          style={{
+            color: tokens.colors.onSurface,
+            fontFamily: tokens.typography.titleLarge.fontFamily,
+            fontSize: tokens.typography.titleLarge.fontSize,
+            fontWeight: tokens.typography.titleLarge.fontWeight,
+            lineHeight: tokens.typography.titleLarge.lineHeight,
+            letterSpacing: tokens.typography.titleLarge.letterSpacing,
+          }}
+        >
+          {isUploading ? "Uploading images..." : "Drop your images here, or browse"}
+        </div>
+
+        <p
+          style={{
+            color: tokens.colors.onSurfaceVariant,
+            fontFamily: tokens.typography.bodyMedium.fontFamily,
+            fontSize: tokens.typography.bodyMedium.fontSize,
+            fontWeight: tokens.typography.bodyMedium.fontWeight,
+            lineHeight: tokens.typography.bodyMedium.lineHeight,
+            letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+          }}
+        >
+          Supports: PNG, JPG, JPEG, WEBP
+        </p>
+
+        <p
+          style={{
+            color: tokens.colors.onSurfaceVariant,
+            fontFamily: tokens.typography.bodySmall.fontFamily,
+            fontSize: tokens.typography.bodySmall.fontSize,
+            fontWeight: tokens.typography.bodySmall.fontWeight,
+            lineHeight: tokens.typography.bodySmall.lineHeight,
+            letterSpacing: tokens.typography.bodySmall.letterSpacing,
+          }}
+        >
+          Large images are optimized automatically.
         </p>
       </div>
     </div>
