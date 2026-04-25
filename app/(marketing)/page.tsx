@@ -52,10 +52,9 @@ export default function MarketingPage() {
   ];
 
   const useCases = [
-    { title: "Agricultural Inspections", description: "Assess crop health, map pest damage, and monitor irrigation across hundreds of acres. Deliver clear reports growers can act on.", imageUrl: "/images/agricultural-inspections.jpg" },
-    { title: "Land Surveys", description: "Document site conditions, track changes between surveys, and produce professional reports clients trust for decision-making.", imageUrl: "/images/land-surveys.jpg" },
-    { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility assets from the air. Generate professional reports without putting boots on the ground.", imageUrl: "/images/infrastructure-inspections.jpg" },
-    { title: "Drone Service Providers", description: "Stand out from competitors by delivering polished inspection reports with every flight. Turn aerial data into a premium service.", imageUrl: "/images/drone-operators.jpg" },
+    { title: "Drone Operators", description: "Deliver reports faster to clients" },
+    { title: "Infrastructure Inspectors", description: "Standardize inspection workflows" },
+    { title: "Field Teams", description: "Organize and analyze large image sets" },
   ];
 
   const steps = [
@@ -814,57 +813,40 @@ export default function MarketingPage() {
           .bento-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 48px;
+            gap: var(--sys-spacing-lg);
+            margin-top: var(--sys-spacing-spacing-xl);
           }
           .use-case-card-bento {
-             background: var(--sys-surface-roles-surface-container);
-            border: 1px solid var(--sys-outline-variant);
-            border-radius: 20px;
+            background: var(--sys-surface-roles-surface-container);
+            border: 1px solid var(--sys-outline-roles-outline-variant);
+            border-radius: var(--sys-radius-lg);
+            padding: var(--sys-spacing-lg);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease;
           }
           .use-case-card-bento:hover {
             transform: translateY(-4px);
-             border-color: var(--sys-outline-variant);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-          }
-          .bento-span-2 {
-            grid-column: span 2;
-          }
-          .bento-span-1 {
-            grid-column: span 1;
+            border-color: var(--sys-primary);
+            box-shadow: var(--sys-elevation-8dp);
           }
           @media (max-width: 900px) {
             .bento-grid {
               grid-template-columns: 1fr;
             }
-            .bento-span-2, .bento-span-1 {
-              grid-column: span 1;
-            }
           }
         `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "60px", textAlign: "center" }}>
-            <span style={{
-               color: tokens.colors.primary,
-              fontSize: "14px",
-              fontWeight: 600,
-              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-              display: "block",
-              marginBottom: "12px",
-              letterSpacing: "0.01em"
-            }}>Who It&apos;s For</span>
+          <div style={{ marginBottom: "var(--sys-spacing-xxl)", textAlign: "center" }}>
             <h2 style={{
-              ...tokens.typography.headlineLarge,
-              color: tokens.colors.onSurface,
+              color: "var(--sys-surface-roles-on-surface)",
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
+              fontWeight: 600,
               textAlign: "center",
               margin: "0 auto",
-              maxWidth: "800px",
             }}>
-              Built for Field Professionals
+              Who It&apos;s For
             </h2>
           </div>
 
@@ -880,60 +862,29 @@ export default function MarketingPage() {
               return (
                 <div
                   key={i}
-                  className={`use-case-card-bento ${spanClass}`}
+                  className="use-case-card-bento"
                 >
-                  {useCase.imageUrl && (
-                    <div style={{
-                      height: "240px",
-                      width: "100%",
-                      backgroundColor: "#0B1120",
-                      borderBottom: "1px solid rgba(255,255,255,0.05)",
-                      overflow: "hidden",
-                    }}>
-                      <img
-                        src={useCase.imageUrl}
-                        alt={useCase.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          opacity: 0.85,
-                        }}
-                      />
-                    </div>
-                  )}
                   <div style={{
-                    padding: "32px",
+                    padding: "var(--sys-spacing-md)",
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "flex-end" // Pushes text down nicely
+                    justifyContent: "center"
                   }}>
-                    <span style={{
-                      color: tokens.colors.onSurfaceVariant,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      marginBottom: "8px",
-                      textTransform: "capitalize",
-                    }}>
-                      {useCase.title.split(" ")[0]}
-                    </span>
                     <h4 style={{
-                      color: tokens.colors.onSurface,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "20px",
-                      fontWeight: "500",
-                      marginBottom: "12px",
+                      color: "var(--sys-surface-roles-on-surface)",
+                      fontFamily: "var(--sys-typescale-title-large-fontfamily)",
+                      fontSize: "var(--sys-typescale-title-large-fontsize)",
+                      fontWeight: 500,
+                      marginBottom: "var(--sys-spacing-sm)",
                     }}>
                       {useCase.title}
                     </h4>
                     <p style={{
-                      color: tokens.colors.onSurfaceVariant,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "14px",
-                      lineHeight: 1.6,
-                      opacity: 0.7,
+                      color: "var(--sys-surface-roles-on-surface-variant)",
+                      fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+                      fontSize: "var(--sys-typescale-body-medium-fontsize)",
+                      lineHeight: "var(--sys-typescale-body-medium-lineheight)",
                     }}>
                       {useCase.description}
                     </p>
@@ -941,6 +892,52 @@ export default function MarketingPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: OUTPUT */}
+      <section style={{
+        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        backgroundColor: "var(--color-section-bg)",
+      }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--sys-spacing-xxl)", alignItems: "center" }}>
+          <div>
+            <h2 style={{
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
+              fontWeight: 600,
+              color: "var(--sys-surface-roles-on-surface)",
+              marginBottom: "var(--sys-spacing-lg)",
+            }}>
+              Professional reports, ready in minutes
+            </h2>
+            <p style={{
+              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+              fontSize: "var(--sys-typescale-body-large-fontsize)",
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              lineHeight: "var(--sys-typescale-body-large-lineheight)",
+            }}>
+              No formatting. No repetitive writing. Just export.
+            </p>
+          </div>
+          <div style={{
+            backgroundColor: "var(--sys-surface-roles-surface-container)",
+            borderRadius: "var(--sys-radius-lg)",
+            padding: "var(--sys-spacing-lg)",
+            border: "1px solid var(--sys-outline-roles-outline-variant)",
+            minHeight: "300px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <p style={{
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+              fontSize: "var(--sys-typescale-body-medium-fontsize)",
+            }}>
+              Report Preview
+            </p>
           </div>
         </div>
       </section>
@@ -994,40 +991,30 @@ export default function MarketingPage() {
              color: rgba(255,255,255,0.8);
            }
          `}} />
-        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 1 }}>
             <h2 style={{
               fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
               fontWeight: 600,
-              color: tokens.colors.onSurface,
-              marginBottom: "24px",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.1,
+              color: "var(--sys-surface-roles-on-surface)",
+              marginBottom: "var(--sys-spacing-lg)",
               textAlign: "center",
             }}>
-              Go From Images to Report in Minutes
+              Start generating inspection reports in minutes
             </h2>
+            <Link href="/signup" className="cta-primary-btn">
+              Get Started
+            </Link>
             <p style={{
-              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-              fontSize: "17px",
-              color: tokens.colors.onSurfaceVariant,
-              lineHeight: 1.6,
-              marginBottom: "40px",
-              maxWidth: "540px",
-              margin: "0 auto 40px",
+              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+              fontSize: "var(--sys-typescale-body-medium-fontsize)",
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              marginTop: "var(--sys-spacing-md)",
               textAlign: "center",
             }}>
-              Upload your first set of images and see what FieldSpec can do. No credit card required.
+              No credit card required
             </p>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", flexWrap: "wrap", marginTop: "40px" }}>
-              <Link href="/signup" className="cta-primary-btn">
-                Start Free
-              </Link>
-              <Link href="#how-it-works" className="cta-secondary-link">
-                Watch the Demo <span aria-hidden="true">&rarr;</span>
-              </Link>
-            </div>
           </div>
         </div>
       </section>
