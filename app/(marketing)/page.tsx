@@ -66,306 +66,161 @@ export default function MarketingPage() {
   ];
 
   return (
-    <main style={{ flex: 1 }}>
+    <main className="flex flex-col min-h-screen">
       {/* Navigation */}
-      <nav style={{
-        padding: `${tokens.spacing.md} ${tokens.spacing.xxl}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        zIndex: 10,
-      }}>
-<style>{`
-              .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
-              .nav-link { text-decoration: none; transition: color 0.3s ease; color: #ffffff !important; font-weight: 500; }
-              .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
-              .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; border-radius: 16px; }
-              .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
-              .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: ${tokens.colors.onSurface} !important; border-radius: 16px; }
-              .btn-text:hover { color: ${tokens.colors.onPrimary} !important; opacity: 1; }
-              .btn-text { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onPrimary} !important; border-radius: 16px; }
-              .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
-              .social-icon:hover { color: ${tokens.colors.onSurface} !important; }
-              /* Header layout */
-              .header-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-              }
-              .header-brand {
-                display: flex;
-                align-items: center;
-              }
-              .header-nav {
-                display: flex;
-                align-items: center;
-                gap: ${tokens.spacing.lg};
-              }
-              .header-actions {
-                display: flex;
-                align-items: center;
-                gap: ${tokens.spacing.lg};
-              }
-            `}</style>
-          <div className="header-brand">
-            <Brand size="md" />
-          </div>
-          <div className="header-nav">
-            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-              Features
-            </Link>
-            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-              How It Works
-            </Link>
-            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-              Use Cases
-            </Link>
-          </div>
-          <div className="header-actions">
-<Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onPrimary }}>
-              Log In
-            </Link>
-            <Link href="/signup" className="btn-primary" style={{
-                padding: "16px 20px",
-                backgroundColor: tokens.colors.primary,
-                color: tokens.colors.onPrimary,
-                textDecoration: "none",
-                borderRadius: "16px",
-                ...tokens.typography.labelLarge,
-                fontWeight: "600",
-              }}>
-              Get Started
-            </Link>
-<ThemeToggle />
-          </div>
-      </nav>
+      <Navbar />
 
-      {/* Hero Section */}
-      <section className="hero-section" style={{
-        position: "relative",
-        width: "100%",
-        height: "100vh",
-        minHeight: "700px",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        zIndex: 1,
-        animation: "heroFadeIn 1s ease-out forwards",
-        backgroundColor: "#000",
-      }}>
-        {/* Video Background */}
-        <div className="hero-video-container">
-          <iframe
-            className="hero-video"
-            src="https://streamable.com/e/lbw4qo?autoplay=1&loop=1&muted=1&controls=0"
-            title="Promotional video background"
-            allow="autoplay; encrypted-media; fullscreen"
-            allowFullScreen
-            loading="eager"
-            aria-hidden="true"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
-          />
-        </div>
-        <div className="hero-video-overlay" />
-        {/* Image Background for Mobile */}
-        <div className="hero-image-container">
-          <img
-            className="hero-image"
-            src="https://i.postimg.cc/fLq17NNx/agriculture-healthy-food-(1).jpg"
-            alt="Drone surveying healthy crops"
-            loading="eager"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="hero-content" style={{
-          position: "relative",
-          zIndex: 2,
-          maxWidth: "1000px",
-          width: "100%",
-          padding: `0 ${tokens.spacing.lg}`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          animation: "contentSlideUp 1.2s ease-out forwards",
-          opacity: 0,
-          animationDelay: "0.2s",
-        }}>
-          <h1 className="hero-title" style={{
-            fontFamily: tokens.typography.displayLarge.fontFamily,
-            fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-            fontWeight: 600,
-            color: "#FFFFFF",
-            marginBottom: tokens.spacing.lg,
-            lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-          }}>
-            Turn Drone Images into<br />
-            <span style={{ color: "#FFFFFF" }}>Client-Ready Reports</span>
-          </h1>
-          <p className="hero-subcopy" style={{
-            fontFamily: tokens.typography.bodyLarge.fontFamily,
-            fontSize: "clamp(1.125rem, 2vw, 1.5rem)",
-            fontWeight: 500,
-            color: "#f0f4fa",
-            maxWidth: "700px",
-            marginBottom: tokens.spacing.xl,
-            lineHeight: 1.5,
-            textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-          }}>
-            Upload aerial images, get AI-generated analysis and findings, and export a structured PDF report. No manual writing, no missed details, no delays.
+{/* Hero Section */}
+      <section style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", paddingTop: "calc(var(--sys-header-offset) + 40px)", paddingBottom: "60px", paddingInline: tokens.spacing.lg}}>
+        
+        {/* Section Heading (Outside Box) */}
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+          <h2 style={{ ...tokens.typography.displaySmall, color: tokens.colors.onSurface, fontWeight: 500, marginBottom: "12px", letterSpacing: "-0.02em" }}>
+            Automate your field reporting
+          </h2>
+          <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant }}>
+            From drone flight to stakeholder delivery, instantly.
           </p>
-          <div className="hero-buttons" style={{
+        </div>
+
+        {/* The Main Box */}
+        <div style={{ width: "100%", height: "600px", borderRadius: "32px", backgroundColor: tokens.colors.surfaceContainer, display: "grid", gridTemplateColumns: "1fr 1fr", overflow: "hidden" }}>
+          
+          {/* Left: Content */}
+          {/* Left: Content */}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "64px", textAlign: "left", height: "100%" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "24px" }}>
+              <h2 style={{
+                ...tokens.typography.displayMedium,
+                color: tokens.colors.onSurface,
+                fontWeight: 500,
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+                maxWidth: "480px"
+              }}>
+                Turn Field images into <br/> structured reports instantly
+              </h2>
+              <p style={{
+                ...tokens.typography.bodyLarge,
+                color: tokens.colors.onSurfaceVariant,
+                maxWidth: "440px",
+                lineHeight: 1.5,
+              }}>
+                Upload inspection images. FieldSpec analyzes them and generates stakeholder-ready reports in minutes.
+              </p>
+
+              {/* Buttons at bottom */}
+              <div style={{ display: "flex", flexDirection: "row", gap: tokens.spacing.md, marginTop: "16px" }}>
+                <Link
+                  href="/signup"
+                  style={{
+                    padding: "12px 24px",
+                    backgroundColor: tokens.colors.primary,
+                    color: tokens.colors.onPrimary,
+                    borderRadius: "12px",
+                    fontFamily: tokens.typography.labelLarge.fontFamily,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Get Started
+                </Link>
+                <Link
+                  href="/sample-report"
+                  style={{
+                    padding: "12px 24px",
+                    backgroundColor: "transparent",
+                    color: tokens.colors.primary,
+                    borderRadius: "12px",
+                    border: `1px solid ${tokens.colors.primary}`,
+                    fontFamily: tokens.typography.labelLarge.fontFamily,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  View Sample Report
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Stacked UI Cards Bleeding */}
+          <div style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
             display: "flex",
-            gap: tokens.spacing.md,
-            justifyContent: "center",
-            flexWrap: "wrap",
+            flexDirection: "column",
+            alignItems: "flex-end", // Align cards to the right
+            gap: "24px",
+            paddingTop: "24px",
+            transform: "translateY(-120px)", // shift up to bleed top and bottom
           }}>
-            <Link href="/signup" className="hero-btn-primary">
-              Start Your First Report
-            </Link>
+            {/* Top Card (White Bleeding) */}
+            <div style={{
+              width: "480px",
+              height: "200px",
+              backgroundColor: tokens.colors.surface,
+              borderRadius: "24px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+              flexShrink: 0,
+            }}></div>
+
+            {/* Middle Card (Dark) */}
+            <div style={{
+              width: "480px",
+              height: "400px",
+              backgroundColor: "#1c1c1c",
+              borderRadius: "24px",
+              boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              <span style={{ color: "#ffffff", fontSize: "24px", fontWeight: 500, fontFamily: tokens.typography.bodyLarge.fontFamily }}>Report pdf placeholder</span>
+            </div>
+
+            {/* Bottom Card (White Bleeding) */}
+            <div style={{
+              width: "480px",
+              height: "200px",
+              backgroundColor: tokens.colors.surface,
+              borderRadius: "24px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+              flexShrink: 0,
+            }}></div>
+            
           </div>
         </div>
 
-        <style dangerouslySetInnerHTML={{
-          __html: `
-          @keyframes heroFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes contentSlideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-
-          .hero-video-container {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            background-color: #000;
-          }
-          .hero-video-overlay {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-              to bottom,
-              rgba(0, 0, 0, 0.55) 0%,
-              rgba(0, 0, 0, 0.45) 100%
-            );
-            z-index: 1;
-          }
-          .hero-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 177.77778vh;
-            min-width: 100%;
-            height: 56.25vw;
-            min-height: 100%;
-            transform: translate(-50%, -50%);
-            border: none;
-            pointer-events: none;
-          }
-          .hero-image-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            background-color: #000;
-            display: none;
-          }
-          .hero-image {
-            position: absolute;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-          }
-
-          /* Token-Based Primary Button */
-          .hero-btn-primary {
-            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-md-y);
-            background-color: #315f9b;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 16px;
-            font-family: var(--sys-typescale-label-large-fontfamily);
-            font-size: var(--sys-typescale-label-large-fontsize);
-            font-weight: 500;
-            border: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .hero-btn-primary:hover {
-            background-color: #d8e4f3;
-            color: #0c1827;
-            transform: translateY(-2px);
-            box-shadow: var(--sys-elevation-8dp) !important;
-          }
-
-          /* Token-Based Secondary Button */
-          .hero-btn-secondary {
-            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
-            background-color: transparent;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 16px;
-            font-family: var(--sys-typescale-label-large-fontfamily);
-            font-size: var(--sys-typescale-label-large-fontsize);
-            font-weight: 500;
-            border: 2px solid #ffffff;
-            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .hero-btn-secondary:hover {
-            background-color: #d8e4f3;
-            color: #0c1827;
-            border-color: #d8e4f3;
-            transform: translateY(-2px);
-            box-shadow: var(--sys-elevation-8dp) !important;
-          }
-
-          /* Responsive Adjustments */
-          @media (max-width: 1024px) {
-            .hero-section {
-              height: 90vh;
-              min-height: 600px;
-            }
-          }
-          @media (max-width: 768px) {
-            .hero-section {
-              height: 100vh;
-              min-height: 600px;
-            }
-            .hero-video-container { display: none; }
-            .hero-image-container { display: block; }
-            
-            .hero-buttons { flex-direction: column; width: 100%; }
-            .hero-buttons > a { width: 100%; max-width: none; }
-          }
-        `}} />
+        {/* Trust strip */}
+        <div style={{
+          position: "absolute",
+          bottom: tokens.spacing.xl,
+          left: 0,
+          right: 0,
+        }}>
+          <div style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto", paddingLeft: tokens.spacing.xl, paddingRight: tokens.spacing.xl, display: "flex", justifyContent: "center" }}>
+            <p style={{
+              ...tokens.typography.bodySmall,
+              color: tokens.colors.onSurfaceVariant,
+            }}>
+              Generate reports 5x faster
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Problem → Solution Section */}
       <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
@@ -585,7 +440,7 @@ export default function MarketingPage() {
 
       {/* How It Works */}
       <section id="how-it-works" style={{
-        padding: `160px ${tokens.spacing.lg} ${tokens.spacing.xxl}`, 
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
@@ -692,7 +547,7 @@ export default function MarketingPage() {
 
       {/* Features Section */}
       <section id="features" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
@@ -805,7 +660,7 @@ export default function MarketingPage() {
 
       {/* Use Cases */}
       <section id="use-cases" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         backgroundColor: "var(--color-section-bg)",
         position: "relative",
       }}>
@@ -947,7 +802,7 @@ export default function MarketingPage() {
 
       {/* Final CTA */}
       <section style={{
-        padding: `0 24px 160px`, // Added large explicit spacing between CTA and footer
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
@@ -1035,7 +890,7 @@ export default function MarketingPage() {
 <footer style={{
         backgroundColor: "var(--footer-bg)",
         borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
         fontFamily: tokens.typography.bodyMedium.fontFamily,
       }}>
         <style>{`

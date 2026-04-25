@@ -71,6 +71,7 @@ export function QuickActionsPanel() {
               paddingTop: "12px",
               paddingBottom: "12px",
               paddingLeft: "12px",
+              
               paddingRight: tokens.spacing.md,
               borderRadius: tokens.radius.lg,
               backgroundColor: isHovered ? hoverBg : baseBg,
