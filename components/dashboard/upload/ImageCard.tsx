@@ -107,10 +107,11 @@ export function ImageCard({
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            border: "none",
-            backgroundColor: "transparent",
-            color: isSelected ? tokens.colors.primary : tokens.colors.onSurfaceVariant,
+            backgroundColor: tokens.colors.surfaceContainerHigh,
+            color: isSelected ? tokens.colors.primary : tokens.colors.onSurface,
             cursor: "pointer",
+            borderRadius: tokens.radius.sm,
+            padding: tokens.spacing.xs,
           }}
         >
           {isSelected ? (

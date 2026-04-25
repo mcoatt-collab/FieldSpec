@@ -887,12 +887,14 @@ export default function UploadPage() {
               e.currentTarget.style.backgroundColor = "transparent";
             }}
           >
-            <CloseIcon
+            <span className="material-icons"
               style={{
-                fontSize: tokens.typography.labelLarge.fontSize,
+                fontSize: tokens.typography.labelLarge.lineHeight,
                 color: "inherit",
               }}
-            />
+            >
+              close
+            </span>
           </button>
         </div>
       )}

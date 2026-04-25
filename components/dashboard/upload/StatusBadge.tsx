@@ -18,23 +18,23 @@ const STATUS_STYLES: Record<
   }
 > = {
   pending: {
-    backgroundColor: tokens.colors.surfaceContainer,
-    borderColor: tokens.colors.outlineVariant,
-    color: tokens.colors.onSurfaceVariant,
+    backgroundColor: tokens.colors.surfaceContainerHigh,
+    borderColor: tokens.colors.outline,
+    color: tokens.colors.onSurface,
   },
   processing: {
-    backgroundColor: "color-mix(in srgb, var(--ref-key-warning-key-color) 12%, transparent)",
-    borderColor: "color-mix(in srgb, var(--ref-key-warning-key-color) 36%, transparent)",
+    backgroundColor: "color-mix(in srgb, var(--ref-key-warning-key-color) 24%, transparent)",
+    borderColor: "color-mix(in srgb, var(--ref-key-warning-key-color) 48%, transparent)",
     color: "var(--ref-key-warning-key-color)",
   },
   completed: {
-    backgroundColor: "color-mix(in srgb, var(--ref-key-success-key-color) 12%, transparent)",
-    borderColor: "color-mix(in srgb, var(--ref-key-success-key-color) 36%, transparent)",
+    backgroundColor: "color-mix(in srgb, var(--ref-key-success-key-color) 24%, transparent)",
+    borderColor: "color-mix(in srgb, var(--ref-key-success-key-color) 48%, transparent)",
     color: "var(--ref-key-success-key-color)",
   },
   failed: {
-    backgroundColor: "color-mix(in srgb, var(--sys-error) 12%, transparent)",
-    borderColor: "color-mix(in srgb, var(--sys-error) 36%, transparent)",
+    backgroundColor: "color-mix(in srgb, var(--sys-error) 24%, transparent)",
+    borderColor: "color-mix(in srgb, var(--sys-error) 48%, transparent)",
     color: tokens.colors.error,
   },
 };
