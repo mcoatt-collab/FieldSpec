@@ -50,3 +50,5 @@ when the user clicks on the email field does not input his detail leaves and cli
 
 
 when the user clicks on the sign in button and both the email field and the password field are filled in and matches the database record, the button should change to a loading state
+
+- when the user clicks the email field while displaying an error message the error message(invalid email or enter valid email) should disappear and the error color of the input border should also change to the primary color once the user start typing in the email field +

@@ -23,9 +23,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log("[Signup] Received body:", { ...body, password: "[REDACTED]" });
+    
     const result = signupSchema.safeParse(body);
 
     if (!result.success) {
+      console.log("[Signup] Validation failed:", result.error.issues);
       return NextResponse.json(
         { error: { message: result.error.issues[0].message, code: "VALIDATION_ERROR" } },
         { status: 400 }
@@ -33,7 +36,10 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password, name, companyName } = result.data;
+    console.log("[Signup] Validation passed, attempting signup for:", email);
+    
     const signupResult = await signup(email, password, name, companyName);
+    console.log("[Signup] Result:", signupResult);
 
     if (!signupResult.success) {
       return NextResponse.json(
