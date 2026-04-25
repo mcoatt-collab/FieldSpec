@@ -28,3 +28,19 @@
 - setup: configure SMTP for outgoing email services.
 - feature: implement a password reset flow.
 - action: registered users must receive an email containing a functional password reset link upon requesting a reset.
+
+
+
+
+
+
+
+
+
+ncrease Card Height: Make the cards taller than they are wide.
+
+Add Visuals: Put an image or a large, colorful icon at the very top of each card.
+
+Contrast: Make your titles (Drone Operators) much bolder and darker, and make the subtext (Deliver reports faster...) a slightly lighter gray.
+
+Add a CTA: Put a "Learn More →" link at the bottom of each card to encourage engagement

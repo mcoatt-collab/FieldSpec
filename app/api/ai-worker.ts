@@ -1,7 +1,9 @@
-import { Worker as BullMQWorker, Job as BullMQJob } from "bullmq";
-import { redis } from "@/lib/redis";
+import "dotenv/config";
+import { Worker, Job } from "bullmq";
+import { redisQueue, connectRedis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { generateCaptionWithRetry, calculateConfidenceScore } from "@/lib/ai";
+import { cache } from "@/lib/cache";
 
 const AI_JOB_QUEUE = "ai-generation";
 
@@ -118,7 +120,7 @@ async function assembleStructuredReport(projectId: string, projectName: string, 
   };
 }
 
-async function processAIJob(job: BullMQJob<AIJobData, unknown>) {
+async function processAIJob(job: Job<AIJobData, void>) {
   const { projectId, jobId } = job.data;
   console.log(`[AI Worker] Processing job ${jobId} for project ${projectId}`);
 
@@ -145,42 +147,54 @@ async function processAIJob(job: BullMQJob<AIJobData, unknown>) {
 
     const totalImages = project.images.length;
     let processedCount = 0;
+    const BATCH_SIZE = 5;
 
-    for (const image of project.images) {
-      console.log(`[AI Worker] Processing image ${processedCount + 1}/${totalImages}`);
+    for (let i = 0; i < totalImages; i += BATCH_SIZE) {
+      const batch = project.images.slice(i, i + BATCH_SIZE);
+      console.log(`[AI Worker] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(totalImages / BATCH_SIZE)} (${batch.length} images)`);
 
-      const category = image.category || null;
-      const userNote = image.notes || null;
-      const hasContext = !!project.name;
+      await Promise.all(batch.map(async (image) => {
+        const existingAI = await prisma.aIOutput.findUnique({
+          where: { imageId: image.id },
+        });
 
-      const aiResult = await generateCaptionWithRetry({
-        category,
-        userNote,
-        context: `Project: ${project.name}`,
-      });
+        if (existingAI) {
+          return;
+        }
 
-      const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
+        const category = image.category || null;
+        const userNote = image.notes || null;
+        const hasContext = !!project.name;
 
-      await prisma.aIOutput.upsert({
-        where: { imageId: image.id },
-        create: {
-          imageId: image.id,
-          caption: aiResult.caption,
-          finding: aiResult.finding,
-          recommendation: aiResult.recommendation,
-          confidenceScore,
-          isEdited: false,
-        },
-        update: {
-          caption: aiResult.caption,
-          finding: aiResult.finding,
-          recommendation: aiResult.recommendation,
-          confidenceScore,
-          isEdited: false,
-        },
-      });
+        const aiResult = await generateCaptionWithRetry({
+          category,
+          userNote,
+          context: `Project: ${project.name}`,
+        });
 
-      processedCount++;
+        const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
+
+        await prisma.aIOutput.upsert({
+          where: { imageId: image.id },
+          create: {
+            imageId: image.id,
+            caption: aiResult.caption,
+            finding: aiResult.finding,
+            recommendation: aiResult.recommendation,
+            confidenceScore,
+            isEdited: false,
+          },
+          update: {
+            caption: aiResult.caption,
+            finding: aiResult.finding,
+            recommendation: aiResult.recommendation,
+            confidenceScore,
+            isEdited: false,
+          },
+        });
+      }));
+
+      processedCount += batch.length;
       const baseProgress = 10;
       const progressRange = 80;
       const currentProgress = baseProgress + Math.floor((processedCount / totalImages) * progressRange);
@@ -248,8 +262,9 @@ async function processAIJob(job: BullMQJob<AIJobData, unknown>) {
 }
 
 export async function startAIWorker() {
-  const worker = new BullMQWorker(AI_JOB_QUEUE, processAIJob, {
-    connection: redis,
+  await connectRedis();
+  const worker = new Worker(AI_JOB_QUEUE, processAIJob, {
+    connection: redisQueue,
     concurrency: 2,
   });
 
@@ -258,9 +273,12 @@ export async function startAIWorker() {
   });
 
   worker.on("failed", (job, err) => {
-    console.error(`[AI Worker] Job ${job?.id} failed:`, (err as Error).message);
+    console.error(`[AI Worker] Job ${job?.id} failed:`, err?.message);
   });
 
   console.log("[AI Worker] Started processing AI jobs");
   return worker;
 }
+
+// Start the worker when this file is executed directly
+startAIWorker().catch(console.error);

@@ -28,11 +28,13 @@ declare module "bullmq" {
     attemptsMade: number;
     constructor(queue: Queue<T>, name: string, data?: T, opts?: JobOptions);
     updateProgress(progress: number | Record<string, unknown>): Promise<void>;
+    remove(): Promise<void>;
   }
 
   export class Queue<T = JobData> {
     constructor(name: string, opts?: QueueOptions);
     add(name: string, data: T, opts?: JobOptions): Promise<Job<T, unknown>>;
+    getJobs(types: string[]): Promise<Job<T, unknown>[]>;
   }
 
   export class Worker<T = JobData, R = unknown> {

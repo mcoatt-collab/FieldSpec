@@ -52,9 +52,9 @@ export default function MarketingPage() {
   ];
 
   const useCases = [
-    { title: "Drone Operators", description: "Deliver reports faster to clients" },
-    { title: "Infrastructure Inspectors", description: "Standardize inspection workflows" },
-    { title: "Field Teams", description: "Organize and analyze large image sets" },
+    { title: "Drone Operators", description: "Deliver reports faster to clients", icon: "flight", imageUrl: "/images/drone-operators.jpg" },
+    { title: "Infrastructure Inspectors", description: "Standardize inspection workflows", icon: "engineering", imageUrl: "/images/infrastructure-inspections.jpg" },
+    { title: "Field Teams", description: "Organize and analyze large image sets", icon: "groups", imageUrl: "/images/land-surveys.jpg" },
   ];
 
   const steps = [
@@ -863,28 +863,64 @@ export default function MarketingPage() {
                 <div
                   key={i}
                   className="use-case-card-bento"
+                  style={{
+                    minHeight: "400px",
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "var(--color-card)",
+                    border: "1px solid var(--color-outline-variant)",
+                    borderRadius: "var(--radius-lg)",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
                 >
+                  {useCase.imageUrl && (
+                    <div style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}>
+                      <img
+                        src={useCase.imageUrl}
+                        alt={useCase.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: "60%",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+                      }} />
+                    </div>
+                  )}
                   <div style={{
-                    padding: "var(--sys-spacing-md)",
+                    padding: "var(--spacing-lg)",
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center"
+                    justifyContent: "flex-end",
+                    position: "relative",
+                    zIndex: 1,
                   }}>
-                    <h4 style={{
-                      color: "var(--sys-surface-roles-on-surface)",
-                      fontFamily: "var(--sys-typescale-title-large-fontfamily)",
-                      fontSize: "var(--sys-typescale-title-large-fontsize)",
-                      fontWeight: 500,
-                      marginBottom: "var(--sys-spacing-sm)",
+                    <h4 className="text-title-large" style={{
+                      color: "#ffffff",
+                      fontWeight: 600,
+                      marginBottom: "var(--spacing-sm)",
+                      textShadow: "0 2px 4px rgba(0,0,0,0.3)",
                     }}>
                       {useCase.title}
                     </h4>
-                    <p style={{
-                      color: "var(--sys-surface-roles-on-surface-variant)",
-                      fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
-                      fontSize: "var(--sys-typescale-body-medium-fontsize)",
-                      lineHeight: "var(--sys-typescale-body-medium-lineheight)",
+                    <p className="text-body-medium" style={{
+                      color: "rgba(255,255,255,0.9)",
+                      textShadow: "0 1px 2px rgba(0,0,0,0.3)",
                     }}>
                       {useCase.description}
                     </p>
@@ -896,106 +932,35 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* SECTION 2: OUTPUT */}
-      <section style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
-        backgroundColor: "var(--color-section-bg)",
-      }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--sys-spacing-xxl)", alignItems: "center" }}>
-          <div>
-            <h2 style={{
-              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-              fontSize: "var(--sys-typescale-headline-large-fontsize)",
-              fontWeight: 600,
-              color: "var(--sys-surface-roles-on-surface)",
-              marginBottom: "var(--sys-spacing-lg)",
-            }}>
-              Professional reports, ready in minutes
-            </h2>
-            <p style={{
-              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-              fontSize: "var(--sys-typescale-body-large-fontsize)",
-              color: "var(--sys-surface-roles-on-surface-variant)",
-              lineHeight: "var(--sys-typescale-body-large-lineheight)",
-            }}>
-              No formatting. No repetitive writing. Just export.
-            </p>
-          </div>
-          <div style={{
-            backgroundColor: "var(--sys-surface-roles-surface-container)",
-            borderRadius: "var(--sys-radius-lg)",
-            padding: "var(--sys-spacing-lg)",
-            border: "1px solid var(--sys-outline-roles-outline-variant)",
-            minHeight: "300px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <p style={{
-              color: "var(--sys-surface-roles-on-surface-variant)",
-              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
-              fontSize: "var(--sys-typescale-body-medium-fontsize)",
-            }}>
-              Report Preview
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section style={{
-        padding: `0 24px 160px`, // Added large explicit spacing between CTA and footer
-        backgroundColor: "var(--color-section-bg)",
+        padding: `80px 24px 160px`,
+        backgroundColor: "transparent",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
-           .cta-card {
-              background-color: var(--sys-surface-roles-surface-container);
-             background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
-             border: 1px solid var(--sys-outline-variant);
-             border-radius: 20px;
-             padding: 50px 24px; // Removed another 50px of total height
-             text-align: center;
-             position: relative;
-             overflow: hidden;
-             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-           }
             .cta-primary-btn {
               background-color: var(--sys-primary);
               color: var(--sys-on-primary);
-              padding: 12px 24px;
-             border-radius: 8px;
-             font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             transition: background-color 0.2s, transform 0.2s;
-             border: none;
-             display: inline-block;
-           }
-           .cta-primary-btn:hover {
-             background-color: var(--sys-primary-container);
-             color: var(--sys-on-primary-container);
-             transform: translateY(-1px);
-           }
-            .cta-secondary-link {
-              color: var(--sys-on-surface);
+              border-radius: 8px;
               font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             display: inline-flex;
-             align-items: center;
-             gap: 6px;
-             transition: color 0.2s, transform 0.2s;
-           }
-           .cta-secondary-link:hover {
-             color: rgba(255,255,255,0.8);
-           }
-         `}} />
-        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-          <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+              font-weight: 500;
+              text-decoration: none;
+              transition: background-color 0.2s, transform 0.2s;
+              border: none;
+              display: inline-block;
+            }
+            .cta-primary-btn:hover {
+              background-color: var(--sys-primary-container);
+              color: var(--sys-on-primary-container);
+              transform: translateY(-1px);
+            }
+          `}} />
+
+        <div style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center" }}>
             <h2 style={{
-              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-              fontSize: "var(--sys-typescale-headline-large-fontsize)",
+              fontFamily: "var(--sys-typescale-display-small-fontfamily)",
+              fontSize: "var(--sys-typescale-display-small-fontsize)",
               fontWeight: 600,
               color: "var(--sys-surface-roles-on-surface)",
               marginBottom: "var(--sys-spacing-lg)",
@@ -1003,21 +968,23 @@ export default function MarketingPage() {
             }}>
               Start generating inspection reports in minutes
             </h2>
-            <Link href="/signup" className="cta-primary-btn">
-              Get Started
-            </Link>
             <p style={{
-              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
-              fontSize: "var(--sys-typescale-body-medium-fontsize)",
+              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+              fontSize: "var(--sys-typescale-body-large-fontsize)",
               color: "var(--sys-surface-roles-on-surface-variant)",
-              marginTop: "var(--sys-spacing-md)",
+              marginBottom: "var(--sys-spacing-xxl)",
               textAlign: "center",
             }}>
               No credit card required
             </p>
+            <Link href="/signup" className="cta-primary-btn" style={{
+              padding: "16px 32px",
+              marginTop: "28px",
+            }}>
+              Get Started
+            </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
 <footer style={{
         backgroundColor: "var(--footer-bg)",

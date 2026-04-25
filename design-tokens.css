@@ -485,8 +485,13 @@
 
 :root.light .step-card:hover,
 :root.light .feature-card:hover,
-:root.light .use-case-card-bento:hover,
 :root.light .problem-solution-card:hover {
   box-shadow: 0 12px 32px rgba(49, 87, 155, 0.14) !important;
   border-color: #31579b !important;
+}
+
+.use-case-card-bento:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-level-3);
+  border-color: var(--color-primary);
 }
