@@ -52,17 +52,16 @@ export default function MarketingPage() {
   ];
 
   const useCases = [
-    { title: "Agricultural Inspections", description: "Assess crop health, map pest damage, and monitor irrigation across hundreds of acres. Deliver clear reports growers can act on.", imageUrl: "/images/agricultural-inspections.jpg" },
-    { title: "Land Surveys", description: "Document site conditions, track changes between surveys, and produce professional reports clients trust for decision-making.", imageUrl: "/images/land-surveys.jpg" },
-    { title: "Infrastructure Inspections", description: "Inspect roofs, bridges, and utility assets from the air. Generate professional reports without putting boots on the ground.", imageUrl: "/images/infrastructure-inspections.jpg" },
-    { title: "Drone Service Providers", description: "Stand out from competitors by delivering polished inspection reports with every flight. Turn aerial data into a premium service.", imageUrl: "/images/drone-operators.jpg" },
+    { title: "Drone Operators", description: "Deliver reports faster to clients" },
+    { title: "Infrastructure Inspectors", description: "Standardize inspection workflows" },
+    { title: "Field Teams", description: "Organize and analyze large image sets" },
   ];
 
   const steps = [
-    { title: "Upload Images", description: "Drag and drop your drone images. GPS data is extracted automatically." },
-    { title: "AI Analyzes & Generates Findings", description: "AI detects patterns, flags issues, and generates findings for every image." },
-    { title: "Review & Edit", description: "Review findings, make edits, and add your notes." },
-    { title: "Export Report", description: "Generate a polished PDF and share with stakeholders." },
+    { num: "1", title: "Upload Your Images", description: "Drag and drop your drone images. GPS data is extracted automatically.", icon: "upload" },
+    { num: "2", title: "Tag & Organize", description: "Categorize images by project, location, or condition in seconds.", icon: "label" },
+    { num: "3", title: "Analyze with AI", description: "AI detects patterns, flags issues, and generates findings for every image.", icon: "auto_awesome" },
+    { num: "4", title: "Export Your Report", description: "Generate a polished PDF report and share with stakeholders immediately.", icon: "description" },
   ];
 
   return (
@@ -79,7 +78,7 @@ export default function MarketingPage() {
         width: "100%",
         zIndex: 10,
       }}>
-        <style>{`
+<style>{`
               .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
               .nav-link { text-decoration: none; transition: color 0.3s ease; color: #ffffff !important; font-weight: 500; }
               .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
@@ -112,37 +111,37 @@ export default function MarketingPage() {
                 gap: ${tokens.spacing.lg};
               }
             `}</style>
-        <div className="header-brand">
-          <Brand size="lg" />
-        </div>
-        <div className="header-nav">
-          <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-            Features
-          </Link>
-          <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-            How It Works
-          </Link>
-          <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
-            Use Cases
-          </Link>
-        </div>
-        <div className="header-actions">
-          <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onPrimary }}>
-            Log In
-          </Link>
-          <Link href="/signup" className="btn-primary" style={{
-            padding: "16px 20px",
-            backgroundColor: tokens.colors.primary,
-            color: tokens.colors.onPrimary,
-            textDecoration: "none",
-            borderRadius: "16px",
-            ...tokens.typography.labelLarge,
-            fontWeight: "600",
-          }}>
-            Get Started
-          </Link>
-          <ThemeToggle />
-        </div>
+          <div className="header-brand">
+            <Brand size="md" />
+          </div>
+          <div className="header-nav">
+            <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
+              Features
+            </Link>
+            <Link href="#how-it-works" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
+              How It Works
+            </Link>
+            <Link href="#use-cases" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
+              Use Cases
+            </Link>
+          </div>
+          <div className="header-actions">
+<Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onPrimary }}>
+              Log In
+            </Link>
+            <Link href="/signup" className="btn-primary" style={{
+                padding: "16px 20px",
+                backgroundColor: tokens.colors.primary,
+                color: tokens.colors.onPrimary,
+                textDecoration: "none",
+                borderRadius: "16px",
+                ...tokens.typography.labelLarge,
+                fontWeight: "600",
+              }}>
+              Get Started
+            </Link>
+<ThemeToggle />
+          </div>
       </nav>
 
       {/* Hero Section */}
@@ -455,9 +454,9 @@ export default function MarketingPage() {
                 left: `${tokens.spacing.lg}`,
                 width: "12px",
                 height: "12px",
-                backgroundColor: tokens.colors.primary,
-                borderRadius: "50%",
-                boxShadow: `0 0 0 4px rgba(96, 165, 250, 0.2)`,
+                 backgroundColor: tokens.colors.primary,
+                 borderRadius: "50%",
+                 boxShadow: `0 0 0 4px rgba(96, 165, 250, 0.2)`,
               }} />
               <h3 className="problem-solution-title" style={{
                 ...tokens.typography.headlineMedium,
@@ -527,9 +526,9 @@ export default function MarketingPage() {
                 left: `${tokens.spacing.lg}`,
                 width: "12px",
                 height: "12px",
-                backgroundColor: tokens.colors.secondary,
-                borderRadius: "50%",
-                boxShadow: `0 0 0 4px rgba(52, 211, 153, 0.2)`,
+                 backgroundColor: tokens.colors.secondary,
+                 borderRadius: "50%",
+                 boxShadow: `0 0 0 4px rgba(52, 211, 153, 0.2)`,
               }} />
               <h3 className="problem-solution-title" style={{
                 ...tokens.typography.headlineMedium,
@@ -543,25 +542,25 @@ export default function MarketingPage() {
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
                     <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>AI analyzes every image and generates consistent findings in minutes, not hours</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
                     <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>All images and data are automatically organized, searchable, and comparable across projects</span>
                   </li>
                   <li className="problem-solution-item" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
                     <div style={{ flexShrink: 0, marginTop: "4px" }}>
-                      <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
-                      </div>
+                       <div className="problem-solution-dot" style={{ width: "20px", height: "20px", borderRadius: tokens.radius.sm, backgroundColor: tokens.colors.secondaryContainer, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                         <span style={{ color: tokens.colors.secondary, fontSize: "var(--sys-typescale-body-large-fontsize)", fontWeight: "bold" }}>✓</span>
+                       </div>
                     </div>
                     <span style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurfaceVariant, lineHeight: 1.6 }}>Professional PDF reports are generated automatically — consistent, accurate, and client-ready</span>
                   </li>
@@ -571,10 +570,10 @@ export default function MarketingPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ display: "flex", gap: "4px" }}>
                     {[1, 2, 3].map((i) => (
-                      <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? tokens.colors.secondary : tokens.colors.outlineVariant }} />
+                       <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: i === 1 ? tokens.colors.secondary : tokens.colors.outlineVariant }} />
                     ))}
                   </div>
-                  <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: tokens.colors.onSurfaceVariant }}>3 ways FieldSpec delivers</span>
+                   <span style={{ fontFamily: "var(--sys-typescale-body-large-fontfamily)", fontSize: "var(--sys-typescale-body-medium-fontsize)", color: tokens.colors.onSurfaceVariant }}>3 ways FieldSpec delivers</span>
                 </div>
               </div>
             </div>
@@ -585,126 +584,105 @@ export default function MarketingPage() {
 
       {/* How It Works */}
       <section id="how-it-works" style={{
-        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg} ${tokens.spacing.xxl}`,
+        padding: `160px ${tokens.spacing.lg} ${tokens.spacing.xxl}`, 
         backgroundColor: "var(--color-section-bg)",
       }}>
         <style dangerouslySetInnerHTML={{
           __html: `
-            .hiw-grid {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 24px;
-              margin-top: 48px;
-            }
-.hiw-card {
-              background: var(--sys-surface-roles-surface-container-low);
-              border: 1px solid var(--sys-outline-roles-outline);
-              border-radius: 8px;
-              padding: 40px 36px;
-              display: flex;
-              flex-direction: column;
-              transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-              overflow: hidden;
-              position: relative;
-            }
-            .hiw-card:hover {
+            .step-card:hover {
               transform: translateY(-4px);
-              border-color: var(--sys-outline-roles-outline);
-              box-shadow: var(--sys-elevation-3d-pnumbra);
+              box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+              border-color: rgba(255,255,255,0.2) !important;
             }
-            .hiw-card-icon {
-              width: 56px;
-              height: 56px;
-              border-radius: 12px;
-              background: linear-gradient(135deg, var(--sys-primary) 0%, var(--sys-secondary) 100%);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 24px;
-            }
-            .hiw-card-decoration {
-              position: absolute;
-              bottom: -20px;
-              right: -20px;
-              width: 120px;
-              height: 120px;
-              border-radius: 50%;
-              background: var(--sys-on-secondary-container);
-              opacity: 0.06;
-            }
-            .hiw-card-icon {
-              width: 56px;
-              height: 56px;
-              border-radius: 8px;
-              background: linear-gradient(135deg, var(--sys-primary) 0%, var(--sys-secondary) 100%);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 20px;
-            }
-            .hiw-card-icon span {
-              font-size: 24px;
-              color: var(--sys-on-primary);
-            }
-            .hiw-card-number {
-              font-family: var(--sys-typescale-title-small-fontfamily);
-              font-size: 13px;
-              font-weight: 600;
-              color: var(--sys-on-surface-variant);
-              margin-bottom: 8px;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
-            }
-            .hiw-card-title {
-              font-family: var(--sys-typescale-title-large-fontfamily);
-              font-size: 20px;
-              font-weight: 600;
-              color: var(--sys-on-surface);
-              margin-bottom: 8px;
-            }
-            .hiw-card-description {
-              font-family: var(--sys-typescale-body-medium-fontfamily);
-              font-size: 15px;
-              color: var(--sys-on-surface-variant);
-              line-height: 1.5;
-            }
-@media (max-width: 640px) {
-              .hiw-grid {
-                grid-template-columns: 1fr;
-              }
-              .hiw-card {
-                padding: 24px;
-              }
-            }
-          `}} />
-        <div style={{ margin: `${tokens.spacing.xl} auto`, padding: tokens.spacing.md, display: "flex", flexDirection: "column", gap: tokens.spacing.lg }}>
-          <div style={{ width: "fit-content", margin: "0 auto", textAlign: "center" }}>
-            <h2 style={{
-              ...tokens.typography.headlineLarge,
-              color: tokens.colors.onSurface,
-              marginBottom: tokens.spacing.xs,
-            }}>
-              How It Works
-            </h2>
-            <p style={{
-              ...tokens.typography.bodyLarge,
-              color: tokens.colors.onSurfaceVariant,
-            }}>
-              Get from drone flight to delivered report in 4 steps
-            </p>
-          </div>
-          <div className="hiw-grid">
+           @media (min-width: 768px) {
+             .step-connector {
+               display: block !important;
+             }
+           }
+         `}} />
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <h2 style={{
+            ...tokens.typography.headlineLarge,
+            color: tokens.colors.onSurface,
+            textAlign: "center",
+            marginBottom: tokens.spacing.xs,
+          }}>
+            How It Works
+          </h2>
+          <p style={{
+            ...tokens.typography.bodyLarge,
+            color: tokens.colors.onSurfaceVariant,
+            textAlign: "center",
+            marginBottom: tokens.spacing.xxl,
+          }}>
+            Get from drone flight to delivered report in 4 steps
+          </p>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: tokens.spacing.lg,
+          }}>
             {steps.map((step, index) => (
-              <div key={index} className="hiw-card">
-                <div className="hiw-card-decoration" />
-                <div className="hiw-card-icon">
-                  <span className="material-symbols-outlined">
-                    {index === 0 ? "cloud_upload" : index === 1 ? "psychology" : index === 2 ? "edit_note" : "picture_as_pdf"}
-                  </span>
+              <div
+                key={step.num}
+                className="step-card"
+                style={{
+                  padding: tokens.spacing.xl,
+                  backgroundColor: tokens.colors.surfaceContainer,
+                  borderRadius: tokens.radius.lg,
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  position: "relative",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                <div style={{
+                  width: "64px",
+                  height: "64px",
+                  borderRadius: tokens.radius.lg,
+                  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.secondary} 100%)`,
+                  color: tokens.colors.onPrimary,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: tokens.spacing.md,
+                  boxShadow: `0 6px 20px ${tokens.colors.primary}40`,
+                }}>
+                  <span className="material-icons" style={{ fontSize: "28px" }}>{step.icon}</span>
                 </div>
-                <div className="hiw-card-number">Step {index + 1}</div>
-                <h3 className="hiw-card-title">{step.title}</h3>
-                <p className="hiw-card-description">{step.description}</p>
+                <h3 style={{
+                  ...tokens.typography.titleMedium,
+                  color: tokens.colors.onSurface,
+                  marginBottom: tokens.spacing.xs,
+                }}>
+                  {step.title}
+                </h3>
+                <p style={{
+                  ...tokens.typography.bodySmall,
+                  color: tokens.colors.onSurfaceVariant,
+                  lineHeight: 1.5,
+                }}>
+                  {step.description}
+                </p>
+                {index < steps.length - 1 && (
+                  <div className="step-connector" style={{
+                    position: "absolute",
+                    right: "-12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "24px",
+                    height: "24px",
+                    color: tokens.colors.outlineVariant,
+                    opacity: 0.3,
+                    display: "none",
+                  }}>
+                    <span className="material-icons" style={{ fontSize: "24px" }}>arrow_forward</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -715,7 +693,114 @@ export default function MarketingPage() {
       <section id="features" style={{
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
         backgroundColor: "var(--color-section-bg)",
-      }} />
+      }}>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+           .feature-card:hover {
+             transform: translateY(-4px);
+             box-shadow: 0 12px 32px rgba(49,87,155,0.12);
+              border-color: var(--sys-primary);
+           }
+           .use-case-card:hover {
+             transform: translateY(-4px);
+             box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+             border-color: var(--sys-primary);
+           }
+           :root.light .feature-card {
+             background-color: #D8E4F3 !important;
+             border-color: #c3d5ed !important;
+           }
+         `}} />
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <h2 style={{
+            ...tokens.typography.headlineLarge,
+             color: tokens.colors.onSurface,
+            textAlign: "center",
+            marginBottom: tokens.spacing.xs,
+          }}>
+            Everything You Need to Deliver Professional Reports
+          </h2>
+          <p style={{
+            ...tokens.typography.bodyLarge,
+             color: tokens.colors.onSurfaceVariant,
+            textAlign: "center",
+            marginBottom: tokens.spacing.xxl,
+          }}>
+            Speed, accuracy, and consistency — built for field inspectors
+          </p>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: tokens.spacing.lg,
+          }}>
+            {features.map((feature, i) => (
+              <div
+                key={i}
+                className="feature-card"
+                style={{
+                  backgroundColor: tokens.colors.surfaceContainer,
+                  borderRadius: "20px",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  padding: tokens.spacing.md,
+                  display: "flex",
+                  flexDirection: "column",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                {feature.imageUrl ? (
+                  <div style={{
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    marginBottom: tokens.spacing.lg,
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}>
+                    <img
+                      src={feature.imageUrl}
+                      alt={feature.title}
+                      style={{
+                        width: "100%",
+                        height: "220px",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ height: "16px" }} />
+                )}
+                <div style={{
+                  padding: `0 ${tokens.spacing.sm}`,
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                }}>
+                  <h4 style={{
+                    fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                    fontSize: "20px",
+                    fontStyle: "italic",
+                    fontWeight: 500,
+                    color: tokens.colors.onSurface,
+                    marginBottom: "12px",
+                  }}>
+                    {feature.title}
+                  </h4>
+                  <p style={{
+                    fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    color: tokens.colors.onSurfaceVariant,
+                    lineHeight: 1.6,
+                    paddingBottom: tokens.spacing.sm,
+                  }}>
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Use Cases */}
       <section id="use-cases" style={{
@@ -728,57 +813,40 @@ export default function MarketingPage() {
           .bento-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 48px;
+            gap: var(--sys-spacing-lg);
+            margin-top: var(--sys-spacing-spacing-xl);
           }
           .use-case-card-bento {
-             background: var(--sys-surface-roles-surface-container);
-            border: 1px solid var(--sys-outline-variant);
-            border-radius: 8px;
+            background: var(--sys-surface-roles-surface-container);
+            border: 1px solid var(--sys-outline-roles-outline-variant);
+            border-radius: var(--sys-radius-lg);
+            padding: var(--sys-spacing-lg);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease;
           }
           .use-case-card-bento:hover {
             transform: translateY(-4px);
-             border-color: var(--sys-outline-variant);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-          }
-          .bento-span-2 {
-            grid-column: span 2;
-          }
-          .bento-span-1 {
-            grid-column: span 1;
+            border-color: var(--sys-primary);
+            box-shadow: var(--sys-elevation-8dp);
           }
           @media (max-width: 900px) {
             .bento-grid {
               grid-template-columns: 1fr;
             }
-            .bento-span-2, .bento-span-1 {
-              grid-column: span 1;
-            }
           }
         `}} />
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "60px", textAlign: "center" }}>
-            <span style={{
-              color: tokens.colors.primary,
-              fontSize: "14px",
-              fontWeight: 600,
-              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-              display: "block",
-              marginBottom: "12px",
-              letterSpacing: "0.01em"
-            }}>Who It&apos;s For</span>
+          <div style={{ marginBottom: "var(--sys-spacing-xxl)", textAlign: "center" }}>
             <h2 style={{
-              ...tokens.typography.headlineLarge,
-              color: tokens.colors.onSurface,
+              color: "var(--sys-surface-roles-on-surface)",
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
+              fontWeight: 600,
               textAlign: "center",
               margin: "0 auto",
-              maxWidth: "800px",
             }}>
-              Built for Field Professionals
+              Who It&apos;s For
             </h2>
           </div>
 
@@ -794,60 +862,29 @@ export default function MarketingPage() {
               return (
                 <div
                   key={i}
-                  className={`use-case-card-bento ${spanClass}`}
+                  className="use-case-card-bento"
                 >
-                  {useCase.imageUrl && (
-                    <div style={{
-                      height: "240px",
-                      width: "100%",
-                      backgroundColor: "#0B1120",
-                      borderBottom: "1px solid rgba(255,255,255,0.05)",
-                      overflow: "hidden",
-                    }}>
-                      <img
-                        src={useCase.imageUrl}
-                        alt={useCase.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          opacity: 0.85,
-                        }}
-                      />
-                    </div>
-                  )}
                   <div style={{
-                    padding: "32px",
+                    padding: "var(--sys-spacing-md)",
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "flex-end" // Pushes text down nicely
+                    justifyContent: "center"
                   }}>
-                    <span style={{
-                      color: tokens.colors.onSurfaceVariant,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      marginBottom: "8px",
-                      textTransform: "capitalize",
-                    }}>
-                      {useCase.title.split(" ")[0]}
-                    </span>
                     <h4 style={{
-                      color: tokens.colors.onSurface,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "20px",
-                      fontWeight: "500",
-                      marginBottom: "12px",
+                      color: "var(--sys-surface-roles-on-surface)",
+                      fontFamily: "var(--sys-typescale-title-large-fontfamily)",
+                      fontSize: "var(--sys-typescale-title-large-fontsize)",
+                      fontWeight: 500,
+                      marginBottom: "var(--sys-spacing-sm)",
                     }}>
                       {useCase.title}
                     </h4>
                     <p style={{
-                      color: tokens.colors.onSurfaceVariant,
-                      fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                      fontSize: "14px",
-                      lineHeight: 1.6,
-                      opacity: 0.7,
+                      color: "var(--sys-surface-roles-on-surface-variant)",
+                      fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+                      fontSize: "var(--sys-typescale-body-medium-fontsize)",
+                      lineHeight: "var(--sys-typescale-body-medium-lineheight)",
                     }}>
                       {useCase.description}
                     </p>
@@ -855,6 +892,52 @@ export default function MarketingPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: OUTPUT */}
+      <section style={{
+        padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+        backgroundColor: "var(--color-section-bg)",
+      }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--sys-spacing-xxl)", alignItems: "center" }}>
+          <div>
+            <h2 style={{
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
+              fontWeight: 600,
+              color: "var(--sys-surface-roles-on-surface)",
+              marginBottom: "var(--sys-spacing-lg)",
+            }}>
+              Professional reports, ready in minutes
+            </h2>
+            <p style={{
+              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
+              fontSize: "var(--sys-typescale-body-large-fontsize)",
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              lineHeight: "var(--sys-typescale-body-large-lineheight)",
+            }}>
+              No formatting. No repetitive writing. Just export.
+            </p>
+          </div>
+          <div style={{
+            backgroundColor: "var(--sys-surface-roles-surface-container)",
+            borderRadius: "var(--sys-radius-lg)",
+            padding: "var(--sys-spacing-lg)",
+            border: "1px solid var(--sys-outline-roles-outline-variant)",
+            minHeight: "300px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <p style={{
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+              fontSize: "var(--sys-typescale-body-medium-fontsize)",
+            }}>
+              Report Preview
+            </p>
           </div>
         </div>
       </section>
@@ -870,7 +953,7 @@ export default function MarketingPage() {
               background-color: var(--sys-surface-roles-surface-container);
              background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
              border: 1px solid var(--sys-outline-variant);
-             border-radius: 8px;
+             border-radius: 20px;
              padding: 50px 24px; // Removed another 50px of total height
              text-align: center;
              position: relative;
@@ -908,45 +991,35 @@ export default function MarketingPage() {
              color: rgba(255,255,255,0.8);
            }
          `}} />
-        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <div className="cta-card" style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 1 }}>
             <h2 style={{
               fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontSize: "var(--sys-typescale-headline-large-fontsize)",
               fontWeight: 600,
-              color: tokens.colors.onSurface,
-              marginBottom: "24px",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.1,
+              color: "var(--sys-surface-roles-on-surface)",
+              marginBottom: "var(--sys-spacing-lg)",
               textAlign: "center",
             }}>
-              Go From Images to Report in Minutes
+              Start generating inspection reports in minutes
             </h2>
+            <Link href="/signup" className="cta-primary-btn">
+              Get Started
+            </Link>
             <p style={{
-              fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-              fontSize: "17px",
-              color: tokens.colors.onSurfaceVariant,
-              lineHeight: 1.6,
-              marginBottom: "40px",
-              maxWidth: "540px",
-              margin: "0 auto 40px",
+              fontFamily: "var(--sys-typescale-body-medium-fontfamily)",
+              fontSize: "var(--sys-typescale-body-medium-fontsize)",
+              color: "var(--sys-surface-roles-on-surface-variant)",
+              marginTop: "var(--sys-spacing-md)",
               textAlign: "center",
             }}>
-              Upload your first set of images and see what FieldSpec can do. No credit card required.
+              No credit card required
             </p>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "24px", flexWrap: "wrap", marginTop: "40px" }}>
-              <Link href="/signup" className="cta-primary-btn">
-                Start Free
-              </Link>
-              <Link href="#how-it-works" className="cta-secondary-link">
-                Watch the Demo <span aria-hidden="true">&rarr;</span>
-              </Link>
-            </div>
           </div>
         </div>
       </section>
 
-      <footer style={{
+<footer style={{
         backgroundColor: "var(--footer-bg)",
         borderTop: `1px solid ${tokens.colors.outlineVariant}`,
         padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
@@ -958,7 +1031,7 @@ export default function MarketingPage() {
             .social-footer-icon { color: var(--footer-color); opacity: 0.6; transition: color 0.3s ease, opacity 0.3s ease; font-size: 20px; display: flex; align-items: center; justify-content: center; }
             .social-footer-icon:hover { opacity: 1; color: var(--footer-color) !important; }
           `}</style>
-
+        
         <div style={{
           maxWidth: "1200px",
           margin: "0 auto",
@@ -967,15 +1040,15 @@ export default function MarketingPage() {
           gap: tokens.spacing.xl,
         }}>
           <div>
-            <Brand size="lg" />
-            <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8, marginTop: tokens.spacing.md }}>
+            <Brand size="md" />
+             <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8, marginTop: tokens.spacing.md }}>
               From drone images to professional reports. In minutes.
             </p>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
-              Product
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Product
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#features" className="footer-link" style={tokens.typography.bodySmall}>Features</a>
@@ -985,9 +1058,9 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
-              Company
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Company
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#" className="footer-link" style={tokens.typography.bodySmall}>About</a>
@@ -997,9 +1070,9 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div>
-            <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
-              Legal
+           <div>
+             <h4 style={{ ...tokens.typography.labelLarge, color: "var(--footer-color)", marginBottom: tokens.spacing.md }}>
+               Legal
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
               <a href="#" className="footer-link" style={tokens.typography.bodySmall}>Privacy Policy</a>
@@ -1020,18 +1093,18 @@ export default function MarketingPage() {
           alignItems: "center",
           gap: tokens.spacing.md,
         }}>
-          <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8 }}>
+           <p style={{ ...tokens.typography.bodySmall, color: "var(--footer-color)", opacity: 0.8 }}>
             &copy; {new Date().getFullYear()} FieldSpec. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
             <a href="https://x.com/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="Twitter" style={{ padding: "6px" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.5H2.66l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.5H2.66l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
             <a href="https://linkedin.com/company/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="LinkedIn" style={{ padding: "6px" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             </a>
             <a href="https://github.com/fieldspec" target="_blank" rel="noopener noreferrer" className="social-footer-icon" aria-label="GitHub" style={{ padding: "6px" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" /></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
             </a>
           </div>
         </div>
