@@ -4,17 +4,17 @@ import { tokens } from "@/lib/design-tokens";
 
 export function Features() {
   const features = [
-    { title: "AI-Generated Insights", description: "Get automated findings and recommendations for every image. No more manual analysis." },
-    { title: "Image-Based Analysis", description: "Upload drone images with GPS data. AI extracts patterns and identifies issues automatically." },
-    { title: "Structured Reports", description: "Build professional reports with consistent formatting. Export-ready in minutes." },
-    { title: "Map Visualisation", description: "See all your images on an interactive map. Pinpoint issues to exact locations." },
-    { title: "Fast Export", description: "Generate PDF reports with one click. Share with stakeholders instantly." },
+    { title: "Skip the Manual Analysis", description: "AI examines every image and produces findings automatically. No more staring at photos wondering what to write." },
+    { title: "GPS-Tagged Analysis", description: "Upload images with GPS coordinates. AI extracts patterns tied to exact locations so you know where issues are, not just what they are." },
+    { title: "Consistent Reports Every Time", description: "Generate formatted, professional PDF reports with one click. Your clients get the same quality, project after project." },
+    { title: "Pinpoint Issues on a Map", description: "Every image appears on an interactive map. See exactly where problems are without flipping through folders." },
+    { title: "Export & Share in One Click", description: "Generate a PDF and share with stakeholders instantly. No formatting, no file conversion, no delays." },
   ];
 
   return (
     <section id="features" style={{ padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`, backgroundColor: tokens.colors.surface }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ ...tokens.typography.headlineLarge, textAlign: "center", marginBottom: tokens.spacing.xxl }}>Key Features</h2>
+        <h2 style={{ ...tokens.typography.headlineLarge, textAlign: "center", marginBottom: tokens.spacing.xxl }}>Everything You Need to Deliver Professional Reports</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: tokens.spacing.lg }}>
           {features.map((f) => (
             <div key={f.title} style={{ padding: tokens.spacing.xl, borderRadius: tokens.radius.lg, border: `1px solid ${tokens.colors.outlineVariant}`, backgroundColor: tokens.colors.surface }}>
@@ -30,10 +30,10 @@ export function Features() {
 
 export function HowItWorks() {
   const steps = [
-    { num: "1", title: "Upload Drone Images", description: "Drag and drop or batch upload images. GPS data is extracted automatically.", icon: "upload" },
-    { num: "2", title: "Tag & Organize", description: "Categorize images by type, location, or condition. Keep everything structured.", icon: "label" },
-    { num: "3", title: "Generate AI Insights", description: "Let AI analyze each image and produce findings and recommendations.", icon: "auto_awesome" },
-    { num: "4", title: "Export Professional Report", description: "Build and export a structured PDF report. Ready for stakeholders.", icon: "description" },
+    { num: "1", title: "Upload Your Images", description: "Drag and drop your drone images. GPS data is extracted automatically.", icon: "upload" },
+    { num: "2", title: "Tag & Organize", description: "Categorize images by project, location, or condition in seconds.", icon: "label" },
+    { num: "3", title: "Analyze with AI", description: "AI detects patterns, flags issues, and generates findings for every image.", icon: "auto_awesome" },
+    { num: "4", title: "Export Your Report", description: "Generate a polished PDF report and share with stakeholders immediately.", icon: "description" },
   ];
 
   return (

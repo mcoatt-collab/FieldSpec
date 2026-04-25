@@ -207,10 +207,12 @@
   --sys-spacing-spacing-7xl: 256px;
   --sys-spacing-spacing-lg: 24px;
   --sys-spacing-spacing-md: 16px;
+  --sys-spacing-spacing-md-y: 20px;
   --sys-spacing-spacing-sm: 8px;
   --sys-spacing-spacing-xl: 32px;
   --sys-spacing-spacing-xs: 4px;
   --sys-spacing-spacing-xxl: 64px;
+  --sys-header-offset: 36px;
   --sys-surface-roles-inverse-on-surface: var(--ref-neutral-neutral20);
   --sys-surface-roles-inverse-surface: var(--ref-neutral-neutral90);
   --sys-surface-roles-on-surface-variant: var(--ref-neutral-variant-neutral-variant80);
