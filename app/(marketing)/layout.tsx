@@ -1,3 +1,5 @@
+import "@/design-tokens.css";
+
 export default function MarketingLayout({
   children,
 }: {

@@ -29,7 +29,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         .btn-outline:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
         .btn-outline { text-decoration: none; transition: background-color 0.3s ease; }
         .btn-text:hover { color: rgba(255, 255, 255, 0.7) !important; }
-        .btn-text { text-decoration: none; transition: color 0.3s ease; }
+        .btn-text { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onPrimary} !important; }
         .social-icon { color: rgba(255, 255, 255, 0.8); transition: color 0.3s ease; }
         .social-icon:hover { color: #FFFFFF !important; }
         .desktop-nav { display: flex; align-items: center; justify-content: center; width: 100%; }
@@ -75,7 +75,13 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             className="btn-text" 
             onMouseEnter={() => onPrefetch("/login")}
             onTouchStart={() => onPrefetch("/login")}
-            style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}
+            style={{ 
+              ...tokens.typography.labelLarge, 
+              color: tokens.colors.onPrimary,
+              backgroundColor: "transparent",
+              padding: "16px 20px",
+              borderRadius: tokens.radius.xl,
+            }}
           >
             Log In
           </Link>
@@ -85,10 +91,10 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             onMouseEnter={() => onPrefetch("/signup")}
             onTouchStart={() => onPrefetch("/signup")}
             style={{
-              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              padding: "16px 20px",
               backgroundColor: "#FFFFFF",
               textDecoration: "none",
-              borderRadius: tokens.radius.md,
+              borderRadius: tokens.radius.xl,
               ...tokens.typography.labelLarge,
               fontWeight: "600",
             }}
@@ -115,13 +121,19 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
           Use Cases
         </Link>
-        <div className="dropdown-actions">
+<div className="dropdown-actions">
           <Link 
             href="/login" 
             className="btn-text" 
             onMouseEnter={() => onPrefetch("/login")}
             onTouchStart={() => onPrefetch("/login")}
-            style={{ ...tokens.typography.labelLarge, color: "#FFFFFF" }}
+            style={{ 
+              ...tokens.typography.labelLarge, 
+              color: tokens.colors.onPrimary,
+              backgroundColor: "transparent",
+              padding: "16px 20px",
+              borderRadius: tokens.radius.xl,
+            }}
           >
             Log In
           </Link>
@@ -131,10 +143,10 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             onMouseEnter={() => onPrefetch("/signup")}
             onTouchStart={() => onPrefetch("/signup")}
             style={{
-              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              padding: "16px 20px",
               backgroundColor: "#FFFFFF",
               textDecoration: "none",
-              borderRadius: tokens.radius.md,
+              borderRadius: tokens.radius.xl,
               ...tokens.typography.labelLarge,
               fontWeight: "600",
             }}

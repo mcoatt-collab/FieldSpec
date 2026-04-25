@@ -69,145 +69,53 @@ export default function MarketingPage() {
     <main style={{ flex: 1 }}>
       {/* Navigation */}
       <nav style={{
-        padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-        borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.xxl}`,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "var(--color-section-bg)",
-        position: "sticky",
+        position: "absolute",
         top: 0,
-        zIndex: 100,
-        boxShadow: "0 1px 8px rgba(0,0,0,0.06)",
+        left: 0,
+        width: "100%",
+        zIndex: 10,
       }}>
-        <style>{`
-             .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
-             .nav-link { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onSurface} !important; font-weight: 500; }
-             .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
-             .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; }
-             .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
-             .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: ${tokens.colors.onSurface} !important; }
-             .btn-text:hover { color: ${tokens.colors.primary} !important; opacity: 1; }
-             .btn-text { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onSurfaceVariant} !important; }
+<style>{`
+              .nav-link:hover { color: ${tokens.colors.primary} !important; opacity: 0.8; }
+              .nav-link { text-decoration: none; transition: color 0.3s ease; color: #ffffff !important; font-weight: 500; }
+              .btn-primary:hover { background-color: ${tokens.colors.primaryContainer} !important; color: ${tokens.colors.onPrimaryContainer} !important; }
+              .btn-primary { text-decoration: none; transition: background-color 0.3s ease, color 0.3s ease; border-radius: 16px; }
+              .btn-outline:hover { background-color: ${tokens.colors.surfaceVariant} !important; }
+              .btn-outline { text-decoration: none; transition: background-color 0.3s ease; color: ${tokens.colors.onSurface} !important; border-radius: 16px; }
+              .btn-text:hover { color: ${tokens.colors.onPrimary} !important; opacity: 1; }
+              .btn-text { text-decoration: none; transition: color 0.3s ease; color: ${tokens.colors.onPrimary} !important; border-radius: 16px; }
               .social-icon { color: ${tokens.colors.onSurfaceVariant}; transition: color 0.3s ease; }
               .social-icon:hover { color: ${tokens.colors.onSurface} !important; }
-             /* Desktop navigation */
-             .desktop-nav {
-               display: flex;
-               flex: 1;
-               justify-content: space-between;
-               align-items: center;
-             }
-             .nav-center {
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               flex: 1;
-               gap: ${tokens.spacing.lg};
-             }
-             .nav-right {
-               display: flex;
-               align-items: center;
-               gap: ${tokens.spacing.md};
-               margin-left: auto;
-             }
-            /* Hamburger menu styles */
-           .hamburger-menu {
-             display: flex;
-             flex-direction: column;
-             justify-content: space-around;
-             width: 30px;
-             height: 24px;
-             background: transparent;
-             border: none;
-             cursor: pointer;
-             padding: 0;
-             z-index: 101;
-           }
-           .hamburger-menu span {
-             width: 100%;
-             height: 3px;
-              background: var(--sys-on-surface);
-             border-radius: 2px;
-             transition: all 0.3s ease;
-           }
-           .hamburger-menu span:nth-child(1) { transform-origin: 0% 0%; }
-           .hamburger-menu span:nth-child(2) { opacity: 1; }
-           .hamburger-menu span:nth-child(3) { transform-origin: 0% 100%; }
-           #menu-toggle:checked ~ .hamburger-menu span:nth-child(1) {
-             transform: rotate(45deg) translate(1px, -1px);
-           }
-           #menu-toggle:checked ~ .hamburger-menu span:nth-child(2) {
-             opacity: 0;
-           }
-           #menu-toggle:checked ~ .hamburger-menu span:nth-child(3) {
-             transform: rotate(-45deg) translate(1px, 1px);
-           }
-            /* Dropdown menu */
-            .dropdown-menu {
-              position: absolute;
-              top: 100%;
-              left: 0;
-              width: 100%;
-               background: var(--color-section-bg);
-               border-bottom: 1px solid var(--sys-outline-variant);
-              box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-              padding: ${tokens.spacing.lg};
-              display: flex;
-              flex-direction: column;
-              gap: ${tokens.spacing.md};
-              z-index: 99;
-              opacity: 0;
-              visibility: hidden;
-              max-height: 0;
-              overflow: hidden;
-              transition: opacity 0.3s ease, visibility 0.3s ease, max-height 0.3s ease;
-            }
-            #menu-toggle:checked ~ .dropdown-menu {
-              opacity: 1;
-              visibility: visible;
-              max-height: 500px;
-            }
-            .dropdown-link {
-               color: var(--sys-on-surface);
-              text-decoration: none;
-              padding: ${tokens.spacing.sm} 0;
-              transition: color 0.3s ease;
-              font-weight: 500;
-            }
-            .dropdown-link:hover {
-               color: var(--sys-primary) !important;
-            }
-           .dropdown-actions {
-             display: flex;
-             flex-direction: column;
-             gap: ${tokens.spacing.sm};
-             margin-top: ${tokens.spacing.md};
-           }
-            .dropdown-actions .btn-text,
-            .dropdown-actions .btn-primary {
-              width: 100%;
-              text-align: center;
-            }
-            /* Media queries for responsive navigation */
-            @media (max-width: 768px) {
-              .desktop-nav {
-                display: none;
+              /* Header layout */
+              .header-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
               }
-            }
-            @media (min-width: 769px) {
-              .hamburger-menu {
-                display: none;
+              .header-brand {
+                display: flex;
+                align-items: center;
               }
-              .dropdown-menu {
-                display: none;
+              .header-nav {
+                display: flex;
+                align-items: center;
+                gap: ${tokens.spacing.lg};
               }
-            }
-          `}</style>
-        <Brand size="md" />
-        {/* Desktop Navigation */}
-        <div className="desktop-nav">
-          <div className="nav-center">
+              .header-actions {
+                display: flex;
+                align-items: center;
+                gap: ${tokens.spacing.lg};
+              }
+            `}</style>
+          <div className="header-brand">
+            <Brand size="md" />
+          </div>
+          <div className="header-nav">
             <Link href="#features" className="nav-link" style={{ ...tokens.typography.labelLarge }}>
               Features
             </Link>
@@ -218,58 +126,23 @@ export default function MarketingPage() {
               Use Cases
             </Link>
           </div>
-          <div className="nav-right">
-            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge }}>
+          <div className="header-actions">
+<Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge, color: tokens.colors.onPrimary }}>
               Log In
             </Link>
-             <Link href="/signup" className="btn-primary" style={{
-               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-               backgroundColor: tokens.colors.primary,
-               color: tokens.colors.onPrimary,
-               textDecoration: "none",
-               borderRadius: tokens.radius.md,
-               ...tokens.typography.labelLarge,
-               fontWeight: "600",
-             }}>
+            <Link href="/signup" className="btn-primary" style={{
+                padding: "16px 20px",
+                backgroundColor: tokens.colors.primary,
+                color: tokens.colors.onPrimary,
+                textDecoration: "none",
+                borderRadius: "16px",
+                ...tokens.typography.labelLarge,
+                fontWeight: "600",
+              }}>
               Get Started
             </Link>
-            <ThemeToggle />
+<ThemeToggle />
           </div>
-        </div>
-        <input type="checkbox" id="menu-toggle" style={{ display: "none" }} />
-        <label htmlFor="menu-toggle" className="hamburger-menu" style={{ marginLeft: "auto" }}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-        <div className="dropdown-menu">
-          <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-            Features
-          </Link>
-          <Link href="#how-it-works" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-            How It Works
-          </Link>
-          <Link href="#use-cases" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
-            Use Cases
-          </Link>
-          <div className="dropdown-actions">
-            <Link href="/login" className="btn-text" style={{ ...tokens.typography.labelLarge }}>
-              Log In
-            </Link>
-             <Link href="/signup" className="btn-primary final-cta-btn" style={{
-               padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-               backgroundColor: tokens.colors.primary,
-               color: tokens.colors.onPrimary,
-               textDecoration: "none",
-               borderRadius: tokens.radius.md,
-               ...tokens.typography.labelLarge,
-               fontWeight: "600",
-             }}>
-              Get Started
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
       </nav>
 
       {/* Hero Section */}
@@ -285,7 +158,7 @@ export default function MarketingPage() {
         textAlign: "center",
         zIndex: 1,
         animation: "heroFadeIn 1s ease-out forwards",
-        backgroundColor: "var(--color-section-bg)",
+        backgroundColor: "#000",
       }}>
         {/* Video Background */}
         <div className="hero-video-container">
@@ -340,11 +213,12 @@ export default function MarketingPage() {
           <p className="hero-subcopy" style={{
             fontFamily: tokens.typography.bodyLarge.fontFamily,
             fontSize: "clamp(1.125rem, 2vw, 1.5rem)",
-            fontWeight: 400,
-            color: "#d8e4f3",
+            fontWeight: 500,
+            color: "#f0f4fa",
             maxWidth: "700px",
             marginBottom: tokens.spacing.xl,
             lineHeight: 1.5,
+            textShadow: "0 1px 4px rgba(0,0,0,0.3)",
           }}>
             Upload aerial images, get AI-generated analysis and findings, and export a structured PDF report. No manual writing, no missed details, no delays.
           </p>
@@ -356,9 +230,6 @@ export default function MarketingPage() {
           }}>
             <Link href="/signup" className="hero-btn-primary">
               Start Your First Report
-            </Link>
-            <Link href="#how-it-works" className="hero-btn-secondary">
-              See How It Works
             </Link>
           </div>
         </div>
@@ -376,25 +247,34 @@ export default function MarketingPage() {
 
           .hero-video-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
             z-index: 0;
             background-color: #000;
           }
           .hero-video-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.25);
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              to bottom,
+              rgba(0, 0, 0, 0.55) 0%,
+              rgba(0, 0, 0, 0.45) 100%
+            );
             z-index: 1;
           }
           .hero-video {
             position: absolute;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            transform: translate(-50%, -50%) scale(1.1);
-            object-fit: cover;
-            object-position: center center;
+            top: 50%;
+            left: 50%;
+            width: 177.77778vh;
+            min-width: 100%;
+            height: 56.25vw;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
             border: none;
             pointer-events: none;
           }
@@ -417,11 +297,11 @@ export default function MarketingPage() {
 
           /* Token-Based Primary Button */
           .hero-btn-primary {
-            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
+            padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-md-y);
             background-color: #315f9b;
             color: #ffffff;
             text-decoration: none;
-            border-radius: var(--sys-radius-md);
+            border-radius: 16px;
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
@@ -442,13 +322,13 @@ export default function MarketingPage() {
           .hero-btn-secondary {
             padding: var(--sys-spacing-spacing-md) var(--sys-spacing-spacing-xl);
             background-color: transparent;
-            color: #d8e4f3;
+            color: #ffffff;
             text-decoration: none;
-            border-radius: var(--sys-radius-md);
+            border-radius: 16px;
             font-family: var(--sys-typescale-label-large-fontfamily);
             font-size: var(--sys-typescale-label-large-fontsize);
             font-weight: 500;
-            border: 2px solid #d8e4f3;
+            border: 2px solid #ffffff;
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             display: inline-flex;
             align-items: center;

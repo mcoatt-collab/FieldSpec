@@ -35,29 +35,21 @@ export default function ThemeToggle() {
         .theme-toggle-btn {
           display: flex;
           align-items: center;
-          gap: 6px;
-          padding: 7px 14px;
-          border-radius: 20px;
+          justify-content: center;
+          padding: 13px;
+          border-radius: 16px;
           border: 1.5px solid #E2E8F0;
           background: #F8FAFC;
           cursor: pointer;
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 16px;
           color: #475569;
           font-family: inherit;
           transition: all 0.2s ease;
-          white-space: nowrap;
-          margin-left: 8px;
         }
         .theme-toggle-btn:hover {
           border-color: #31579b;
           background: #EEF4FB;
           color: #31579b;
-          transform: translateY(-1px);
-        }
-        .theme-toggle-icon {
-          font-size: 15px;
-          line-height: 1;
         }
       `}</style>
       <button
@@ -66,10 +58,9 @@ export default function ThemeToggle() {
         aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
         title={isLight ? "Switch to dark mode" : "Switch to light mode"}
       >
-        <span className="material-symbols-outlined theme-toggle-icon">
+        <span className="material-symbols-outlined">
           {isLight ? "dark_mode" : "light_mode"}
         </span>
-        {isLight ? "Dark" : "Light"}
       </button>
     </>
   );
