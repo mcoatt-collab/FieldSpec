@@ -1,9 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
+
 import { useProjectsStore } from "@/store/useProjectsStore";
+import { UploadZone } from "@/components/dashboard/upload/UploadZone";
+import {
+  UploadQueue,
+  UploadItem,
+} from "@/components/dashboard/upload/UploadQueue";
+import { FilterBar } from "@/components/dashboard/upload/FilterBar";
+import { BulkActionBar } from "@/components/dashboard/upload/BulkActionBar";
+import { ImageCard } from "@/components/dashboard/upload/ImageCard";
+import { EmptyState } from "@/components/dashboard/upload/EmptyState";
+import { StatusType } from "@/components/dashboard/upload/StatusBadge";
 import { LoadingScreen } from "@/lib/components/loading";
 
 interface ImageType {
@@ -13,116 +24,177 @@ interface ImageType {
   category: string;
   notes: string | null;
   createdAt: string;
+  status?: StatusType;
 }
-
-const CATEGORIES = [
-  { value: "all", label: "All" },
-  { value: "crop_health", label: "Crop Health" },
-  { value: "erosion", label: "Erosion" },
-  { value: "damage", label: "Damage" },
-  { value: "irrigation", label: "Irrigation" },
-  { value: "general", label: "General" },
-  { value: "untagged", label: "Untagged" },
-];
-
-const CATEGORY_OPTIONS = CATEGORIES.filter(
-  (c) => c.value !== "all" && c.value !== "untagged",
-);
 
 export default function UploadPage() {
   const router = useRouter();
-  const { projects, loading: projectsLoading, fetchProjects } = useProjectsStore();
+  const {
+    projects,
+    loading: projectsLoading,
+    fetchProjects,
+  } = useProjectsStore();
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [images, setImages] = useState<ImageType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [editingImage, setEditingImage] = useState<ImageType | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const initialProjectLoadedRef = useRef(false);
 
   const fetchImages = useCallback(async (projectId: string) => {
     try {
       const res = await fetch(`/api/images?projectId=${projectId}`);
       const data = await res.json();
+
       if (res.ok && data.data) {
         setImages(data.data);
       }
     } catch (err) {
       console.error("Failed to fetch images:", err);
+      setError("Failed to load images");
     }
   }, []);
 
-  const loadInitialData = useCallback(async () => {
-    await fetchProjects();
-    setLoading(false);
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchProjects();
+      setLoading(false);
+    };
+
+    loadData();
   }, [fetchProjects]);
 
   useEffect(() => {
-    void loadInitialData();
-  }, [loadInitialData]);
-
-  useEffect(() => {
     if (projects.length > 0 && !selectedProjectId) {
-      const firstProjectId = projects[0].id;
-      initialProjectLoadedRef.current = true;
-      setSelectedProjectId(firstProjectId);
-      void fetchImages(firstProjectId);
+      setSelectedProjectId(projects[0].id);
     }
-  }, [projects, selectedProjectId, fetchImages]);
+  }, [projects, selectedProjectId]);
 
   useEffect(() => {
-    if (!selectedProjectId) return;
-
-    if (initialProjectLoadedRef.current) {
-      initialProjectLoadedRef.current = false;
-      return;
+    if (selectedProjectId) {
+      fetchImages(selectedProjectId);
+      setSelectedImageIds(new Set());
     }
-
-    void fetchImages(selectedProjectId);
   }, [selectedProjectId, fetchImages]);
 
-  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleUpload = async (files: FileList) => {
+    if (!selectedProjectId) return;
 
-    setUploading(true);
+    setIsUploading(true);
     setError("");
 
-    try {
-      const file = files[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("projectId", selectedProjectId);
+    const newItems: UploadItem[] = Array.from(files).map((file) => ({
+      id: Math.random().toString(36).slice(2, 11),
+      name: file.name,
+      progress: 0,
+      status: "pending",
+    }));
 
-      const uploadRes = await fetch("/api/upload/image", {
-        method: "POST",
-        body: formData,
-      });
+    setUploadQueue((prev) => [...newItems, ...prev]);
 
-      const saveData = await uploadRes.json();
+    for (const item of newItems) {
+      setUploadQueue((prev) =>
+        prev.map((queueItem) =>
+          queueItem.id === item.id
+            ? { ...queueItem, status: "uploading" }
+            : queueItem,
+        ),
+      );
+    }
 
-      if (!uploadRes.ok || !saveData.data) {
-        setError(saveData.error?.message || "Upload failed");
-        return;
-      }
+    for (let index = 0; index < files.length; index += 1) {
+      const file = files[index];
+      const itemId = newItems[index].id;
 
-      setImages((currentImages) => [saveData.data, ...currentImages]);
-    } catch (err) {
-      setError("Upload failed. Please try again.");
-    } finally {
-      setUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("projectId", selectedProjectId);
+
+        const progressInterval = setInterval(() => {
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId && item.progress < 90
+                ? { ...item, progress: item.progress + 10, status: "uploading" }
+                : item,
+            ),
+          );
+        }, 200);
+
+        const res = await fetch("/api/upload/image", {
+          method: "POST",
+          body: formData,
+        });
+
+        clearInterval(progressInterval);
+        const data = await res.json();
+
+        if (res.ok && data.data) {
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId
+                ? { ...item, progress: 100, status: "completed" }
+                : item,
+            ),
+          );
+          setImages((prev) => [data.data, ...prev]);
+        } else {
+          setUploadQueue((prev) =>
+            prev.map((item) =>
+              item.id === itemId ? { ...item, status: "failed" } : item,
+            ),
+          );
+        }
+      } catch (err) {
+        setUploadQueue((prev) =>
+          prev.map((item) =>
+            item.id === itemId ? { ...item, status: "failed" } : item,
+          ),
+        );
       }
     }
-  }
 
-  async function handleCategoryChange(imageId: string, category: string) {
+    setIsUploading(false);
+  };
+
+  const handleRemoveUploadItem = (id: string) => {
+    setUploadQueue((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleClearCompletedUploads = () => {
+    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+  };
+
+  const handleSelectImage = (id: string, selected: boolean) => {
+    setSelectedImageIds((prev) => {
+      const next = new Set(prev);
+      if (selected) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedImageIds.size === filteredAndSortedImages.length) {
+      setSelectedImageIds(new Set());
+    } else {
+      setSelectedImageIds(
+        new Set(filteredAndSortedImages.map((image) => image.id)),
+      );
+    }
+  };
+
+  const handleCategoryChange = async (imageId: string, category: string) => {
     try {
       const res = await fetch(`/api/images/${imageId}`, {
         method: "PATCH",
@@ -130,25 +202,21 @@ export default function UploadPage() {
         body: JSON.stringify({ category }),
       });
 
-      if (!res.ok) {
-        setError("Failed to update category");
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        setImages((prev) =>
+          prev.map((image) => (image.id === imageId ? data.data : image)),
+        );
       }
-
-      const data = await res.json();
-      setImages((currentImages) =>
-        currentImages.map((img) => (img.id === imageId ? data.data : img))
-      );
     } catch (err) {
       setError("Failed to update category");
     }
-  }
+  };
 
-  async function handleSaveNotes() {
+  const handleSaveNotes = async () => {
     if (!editingImage) return;
 
     setSaving(true);
-    setError("");
 
     try {
       const res = await fetch(`/api/images/${editingImage.id}`, {
@@ -157,75 +225,123 @@ export default function UploadPage() {
         body: JSON.stringify({ notes: editingImage.notes || "" }),
       });
 
-      if (!res.ok) {
-        setError("Failed to save notes");
-        setSaving(false);
-        return;
-      }
+      if (res.ok) {
+        const data = await res.json();
+        setImages((prev) =>
+          prev.map((image) =>
+            image.id === editingImage.id ? data.data : image,
+          ),
+        );
+        setSaveSuccess(true);
 
-      const data = await res.json();
-      setImages((currentImages) =>
-        currentImages.map((img) =>
-          img.id === editingImage.id ? data.data : img,
-        ),
-      );
-      setSaveSuccess(true);
-      setTimeout(() => {
-        setEditingImage(null);
-        setSaveSuccess(false);
-      }, 1000);
+        setTimeout(() => {
+          setEditingImage(null);
+          setSaveSuccess(false);
+        }, 1000);
+      }
     } catch (err) {
       setError("Failed to save notes");
     } finally {
       setSaving(false);
     }
-  }
+  };
 
-  async function handleDeleteImage(imageId: string) {
+  const handleDeleteImage = async (imageId: string) => {
     if (!confirm("Are you sure you want to delete this image?")) return;
 
-    setDeletingImageId(imageId);
-    setError("");
-
     try {
-      const res = await fetch(`/api/images/${imageId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/api/images/${imageId}`, { method: "DELETE" });
 
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error?.message || "Failed to delete image");
-        return;
+      if (res.ok) {
+        setImages((prev) => prev.filter((image) => image.id !== imageId));
+        setSelectedImageIds((prev) => {
+          const next = new Set(prev);
+          next.delete(imageId);
+          return next;
+        });
       }
-
-      setImages((currentImages) =>
-        currentImages.filter((img) => img.id !== imageId),
-      );
     } catch (err) {
-      setError("Failed to delete image. Please try again.");
-    } finally {
-      setDeletingImageId(null);
+      setError("Failed to delete image");
     }
-  }
-
-  const filteredImages = images.filter((img) => {
-    if (filter === "all") return true;
-    if (filter === "untagged")
-      return !img.category || img.category === "general";
-    return img.category === filter;
-  });
-
-  const getCategoryLabel = (category: string | null) => {
-    if (!category || category === "general") return "Untagged";
-    const cat = CATEGORY_OPTIONS.find((c) => c.value === category);
-    return cat ? cat.label : category;
   };
 
-  const getCategoryColor = (category: string | null) => {
-    if (!category || category === "general")
-      return tokens.colors.surfaceVariant;
-    return tokens.colors.primaryContainer;
+  const handleBulkDelete = async () => {
+    if (!confirm(`Delete ${selectedImageIds.size} images?`)) return;
+
+    for (const id of Array.from(selectedImageIds)) {
+      await handleDeleteImage(id);
+    }
+
+    setSelectedImageIds(new Set());
   };
+
+  const handleBulkCategorize = async (category: string) => {
+    for (const id of Array.from(selectedImageIds)) {
+      await handleCategoryChange(id, category);
+    }
+
+    setSelectedImageIds(new Set());
+  };
+
+  const handleReprocess = (id: string) => {
+    setImages((prev) =>
+      prev.map((image) =>
+        image.id === id
+          ? { ...image, status: "processing" as StatusType }
+          : image,
+      ),
+    );
+
+    setTimeout(() => {
+      setImages((prev) =>
+        prev.map((image) =>
+          image.id === id
+            ? { ...image, status: "completed" as StatusType }
+            : image,
+        ),
+      );
+    }, 3000);
+  };
+
+  const filteredAndSortedImages = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return images
+      .filter((image) => {
+        const matchesCategory =
+          categoryFilter === "all"
+            ? true
+            : categoryFilter === "untagged"
+              ? !image.category || image.category === "general"
+              : image.category === categoryFilter;
+
+        const status = image.status || "completed";
+        const matchesStatus =
+          statusFilter === "all" ? true : status === statusFilter;
+
+        const matchesQuery =
+          normalizedQuery.length === 0
+            ? true
+            : [
+                image.id,
+                image.category,
+                image.notes || "",
+                image.createdAt,
+              ]
+                .join(" ")
+                .toLowerCase()
+                .includes(normalizedQuery);
+
+        return matchesCategory && matchesStatus && matchesQuery;
+      })
+      .sort((first, second) => {
+        const firstDate = new Date(first.createdAt).getTime();
+        const secondDate = new Date(second.createdAt).getTime();
+        return sortOrder === "newest"
+          ? secondDate - firstDate
+          : firstDate - secondDate;
+      });
+  }, [images, categoryFilter, statusFilter, sortOrder, searchQuery]);
 
   if (loading || projectsLoading) {
     return <LoadingScreen message="Loading images..." />;
@@ -234,655 +350,545 @@ export default function UploadPage() {
   return (
     <div
       style={{
-        maxWidth: "1200px",
-        padding: `0 ${tokens.spacing.md}`,
+        width: "100%",
+        paddingBottom: tokens.spacing.xxl,
       }}
     >
-      <style>{`
-        .custom-select {
-          transition: all 0.2s ease;
-          max-width: 100%;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-        @media (max-width: 600px) {
-          .custom-select {
-            font-size: 14px !important;
-            padding-right: 28px !important;
-            height: 44px;
-          }
-          .project-select-container {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 8px !important;
-          }
-          .project-select-container select {
-            width: 100% !important;
-          }
-        }
-        .custom-select:hover {
-          background-color: ${tokens.colors.surfaceContainerLow} !important;
-          border-color: ${tokens.colors.outline} !important;
-        }
-        .filter-btn {
-          transition: all 0.2s ease;
-        }
-        .filter-btn:hover {
-          background-color: ${tokens.colors.primaryContainer} !important;
-          color: ${tokens.colors.onPrimaryContainer} !important;
-        }
-        .action-btn {
-          transition: all 0.2s ease;
-        }
-        .action-btn:hover {
-          background-color: ${tokens.colors.surfaceVariant} !important;
-        }
-        .delete-icon-btn {
-          opacity: 0.5;
-          background-color: rgba(255, 255, 255, 0.9);
-          color: ${tokens.colors.onSurfaceVariant};
-          transition: all 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: none;
-          cursor: pointer;
-        }
-        .delete-icon-btn:hover {
-          opacity: 1;
-          background-color: ${tokens.colors.error} !important;
-          color: ${tokens.colors.onError} !important;
-          transform: scale(1.1);
-        }
-        .delete-icon-btn:active {
-          transform: scale(0.95);
-        }
-        @keyframes slideUpFade {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-content {
-          animation: slideUpFade 0.4s ease-out forwards;
-        }
-      `}</style>
       <div
-        className="animate-content"
         style={{
-          marginBottom: tokens.spacing.xl,
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.lg,
+          padding: tokens.spacing.md,
+          backgroundColor: tokens.colors.surface,
         }}
       >
-        <h2
-          style={{
-            ...tokens.typography.headlineMedium,
-            color: tokens.colors.onSurface,
-          }}
-        >
-          Upload & Manage
-        </h2>
-        <p
-          style={{
-            ...tokens.typography.bodyMedium,
-            color: tokens.colors.onSurfaceVariant,
-            marginTop: tokens.spacing.xs,
-          }}
-        >
-          Upload and organize field inspection images
-        </p>
-      </div>
-
-      {projects.length === 0 ? (
         <div
-          className="animate-content"
           style={{
-            padding: tokens.spacing.xl,
-            backgroundColor: tokens.colors.surface,
-            borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
-            border: `1px solid ${tokens.colors.outlineVariant}`,
-            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: tokens.spacing.lg,
           }}
         >
           <div
             style={{
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "var(--ref-neutral-neutral-98)",
-              borderRadius: tokens.radius.lg,
-              textAlign: "center",
-              border: `2px dashed var(--ref-neutral-variant-neutral-variant80)`,
-              marginBottom: tokens.spacing.lg,
-            }}
-          >
-            <svg
-              style={{
-                width: "48px",
-                height: "48px",
-                marginBottom: tokens.spacing.md,
-                fill: "var(--ref-neutral-variant-neutral-variant40)",
-              }}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5-7l-3 3.72L9 13l-3 4h12l-4-5z" />
-            </svg>
-            <p
-              style={{
-                ...tokens.typography.titleMedium,
-                color: "var(--ref-neutral-variant-neutral-variant30)",
-                margin: 0,
-                marginBottom: tokens.spacing.xs,
-              }}
-            >
-              No projects available
-            </p>
-            <p
-              style={{
-                ...tokens.typography.bodySmall,
-                color: "var(--ref-neutral-variant-neutral-variant40)",
-                opacity: 0.8,
-                margin: 0,
-              }}
-            >
-              Create a project to start uploading images
-            </p>
-          </div>
-          <button
-            onClick={() => router.push("/dashboard/projects")}
-            style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
-              border: "none",
-              borderRadius: tokens.radius.md,
-              cursor: "pointer",
-              ...tokens.typography.labelLarge,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primaryContainer;
-              e.currentTarget.style.color = tokens.colors.onPrimaryContainer;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primary;
-              e.currentTarget.style.color = tokens.colors.onPrimary;
-            }}
-          >
-            Create Project
-          </button>
-        </div>
-      ) : (
-        <>
-          <div
-            className="animate-content project-select-container"
-            style={{
-              marginBottom: tokens.spacing.lg,
               display: "flex",
-              alignItems: "center",
+              flexWrap: "wrap",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
               gap: tokens.spacing.md,
-              flexWrap: "wrap",
             }}
           >
-            <label
-              style={{
-                ...tokens.typography.labelLarge,
-                color: tokens.colors.onSurface,
-              }}
-            >
-              Project:
-            </label>
-            <select
-              value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="custom-select"
-              style={{
-                padding: `${tokens.spacing.sm} ${tokens.spacing.xl} ${tokens.spacing.sm} ${tokens.spacing.sm}`,
-                border: `1px solid ${tokens.colors.outlineVariant}`,
-                borderRadius: tokens.radius.md,
-                backgroundColor: tokens.colors.surface,
-                color: tokens.colors.onSurface,
-                ...tokens.typography.bodyLarge,
-                boxSizing: "border-box",
-                appearance: "none",
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: `right ${tokens.spacing.sm} center`,
-                backgroundSize: "16px",
-                cursor: "pointer",
-              }}
-            >
-              {projects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            disabled={uploading}
-            style={{ display: "none" }}
-            id="file-upload"
-          />
-
-          <label
-            htmlFor="file-upload"
-            className="animate-content"
-            style={{
-              display: "block",
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "var(--ref-primary-primary95)",
-              borderRadius: tokens.radius.lg,
-              textAlign: "center",
-              cursor: uploading ? "not-allowed" : "pointer",
-              opacity: uploading ? 0.6 : 1,
-              border: `2px dashed var(--ref-neutral-variant-neutral-variant90)`,
-              marginBottom: tokens.spacing.xl,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              if (!uploading) {
-                (e.currentTarget as HTMLLabelElement).style.backgroundColor =
-                  "var(--ref-primary-primary90)";
-                (e.currentTarget as HTMLLabelElement).style.borderColor =
-                  "var(--ref-primary-primary80)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!uploading) {
-                (e.currentTarget as HTMLLabelElement).style.backgroundColor =
-                  "var(--ref-primary-primary95)";
-                (e.currentTarget as HTMLLabelElement).style.borderColor =
-                  "var(--ref-neutral-variant-neutral-variant90)";
-              }
-            }}
-          >
-            {/* Upload Icon */}
-            <svg
-              style={{
-                width: "48px",
-                height: "48px",
-                marginBottom: tokens.spacing.md,
-                fill: "var(--ref-primary-primary40)",
-              }}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-
-            {/* Main Text */}
-            <p
-              style={{
-                ...tokens.typography.titleLarge,
-                color: "var(--ref-primary-primary40)",
-                margin: 0,
-                marginBottom: tokens.spacing.xs,
-              }}
-            >
-              {uploading ? "Optimizing & uploading..." : "Drop your image here, or browse"}
-            </p>
-
-            {/* Support Text */}
-            <p
-              style={{
-                ...tokens.typography.bodySmall,
-                color: "var(--ref-neutral-variant-neutral-variant40)",
-                opacity: 0.8,
-                margin: 0,
-              }}
-            >
-              Supports: PNG, JPG, JPEG, WEBP. Large images are optimized automatically.
-            </p>
-          </label>
-
-          {error && (
             <div
-              className="animate-content"
               style={{
-                padding: tokens.spacing.md,
-                marginBottom: tokens.spacing.md,
-                backgroundColor: tokens.colors.errorContainer,
-                color: tokens.colors.onErrorContainer,
-                borderRadius: tokens.radius.md,
-                ...tokens.typography.bodySmall,
+                display: "flex",
+                flexDirection: "column",
+                gap: tokens.spacing.xs,
               }}
             >
-              {error}
-            </div>
-          )}
-
-          <div
-            className="animate-content"
-            style={{
-              marginBottom: tokens.spacing.lg,
-              display: "flex",
-              gap: tokens.spacing.sm,
-              flexWrap: "wrap",
-            }}
-          >
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.value}
-                onClick={() => setFilter(cat.value)}
-                className={filter === cat.value ? "" : "filter-btn"}
+              <h1
                 style={{
-                  padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
-                  backgroundColor:
-                    filter === cat.value
-                      ? tokens.colors.primary
-                      : tokens.colors.surface,
-                  color:
-                    filter === cat.value
-                      ? tokens.colors.onPrimary
-                      : tokens.colors.onSurface,
-                  border: `1px solid ${tokens.colors.outlineVariant}`,
-                  borderRadius: tokens.radius.md,
-                  cursor: "pointer",
-                  ...tokens.typography.labelMedium,
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.headlineSmall.fontFamily,
+                  fontSize: tokens.typography.headlineSmall.fontSize,
+                  fontWeight: tokens.typography.headlineSmall.fontWeight,
+                  lineHeight: tokens.typography.headlineSmall.lineHeight,
+                  letterSpacing: tokens.typography.headlineSmall.letterSpacing,
                 }}
               >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+                Upload & Manage
+              </h1>
 
-          {filteredImages.length > 0 ? (
-            <div
+              <p
+                style={{
+                  color: tokens.colors.onSurfaceVariant,
+                  fontFamily: tokens.typography.bodyLarge.fontFamily,
+                  fontSize: tokens.typography.bodyLarge.fontSize,
+                  fontWeight: tokens.typography.bodyLarge.fontWeight,
+                  lineHeight: tokens.typography.bodyLarge.lineHeight,
+                  letterSpacing: tokens.typography.bodyLarge.letterSpacing,
+                }}
+              >
+                Upload and organize field inspection images
+              </p>
+            </div>
+
+            <button
+              onClick={() => window.open("/docs/upload-guide", "_blank")}
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: tokens.spacing.md,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: tokens.spacing.sm,
+                paddingInline: tokens.spacing.md,
+                paddingBlock: tokens.spacing.sm,
+                borderRadius: tokens.radius.md,
+                border: `1px solid ${tokens.colors.outline}`,
+                backgroundColor: tokens.colors.surface,
+                color: tokens.colors.onSurface,
+                cursor: "pointer",
+                fontFamily: tokens.typography.labelLarge.fontFamily,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
               }}
             >
-              {filteredImages.map((image, index) => (
-                <div
-                  key={image.id}
-                  style={{
-                    borderRadius: tokens.radius.lg,
-                    overflow: "hidden",
-                    backgroundColor: tokens.colors.surface,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
-                    transition: "all 0.2s ease",
-                    animation: `slideUpFade 0.4s ease-out forwards ${index * 0.05}s`,
-                    opacity: 0,
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <img
-                      src={image.thumbnailUrl}
-                      alt="Uploaded"
-                      style={{
-                        width: "100%",
-                        height: "220px",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
+              <span className="material-icons" style={{ fontSize: tokens.typography.labelLarge.lineHeight }}>upload_file</span>
+              Upload Guide
+            </button>
+          </div>
 
-                    {/* Delete Icon - Top Left */}
-                    <button
-                      className="delete-icon-btn"
-                      onClick={() => handleDeleteImage(image.id)}
-                      disabled={deletingImageId === image.id}
-                      style={{
-                        position: "absolute",
-                        top: tokens.spacing.xs,
-                        left: tokens.spacing.xs,
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: tokens.radius.sm,
-                        zIndex: 10,
-                      }}
-                      title="Delete image"
-                    >
-                      <span
-                        className="material-icons"
-                        style={{ fontSize: "18px" }}
-                      >
-                        {deletingImageId === image.id
-                          ? "hourglass_empty"
-                          : "delete"}
-                      </span>
-                    </button>
 
-                    {image.notes && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: tokens.spacing.xs,
-                          right: tokens.spacing.xs,
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: tokens.radius.sm,
-                          backgroundColor: tokens.colors.tertiary,
-                          color: tokens.colors.onTertiary,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          zIndex: 10,
-                        }}
-                        title="Has notes"
-                      >
-                        <span
-                          className="material-icons"
-                          style={{ fontSize: "18px" }}
-                        >
-                          sticky_note_2
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      padding: tokens.spacing.sm,
-                    }}
-                  >
-                    <select
-                      value={image.category || "general"}
-                      onChange={(e) =>
-                        handleCategoryChange(image.id, e.target.value)
-                      }
-                      className="custom-select"
-                      style={{
-                        width: "100%",
-                        padding: `${tokens.spacing.sm} ${tokens.spacing.xl} ${tokens.spacing.sm} ${tokens.spacing.sm}`,
-                        border: `1px solid ${tokens.colors.outlineVariant}`,
-                        borderRadius: tokens.radius.sm,
-                        backgroundColor: getCategoryColor(image.category),
-                        color: tokens.colors.onSurface,
-                        ...tokens.typography.labelSmall,
-                        boxSizing: "border-box",
-                        appearance: "none",
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: `right ${tokens.spacing.sm} center`,
-                        backgroundSize: "16px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {CATEGORY_OPTIONS.map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={() => setEditingImage(image)}
-                      className="action-btn"
-                      style={{
-                        marginTop: tokens.spacing.xs,
-                        width: "100%",
-                        padding: tokens.spacing.xs,
-                        backgroundColor: "transparent",
-                        border: `1px solid ${tokens.colors.outlineVariant}`,
-                        borderRadius: tokens.radius.sm,
-                        color: tokens.colors.onSurfaceVariant,
-                        cursor: "pointer",
-                        ...tokens.typography.labelSmall,
-                      }}
-                    >
-                      {image.notes ? "Edit Note" : "Add Note"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+
+          {projects.length === 0 ? (
+            <EmptyState
+              type="no_images"
+              onAction={() => (window.location.href = "/dashboard/projects")}
+            />
           ) : (
             <div
               style={{
-                padding: tokens.spacing.xl,
-                textAlign: "center",
-                backgroundColor: tokens.colors.surfaceVariant,
-                borderRadius: tokens.radius.lg,
+                display: "flex",
+                flexDirection: "column",
+                gap: tokens.spacing.lg,
               }}
             >
-              <p
+              <div
                 style={{
-                  ...tokens.typography.bodyMedium,
-                  color: tokens.colors.onSurfaceVariant,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  gap: tokens.spacing.md,
                 }}
               >
-                No images found for this filter.
-              </p>
+                <span
+                  style={{
+                    color: tokens.colors.onSurface,
+                    fontFamily: tokens.typography.titleMedium.fontFamily,
+                    fontSize: tokens.typography.titleMedium.fontSize,
+                    fontWeight: tokens.typography.titleMedium.fontWeight,
+                    lineHeight: tokens.typography.titleMedium.lineHeight,
+                    letterSpacing: tokens.typography.titleMedium.letterSpacing,
+                  }}
+                >
+                  Project:
+                </span>
+
+                <label
+                  style={{
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    minWidth: "min(100%, 20rem)",
+                  }}
+                >
+                  <select
+                    value={selectedProjectId}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    style={{
+                      width: "100%",
+                      appearance: "none",
+                      paddingInline: tokens.spacing.md,
+                      paddingBlock: tokens.spacing.sm,
+                      paddingRight: tokens.spacing.xl,
+                      borderRadius: tokens.radius.md,
+                      border: `1px solid ${tokens.colors.outline}`,
+                      backgroundColor: tokens.colors.surface,
+                      color: tokens.colors.onSurface,
+                      cursor: "pointer",
+                      outline: "none",
+                      fontFamily: tokens.typography.bodyLarge.fontFamily,
+                      fontSize: tokens.typography.bodyLarge.fontSize,
+                      fontWeight: tokens.typography.bodyLarge.fontWeight,
+                      lineHeight: tokens.typography.bodyLarge.lineHeight,
+                      letterSpacing: tokens.typography.bodyLarge.letterSpacing,
+                    }}
+                  >
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <span className="material-icons"
+                    style={{
+                      position: "absolute",
+                      right: tokens.spacing.sm,
+                      pointerEvents: "none",
+                      color: tokens.colors.onSurfaceVariant,
+                      fontSize: tokens.typography.labelLarge.lineHeight,
+                    }}
+                  >
+                    keyboard_arrow_down
+                  </span>
+                </label>
+              </div>
+
+
+
+              <FilterBar
+                category={categoryFilter}
+                setCategory={setCategoryFilter}
+                status={statusFilter}
+                setStatus={setStatusFilter}
+                sort={sortOrder}
+                setSort={setSortOrder}
+                query={searchQuery}
+                setQuery={setSearchQuery}
+              />
+
+
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 24rem), 1fr))",
+                  gap: tokens.spacing.md,
+                }}
+              >
+                <UploadZone onUpload={handleUpload} isUploading={isUploading} />
+                <UploadQueue
+                  items={uploadQueue}
+                  onRemoveItem={handleRemoveUploadItem}
+                  onClearCompleted={handleClearCompletedUploads}
+                />
+              </div>
+
+              <BulkActionBar
+                totalCount={filteredAndSortedImages.length}
+                selectedCount={selectedImageIds.size}
+                allSelected={
+                  filteredAndSortedImages.length > 0 &&
+                  selectedImageIds.size === filteredAndSortedImages.length
+                }
+                onToggleSelectAll={handleSelectAll}
+                onClearSelection={() => setSelectedImageIds(new Set())}
+                onBulkDelete={handleBulkDelete}
+                onBulkCategorize={handleBulkCategorize}
+                onBulkReprocess={() =>
+                  selectedImageIds.forEach((id) => handleReprocess(id))
+                }
+              />
+
+              {filteredAndSortedImages.length > 0 ? (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: `repeat(auto-fill, minmax(calc(${tokens.spacing.xxl} * 3), 1fr))`,
+                    gap: tokens.spacing.md,
+                    padding: tokens.spacing.sm,
+                    backgroundColor: tokens.colors.surface,
+                  }}
+                >
+                  {filteredAndSortedImages.map((image) => (
+                    <ImageCard
+                      key={image.id}
+                      image={image}
+                      isSelected={selectedImageIds.has(image.id)}
+                      onSelect={handleSelectImage}
+                      onCategoryChange={handleCategoryChange}
+                      onEditNote={(selectedImage) =>
+                        setEditingImage(selectedImage as ImageType)
+                      }
+                      onDelete={handleDeleteImage}
+                      onReprocess={handleReprocess}
+                    />
+                  ))}
+                </div>
+              ) : null}
+
+              {(images.length === 0 || filteredAndSortedImages.length === 0) && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 20rem), 1fr))",
+                    gap: tokens.spacing.md,
+                  }}
+                >
+                  {images.length === 0 ? (
+                    <EmptyState
+                      type="no_images"
+                      onAction={() =>
+                        document.getElementById("file-upload")?.click()
+                      }
+                    />
+                  ) : null}
+
+                  {images.length > 0 && filteredAndSortedImages.length === 0 ? (
+                    <EmptyState
+                      type="no_results"
+                      onAction={() => {
+                        setCategoryFilter("all");
+                        setStatusFilter("all");
+                        setSearchQuery("");
+                      }}
+                    />
+                  ) : null}
+                </div>
+              )}
             </div>
           )}
-        </>
-      )}
+        </div>
+      </div>
 
       {editingImage && (
         <div
           style={{
             position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            inset: 0,
+            zIndex: 50,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000,
+            backgroundColor:
+              "color-mix(in srgb, var(--sys-add-on-surface-roles-scrim) 56%, transparent)",
+            backdropFilter: `blur(${tokens.spacing.xs})`,
+            padding: tokens.spacing.md,
           }}
           onClick={() => setEditingImage(null)}
         >
           <div
             style={{
               backgroundColor: tokens.colors.surface,
-              borderRadius: tokens.radius.lg,
+              width: "100%",
+              maxWidth: "28rem",
+              borderRadius: tokens.radius.xl,
+              boxShadow: tokens.elevation.level4,
               padding: tokens.spacing.xl,
-              maxWidth: "400px",
-              width: "90%",
+              animation: "zoomIn 0.2s ease-out",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3
+            <div
               style={{
-                ...tokens.typography.titleLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: tokens.spacing.lg,
               }}
             >
-              {editingImage.notes ? "Edit Note" : "Add Note"}
-            </h3>
+              <h3
+                style={{
+                  color: tokens.colors.onSurface,
+                  fontFamily: tokens.typography.headlineSmall.fontFamily,
+                  fontSize: tokens.typography.headlineSmall.fontSize,
+                  fontWeight: tokens.typography.headlineSmall.fontWeight,
+                  lineHeight: tokens.typography.headlineSmall.lineHeight,
+                  letterSpacing: tokens.typography.headlineSmall.letterSpacing,
+                }}
+              >
+                Image Notes
+              </h3>
+
+              <button
+                onClick={() => setEditingImage(null)}
+                style={{
+                  padding: tokens.spacing.sm,
+                  background: "none",
+                  border: "none",
+                  borderRadius: tokens.radius.pill,
+                  cursor: "pointer",
+                  color: tokens.colors.onSurface,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    tokens.colors.surfaceVariant;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                <span className="material-icons"
+                  style={{ fontSize: tokens.typography.labelLarge.lineHeight }}
+                >
+                  close
+                </span>
+              </button>
+            </div>
+
+            <div
+              style={{
+                position: "relative",
+                aspectRatio: "16 / 9",
+                borderRadius: tokens.radius.lg,
+                overflow: "hidden",
+                marginBottom: tokens.spacing.lg,
+                backgroundColor: tokens.colors.surfaceContainer,
+              }}
+            >
+              <img
+                src={editingImage.thumbnailUrl}
+                alt=""
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+
             <textarea
               value={editingImage.notes || ""}
               onChange={(e) =>
                 setEditingImage({ ...editingImage, notes: e.target.value })
               }
-              placeholder="Add notes about this image..."
-              maxLength={500}
+              placeholder="Add observation details or AI corrections..."
               style={{
                 width: "100%",
-                height: "120px",
-                padding: tokens.spacing.md,
+                minHeight: `calc(${tokens.spacing.xxl} * 2)`,
+                backgroundColor: tokens.colors.surfaceContainerLow,
                 border: `1px solid ${tokens.colors.outline}`,
-                borderRadius: tokens.radius.md,
-                backgroundColor: tokens.colors.surface,
+                borderRadius: tokens.radius.lg,
+                padding: tokens.spacing.md,
                 color: tokens.colors.onSurface,
-                ...tokens.typography.bodyMedium,
-                boxSizing: "border-box",
-                resize: "vertical",
+                outline: "none",
+                transition: "all 0.2s ease",
+                resize: "none",
+                fontFamily: tokens.typography.bodyMedium.fontFamily,
+                fontSize: tokens.typography.bodyMedium.fontSize,
+                fontWeight: tokens.typography.bodyMedium.fontWeight,
+                lineHeight: tokens.typography.bodyMedium.lineHeight,
+                letterSpacing: tokens.typography.bodyMedium.letterSpacing,
               }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.primary;
+                e.currentTarget.style.boxShadow = `0 0 0 1px ${tokens.colors.primary}`;
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.outline;
+                e.currentTarget.style.boxShadow = "none";
+              }}
+              autoFocus
             />
-            <p
-              style={{
-                ...tokens.typography.labelSmall,
-                color: tokens.colors.onSurfaceVariant,
-                marginTop: tokens.spacing.xs,
-                textAlign: "right",
-              }}
-            >
-              {(editingImage.notes || "").length}/500
-            </p>
-            {error && (
-              <div
-                style={{
-                  padding: tokens.spacing.sm,
-                  marginBottom: tokens.spacing.sm,
-                  backgroundColor: tokens.colors.errorContainer,
-                  color: tokens.colors.onErrorContainer,
-                  borderRadius: tokens.radius.sm,
-                  ...tokens.typography.bodySmall,
-                }}
-              >
-                {error}
-              </div>
-            )}
+
             <div
               style={{
                 display: "flex",
+                justifyContent: "flex-end",
                 gap: tokens.spacing.md,
-                marginTop: tokens.spacing.md,
+                marginTop: tokens.spacing.xl,
               }}
             >
               <button
                 onClick={() => setEditingImage(null)}
                 style={{
-                  flex: 1,
-                  padding: tokens.spacing.md,
-                  backgroundColor: tokens.colors.surface,
+                  paddingInline: tokens.spacing.lg,
+                  paddingBlock: tokens.spacing.sm,
                   color: tokens.colors.onSurface,
-                  border: `1px solid ${tokens.colors.outline}`,
+                  fontFamily: tokens.typography.labelLarge.fontFamily,
+                  fontSize: tokens.typography.labelLarge.fontSize,
+                  fontWeight: tokens.typography.labelLarge.fontWeight,
+                  lineHeight: tokens.typography.labelLarge.lineHeight,
+                  letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                  background: "none",
+                  border: "none",
                   borderRadius: tokens.radius.md,
                   cursor: "pointer",
-                  ...tokens.typography.labelLarge,
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    tokens.colors.surfaceVariant;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
                 }}
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleSaveNotes}
                 disabled={saving}
                 style={{
-                  flex: 1,
-                  padding: tokens.spacing.md,
-                  backgroundColor: saveSuccess
-                    ? tokens.colors.tertiary
-                    : tokens.colors.primary,
-                  color: saveSuccess
-                    ? tokens.colors.onTertiary
-                    : tokens.colors.onPrimary,
-                  border: "none",
+                  paddingInline: tokens.spacing.lg,
+                  paddingBlock: tokens.spacing.sm,
                   borderRadius: tokens.radius.md,
+                  fontFamily: tokens.typography.labelLarge.fontFamily,
+                  fontSize: tokens.typography.labelLarge.fontSize,
+                  fontWeight: tokens.typography.labelLarge.fontWeight,
+                  lineHeight: tokens.typography.labelLarge.lineHeight,
+                  letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                  color: tokens.colors.onPrimary,
+                  backgroundColor: saveSuccess
+                    ? "var(--ref-key-success-key-color)"
+                    : tokens.colors.primary,
+                  boxShadow: saveSuccess ? "none" : tokens.elevation.level1,
+                  border: "none",
                   cursor: saving ? "not-allowed" : "pointer",
                   opacity: saving ? 0.7 : 1,
-                  ...tokens.typography.labelLarge,
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (!saving && !saveSuccess) {
+                    e.currentTarget.style.boxShadow = tokens.elevation.level2;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!saving && !saveSuccess) {
+                    e.currentTarget.style.boxShadow = tokens.elevation.level1;
+                  }
                 }}
               >
-                {saving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
+                {saving
+                  ? "Saving..."
+                  : saveSuccess
+                    ? "Saved"
+                    : "Save Changes"}
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {error && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: tokens.spacing.lg,
+            right: tokens.spacing.lg,
+            backgroundColor: tokens.colors.error,
+            color: tokens.colors.onError,
+            paddingInline: tokens.spacing.lg,
+            paddingBlock: tokens.spacing.md,
+            borderRadius: tokens.radius.lg,
+            boxShadow: tokens.elevation.level3,
+            display: "flex",
+            alignItems: "center",
+            gap: tokens.spacing.md,
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          <span>{error}</span>
+          <button
+            onClick={() => setError("")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "inherit",
+              cursor: "pointer",
+              padding: tokens.spacing.sm,
+              borderRadius: tokens.radius.sm,
+              fontSize: tokens.typography.titleLarge.fontSize,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor =
+                "color-mix(in srgb, var(--sys-on-error) 16%, transparent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <span className="material-icons"
+              style={{
+                fontSize: tokens.typography.labelLarge.lineHeight,
+                color: "inherit",
+              }}
+            >
+              close
+            </span>
+          </button>
         </div>
       )}
     </div>

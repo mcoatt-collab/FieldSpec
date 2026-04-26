@@ -67,12 +67,13 @@ export function QuickActionsPanel() {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: tokens.spacing.md,
-              paddingLeft: tokens.spacing.lg,
-              paddingRight: tokens.spacing.lg,
-              paddingTop: tokens.spacing.md,
-              paddingBottom: tokens.spacing.md,
-              borderRadius: tokens.radius.xl,
+              gap: tokens.spacing.sm,
+              paddingTop: "12px",
+              paddingBottom: "12px",
+              paddingLeft: "12px",
+              
+              paddingRight: tokens.spacing.md,
+              borderRadius: tokens.radius.lg,
               backgroundColor: isHovered ? hoverBg : baseBg,
               color: isHovered ? hoverColor : baseColor,
               border: "1px solid",
@@ -84,7 +85,7 @@ export function QuickActionsPanel() {
             <span
               className="material-icons"
               style={{
-                fontSize: "28px",
+                fontSize: tokens.typography.labelLarge.lineHeight,
                 color: isHovered ? hoverColor : (isPrimary ? tokens.colors.onPrimaryContainer : tokens.colors.onSurfaceVariant),
               }}
             >
@@ -93,8 +94,10 @@ export function QuickActionsPanel() {
             <span
               style={{
                 color: isHovered ? hoverColor : (isPrimary ? tokens.colors.onPrimaryContainer : tokens.colors.onSurfaceVariant),
-                fontSize: tokens.typography.labelMedium.fontSize,
-                fontWeight: tokens.typography.labelMedium.fontWeight,
+                fontSize: tokens.typography.labelLarge.fontSize,
+                fontWeight: tokens.typography.labelLarge.fontWeight,
+                lineHeight: tokens.typography.labelLarge.lineHeight,
+                letterSpacing: tokens.typography.labelLarge.letterSpacing,
               }}
             >
               {action.label}
