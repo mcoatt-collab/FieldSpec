@@ -69,11 +69,11 @@ export default function MarketingPage() {
   return (
     <main className="flex flex-col min-h-screen">
       {/* Navigation */}
-      <Navbar />
+<Navbar />
 
 {/* Hero Section */}
       <section className="hero-section" style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", paddingTop: "32px", paddingBottom: "24px", paddingInline: tokens.spacing.lg}}>
-        
+         
         {/* Section Heading (Outside Box) */}
         <div style={{ textAlign: "center", marginBottom: "48px" }}>
           <h1 style={{ ...tokens.typography.displaySmall, fontSize: "clamp(24px, 5vw, 36px)", color: tokens.colors.onSurface, fontWeight: 500, marginBottom: "12px", letterSpacing: "-0.02em" }}>
@@ -85,7 +85,7 @@ export default function MarketingPage() {
         </div>
 
         {/* The Main Box */}
-        <div style={{ width: "100%", height: "600px", borderRadius: tokens.radius.xl, backgroundColor: tokens.colors.surfaceContainer, display: "grid", gridTemplateColumns: "1.2fr 1fr", overflow: "hidden" }}>
+        <div className="hero-grid" style={{ width: "100%", height: "600px", borderRadius: tokens.radius.xl, backgroundColor: tokens.colors.surfaceContainer, display: "grid", gridTemplateColumns: "1.2fr 1fr", overflow: "hidden" }}>
           
           {/* Left: Content */}
           <div className="hero-left-content" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: tokens.spacing.xxl, padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`, textAlign: "center", height: "100%" }}>
@@ -101,7 +101,7 @@ export default function MarketingPage() {
                 letterSpacing: "-0.02em",
                 maxWidth: "480px"
               }}>
-                we eliminate your biggest pain
+                 eliminate your biggest pain
               </h2>
               <p style={{
                 ...tokens.typography.bodyLarge,
@@ -159,7 +159,7 @@ export default function MarketingPage() {
 {/* Right: Content */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: tokens.spacing.md }}>
             <div style={{ width: "100%", backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: tokens.radius.lg, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src="/images/IMG_9160.PNG" alt="Product preview" style={{ width: "100%", height: "100%", objectFit: "contain", borderRadius: tokens.radius.md }} />
+              <img src="/images/IMG_9160.PNG" alt="Product preview" style={{ width: "100%", height: "auto", objectFit: "contain", borderRadius: tokens.radius.md }} />
             </div>
           </div>
 
@@ -168,6 +168,10 @@ export default function MarketingPage() {
               background-color: color-mix(in srgb, ${tokens.colors.primary} 85%, white) !important;
             }
             @media (max-width: 768px) {
+              .hero-grid {
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto 1fr;
+              }
               .hero-btn-primary {
                 padding: ${tokens.spacing.sm} ${tokens.spacing.md} !important;
               }
@@ -179,16 +183,16 @@ export default function MarketingPage() {
                 padding-right: ${tokens.spacing.md} !important;
               }
               .hero-left-content {
-                padding: ${tokens.spacing.md} ${tokens.spacing.sm} !important;
+                padding-bottom: 24px !important;
               }
-}
+            }
           `}</style>
         </div>
 
       </section>
 
       {/* Trust Strip */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", paddingInline: tokens.spacing.lg, paddingTop: tokens.spacing.xl, paddingBottom: tokens.spacing.xl, display: "flex", justifyContent: "center", alignItems: "center", gap: tokens.spacing.lg, borderTop: `0.5px solid ${tokens.colors.outlineVariant}`, borderBottom: `0.5px solid ${tokens.colors.outlineVariant}` }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%", paddingInline: tokens.spacing.md, paddingTop: tokens.spacing.lg, paddingBottom: tokens.spacing.lg, display: "flex", justifyContent: "center", alignItems: "center", gap: tokens.spacing.lg, borderTop: `0.5px solid ${tokens.colors.outlineVariant}`, borderBottom: `0.5px solid ${tokens.colors.outlineVariant}` }}>
         <p style={{
           fontFamily: tokens.typography.labelLarge.fontFamily,
           fontSize: tokens.typography.labelLarge.fontSize,
