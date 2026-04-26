@@ -1,6 +1,7 @@
 "use client";
 
 import { tokens } from "@/lib/design-tokens";
+import { useState } from "react";
 
 interface EmptyStateProps {
   icon?: string;
@@ -11,6 +12,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ icon = "folder_open", title, description, actionLabel, onAction }: EmptyStateProps) {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
@@ -80,20 +82,23 @@ export function EmptyState({ icon = "folder_open", title, description, actionLab
         {onAction && actionLabel && (
           <button
             onClick={onAction}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             style={{
               marginTop: tokens.spacing.sm,
               paddingInline: tokens.spacing.lg,
               paddingBlock: tokens.spacing.sm,
               borderRadius: tokens.radius.md,
-              border: `1px solid ${tokens.colors.outline}`,
-              backgroundColor: tokens.colors.surface,
-              color: tokens.colors.onSurface,
+              border: "none",
+              backgroundColor: isHovered ? tokens.colors.primaryContainer : tokens.colors.primary,
+              color: isHovered ? tokens.colors.onPrimaryContainer : tokens.colors.onPrimary,
               cursor: "pointer",
               fontFamily: tokens.typography.labelLarge.fontFamily,
               fontSize: tokens.typography.labelLarge.fontSize,
               fontWeight: tokens.typography.labelLarge.fontWeight,
               lineHeight: tokens.typography.labelLarge.lineHeight,
               letterSpacing: tokens.typography.labelLarge.letterSpacing,
+              transition: "all 0.2s ease",
             }}
           >
             {actionLabel}
