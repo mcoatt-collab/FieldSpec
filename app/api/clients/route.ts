@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       prisma.client.count({ where: { userId } }),
     ]);
 
-    const formattedClients = clients.map(c => ({
+    const formattedClients = clients.map((c: { id: string; name: string; company: string | null; contactInfo: string | null; createdAt: Date; _count: { projects: number } }) => ({
       id: c.id,
       name: c.name,
       company: c.company,

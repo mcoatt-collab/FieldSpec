@@ -66,6 +66,7 @@ input::-webkit-input-placeholder {
   --color-on-primary: var(--sys-on-primary);
   --color-primary-container: var(--sys-primary-container);
   --color-on-primary-container: var(--sys-on-primary-container);
+  --color-primary-hover: var(--ref-primary-primary80);
 
   /* Card Colors - Custom for dark/light modes */
   --color-card: var(--color-card-bg);
@@ -212,10 +213,18 @@ input::-webkit-input-placeholder {
 }
 
 @layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
+  * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: var(--sys-primary);
+  }
+
+  button:hover {
+    background-color: var(--color-primary-hover);
   }
 
   button {

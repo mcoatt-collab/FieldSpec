@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ],
   },
+  output: 'standalone',
+  experimental: {
+    allowedDevOrigins: ['192.168.1.89', 'localhost'],
+  },
 };
 
 export default nextConfig;

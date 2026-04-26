@@ -120,7 +120,7 @@ async function assembleStructuredReport(projectId: string, projectName: string, 
   };
 }
 
-async function processAIJob(job: Job<AIJobData, void, string>) {
+async function processAIJob(job: Job<AIJobData, void>) {
   const { projectId, jobId } = job.data;
   console.log(`[AI Worker] Processing job ${jobId} for project ${projectId}`);
 
@@ -269,11 +269,11 @@ export async function startAIWorker() {
   });
 
   worker.on("completed", (job) => {
-    console.log(`[AI Worker] Job ${job.id} completed`);
+    console.log(`[AI Worker] Job ${job?.id} completed`);
   });
 
   worker.on("failed", (job, err) => {
-    console.error(`[AI Worker] Job ${job?.id} failed:`, err.message);
+    console.error(`[AI Worker] Job ${job?.id} failed:`, err?.message);
   });
 
   console.log("[AI Worker] Started processing AI jobs");

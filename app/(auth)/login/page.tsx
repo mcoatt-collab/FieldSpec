@@ -8,13 +8,64 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [focused, setFocused] = useState({ email: false, password: false });
+  const [submitted, setSubmitted] = useState(false);
+  const [changed, setChanged] = useState({ email: false, password: false });
+
+  const isValidEmailFormat = (email: string) => {
+    const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com"];
+    const emailRegex = /^[^\s@]+@[^\s@]+$/;
+    if (!emailRegex.test(email)) return false;
+    
+    const domain = email.split("@")[1]?.toLowerCase();
+    if (!domain) return false;
+    
+    if (allowedDomains.includes(domain)) return true;
+    
+    if (domain.includes(".")) return true;
+    
+    return false;
+  };
+
+  const emailEmptyError = (touched.email || submitted) && !email ? "Enter your email address" : "";
+  const emailFormatError = (touched.email || submitted) && email && !isValidEmailFormat(email) ? "Invalid email address" : "";
+  const passwordError = (touched.password || submitted) && !password ? "Enter your password" : "";
+
+  const emailErrorMsg = (focused.email ? "" : (emailEmptyError || emailFormatError));
+  const showEmailBorder = (touched.email || submitted) && (!email || (email && !isValidEmailFormat(email)));
+  const showPasswordBorder = (touched.password || submitted) && !password;
+  const emailInErrorFocus = focused.email && !changed.email && showEmailBorder;
+  const passwordInErrorFocus = focused.password && !changed.password && showPasswordBorder;
+  
+  const isEmailFilled = email.length > 0 && !emailErrorMsg;
+  const isPasswordFilled = password.length > 0 && !passwordError;
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setError("");
+    setChanged({ ...changed, email: true });
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    setError("");
+    setChanged({ ...changed, password: true });
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setTouched({ email: true, password: true });
+    setSubmitted(true);
+
+    if (!email || !password) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -27,7 +78,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error?.message || "Login failed");
+        setError("Invalid email or password. If you don't have an account, please create one.");
         setLoading(false);
         return;
       }
@@ -41,73 +92,129 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-[400px] p-lg bg-surface rounded-md">
-      <h1 className="text-center mb-xs text-on-surface tracking-normal" style={{ fontSize: "28px", fontWeight: "600", lineHeight: "36px" }}>
-        Welcome Back
+      <style jsx>{`
+        input {
+          transition: box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        input:hover {
+          border-color: var(--sys-outline-roles-outline);
+        }
+        input.email-error-focus, input.password-error-focus {
+          border-color: var(--sys-error) !important;
+        }
+        input.filled-valid {
+          border-color: var(--sys-primary) !important;
+          background-color: var(--sys-primary-container) !important;
+        }
+        input.filled-valid:hover {
+          border-color: var(--sys-primary) !important;
+        }
+        input.filled-valid:focus {
+          border-color: var(--sys-primary) !important;
+          box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.15) !important;
+        }
+        input.email-error-focus:focus, input.password-error-focus:focus {
+          box-shadow: 0 0 0 2px rgba(214, 53, 53, 0.1) !important;
+        }
+        input:focus {
+          box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.15);
+        }
+        input:disabled {
+          box-shadow: none;
+        }
+        input:not(:placeholder-shown):not(:focus) {
+          background-color: var(--sys-primary-container);
+          color: var(--sys-on-primary-container);
+        }
+        button[type="submit"]:hover:not(:disabled) {
+          background-color: var(--sys-state-hovered);
+          color: var(--sys-on-primary);
+        }
+        button[type="submit"]:active:not(:disabled) {
+          background-color: var(--sys-state-pressed);
+          color: var(--sys-on-primary);
+          box-shadow: none;
+          transform: translateY(1px);
+        }
+      `}</style>
+      <h1 className="text-center mb-1 text-on-surface text-headline-medium" style={{ display: "block", marginTop: "8px", fontSize: "calc(var(--sys-typescale-headline-medium-fontsize) - 0px)" }}>
+        Log in
       </h1>
-      <p className="text-center mb-lg text-on-surface-variant text-body-medium">
-        Sign in to your account
+      <p className="text-center text-on-surface-variant text-body-medium" style={{ display: "block", marginTop: "-14px" }}>
+        Welcome back to FieldSpec
       </p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-md">
-          <label className="block mb-xs text-on-surface text-label-medium">
-            Email <span className="text-primary">*</span>
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full box-border px-md py-sm border border-outline rounded-sm bg-surface text-on-surface focus:outline-primary text-body-medium"
-          />
+          <div className="flex justify-between items-center mb-xs">
+            <label htmlFor="email" className="text-on-surface text-label-medium">
+              Email <span className="text-primary">*</span>
+            </label>
+          </div>
+          <div className="relative flex items-center">
+            <span className="material-symbols-outlined absolute pointer-events-none" style={{ color: "var(--sys-on-surface-variant)", left: "12px", fontSize: "20px" }}>
+              mail
+            </span>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              onFocus={() => setFocused({ ...focused, email: true })}
+              onBlur={() => { setFocused({ ...focused, email: false }); setTouched({ ...touched, email: true }); }}
+              required
+              placeholder=" "
+              autoComplete="off"
+              className={"w-full box-border px-md py-[14px] border-[1.5px] border-outline-variant rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200" + (emailEmptyError || emailFormatError ? " email-error-focus" : isEmailFilled ? " filled-valid" : "")}
+              style={{ paddingLeft: "34px", borderWidth: "1.5px", ...(isEmailFilled ? { borderColor: "var(--sys-primary)", backgroundColor: "var(--sys-primary-container)", borderWidth: "2px" } : {}) }}
+            />
+          </div>
+          {emailErrorMsg && (
+            <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{emailErrorMsg}</p>
+          )}
         </div>
 
         <div className="mb-lg">
-          <div className="flex justify-between mb-xs">
-            <label className="text-on-surface text-label-medium">
+          <div className="flex justify-between items-center mb-xs">
+            <label htmlFor="password" className="text-on-surface text-label-medium">
               Password <span className="text-primary">*</span>
             </label>
-            <Link href="/forgot-password" className="text-primary text-label-small" style={{ textDecoration: "none" }}>
-              Forgot Password?
+            <Link href="/forgot-password" className="text-primary text-body-small no-underline hover:underline active:underline transition-all duration-200 cursor-pointer">
+              Forgot password?
             </Link>
           </div>
-          <div 
-            className="flex items-center border border-outline rounded-sm"
-            style={{ 
-              borderColor: "var(--sys-outline)",
-              transition: "border-color 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-outline)";
-            }}
-          >
+          <div className="relative flex items-center">
+            <span className="material-symbols-outlined absolute pointer-events-none" style={{ color: "var(--sys-on-surface-variant)", left: "12px", fontSize: "20px", width: "28px" }}>
+              lock
+            </span>
             <input
+              id="password"
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              onFocus={() => setFocused({ ...focused, password: true })}
+              onBlur={() => { setFocused({ ...focused, password: false }); setTouched({ ...touched, password: true }); }}
               required
-              className="flex-1 box-border px-md py-sm border-none text-on-surface focus:outline-none text-body-medium bg-transparent"
+              placeholder=" "
+              autoComplete="off"
+              className={"w-full box-border px-md py-[14px] border-[1.5px] border-outline-variant rounded-sm bg-surface text-on-surface focus:outline-1 focus:outline-primary text-body-medium transition-all duration-200" + (passwordError ? " password-error-focus" : isPasswordFilled ? " filled-valid" : "")}
+              style={{ paddingLeft: "34px", paddingRight: "32px", borderWidth: "1.5px", ...(isPasswordFilled ? { borderColor: "var(--sys-primary)", backgroundColor: "var(--sys-primary-container)", borderWidth: "2px" } : {}) }}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="px-sm py-sm cursor-pointer flex items-center justify-center bg-transparent border-none"
-              style={{ color: "var(--sys-outline)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--sys-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--sys-outline)";
-              }}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute cursor-pointer bg-transparent border-none p-0"
+              style={{ color: "var(--sys-on-surface-variant)", right: "12px" }}
             >
-              <span className="material-icons" style={{ fontSize: "16px" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
                 {showPassword ? "visibility_off" : "visibility"}
               </span>
             </button>
           </div>
+          {passwordError && (
+            <p className="mt-xs text-body-small" style={{ color: "var(--sys-error)" }}>{passwordError}</p>
+          )}
         </div>
 
         {error && (
@@ -119,39 +226,23 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
-          style={{ transition: "background-color 0.2s ease, transform 0.2s ease", border: "none", textDecoration: "none" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-add-on-primary-fixed)";
-            e.currentTarget.style.color = "var(--sys-primary)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-primary)";
-            e.currentTarget.style.color = "var(--sys-on-primary)";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.outline = "none";
-          }}
+          className="w-full bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 transition-all duration-200 hover:bg-primary-container hover:text-on-primary-container active:translate-y-[1px] -mt-1 focus:outline-none"
+          style={{ fontSize: "16px", fontWeight: 500, padding: "12px 16px" }}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Signing in..." : "Log in"}
         </button>
       </form>
 
-      <div className="my-md flex items-center">
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+      <div className="mt-sm mb-sm flex items-center">
+        <div className="flex-1 h-px bg-outline"></div>
         <span className="px-sm text-on-surface-variant text-label-medium">or</span>
-        <div className="flex-1 h-px bg-outline" style={{ height: "0.5px" }}></div>
+        <div className="flex-1 h-px bg-outline"></div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => window.location.href = "/api/auth/oauth/google"}
-        className="w-full flex items-center justify-center gap-sm py-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors"
+      <Link
+        href="/api/auth/oauth/google"
+        className="w-full flex items-center justify-center gap-sm px-md border border-outline rounded-sm bg-surface hover:bg-surface-variant transition-colors cursor-pointer"
+        style={{ paddingTop: "10px", paddingBottom: "10px", textDecoration: "none" }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -160,11 +251,11 @@ export default function LoginPage() {
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
         <span className="text-on-surface text-label-large">Continue with Google</span>
-      </button>
+      </Link>
 
-      <div className="mt-md text-center text-on-surface-variant text-body-small">
+      <div className="mt-[20px] text-center text-on-surface-variant text-body-medium">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-primary" style={{ textDecoration: "none" }}>
+        <Link href="/signup" className="text-primary no-underline hover:underline active:underline transition-all duration-200">
           Sign up
         </Link>
       </div>

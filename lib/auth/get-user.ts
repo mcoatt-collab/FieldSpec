@@ -14,7 +14,7 @@ export function getUserIdFromRequest(request: NextRequest): string | null {
 }
 
 /**
- * Gets a valid userId from the request and verifies it still exists.
+ * Gets a valid userId from the request, verifying its existence in the DB.
  */
 export async function getValidatedUserId(request: NextRequest): Promise<string | null> {
   const userId = getUserIdFromRequest(request);
@@ -26,10 +26,7 @@ export async function getValidatedUserId(request: NextRequest): Promise<string |
     select: { id: true },
   });
 
-  if (!userExists) {
-    console.log("[getValidatedUserId] Stale userId in token:", userId);
-    return null;
-  }
+  if (userExists) return userId;
 
-  return userId;
+  return null;
 }

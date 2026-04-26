@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
-import { cache, withCache } from "@/lib/cache";
+import { withRateLimit } from "@/lib/api-wrapper";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -10,6 +11,11 @@ const createProjectSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const rateLimit = await checkRateLimit(request);
+  if (!rateLimit.success) {
+    return rateLimitResponse(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
+  }
+
   try {
     const userId = await getValidatedUserId(request);
     
@@ -20,40 +26,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "50");
-    const offset = parseInt(searchParams.get("offset") || "0");
+    const projects = await prisma.project.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        photoCount: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-    const cacheKey = cache.buildKey("projects", `${userId}_${limit}_${offset}`);
-
-    const data = await withCache(cacheKey, async () => {
-      const [projects, total] = await Promise.all([
-        prisma.project.findMany({
-          where: { userId },
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            photoCount: true,
-            createdAt: true,
-          },
-          orderBy: { createdAt: "desc" },
-          take: limit,
-          skip: offset,
-        }),
-        prisma.project.count({ where: { userId } }),
-      ]);
-      return { projects, total };
-    }, 30);
-
-    return NextResponse.json({ 
-      data: data.projects,
-      meta: {
-        total: data.total,
-        limit,
-        offset,
-      }
-    }, { status: 200 });
+    return NextResponse.json({ data: projects }, { status: 200 });
   } catch (error) {
     console.error("GET projects error:", error);
     return NextResponse.json(
@@ -64,6 +49,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimit = await checkRateLimit(request);
+  if (!rateLimit.success) {
+    return rateLimitResponse(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
+  }
+
   try {
     const userId = await getValidatedUserId(request);
     
@@ -113,8 +103,6 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     });
-
-    await cache.delete(cache.buildKey("projects", userId));
 
     return NextResponse.json({ data: project }, { status: 201 });
   } catch (error) {
