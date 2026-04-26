@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 import { LoadingScreen } from "@/lib/components/loading";
+import { EmptyState } from "@/components/dashboard/EmptyState";
 
 interface Client {
   id: string;
@@ -369,84 +370,13 @@ export default function ClientsPage() {
       )}
 
       {clients.length === 0 && !showCreateForm ? (
-        <div
-          className="animate-content"
-          style={{
-            padding: tokens.spacing.xl,
-            backgroundColor: tokens.colors.surface,
-            borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
-            border: `1px solid ${tokens.colors.outlineVariant}`,
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "var(--ref-neutral-neutral-98)",
-              borderRadius: tokens.radius.lg,
-              textAlign: "center",
-              border: `2px dashed var(--ref-neutral-variant-neutral-variant80)`,
-              marginBottom: tokens.spacing.lg,
-            }}
-          >
-            <svg
-              style={{
-                width: "48px",
-                height: "48px",
-                marginBottom: tokens.spacing.md,
-                fill: "var(--ref-neutral-variant-neutral-variant40)",
-              }}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-            <p
-              style={{
-                ...tokens.typography.titleMedium,
-                color: "var(--ref-neutral-variant-neutral-variant30)",
-                margin: 0,
-                marginBottom: tokens.spacing.xs,
-              }}
-            >
-              No clients yet
-            </p>
-            <p
-              style={{
-                ...tokens.typography.bodySmall,
-                color: "var(--ref-neutral-variant-neutral-variant40)",
-                opacity: 0.8,
-                margin: 0,
-              }}
-            >
-              Create your first client to start organizing projects
-            </p>
-          </div>
-          <button
-            onClick={() => setShowCreateForm(true)}
-            style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
-              border: "none",
-              borderRadius: tokens.radius.md,
-              cursor: "pointer",
-              ...tokens.typography.labelLarge,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primaryContainer;
-              e.currentTarget.style.color = tokens.colors.onPrimaryContainer;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primary;
-              e.currentTarget.style.color = tokens.colors.onPrimary;
-            }}
-          >
-            Create Client
-          </button>
-        </div>
+        <EmptyState
+          icon="group"
+          title="No clients yet"
+          description="Create your first client to start organizing projects"
+          actionLabel="Create Client"
+          onAction={() => setShowCreateForm(true)}
+        />
       ) : (
         <div
           style={{

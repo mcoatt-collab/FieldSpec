@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 import { LoadingScreen } from "@/lib/components/loading";
+import { EmptyState } from "@/components/dashboard/EmptyState";
 
 interface Project {
   id: string;
@@ -370,84 +371,13 @@ export default function ProjectsPage() {
       {loading ? (
         <LoadingScreen message="Loading projects..." />
       ) : projects.length === 0 ? (
-        <div
-          className="animate-content"
-          style={{
-            padding: tokens.spacing.xl,
-            backgroundColor: tokens.colors.surface,
-            borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
-            border: `1px solid ${tokens.colors.outlineVariant}`,
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-              backgroundColor: "var(--ref-neutral-neutral-98)",
-              borderRadius: tokens.radius.lg,
-              textAlign: "center",
-              border: `2px dashed var(--ref-neutral-variant-neutral-variant80)`,
-              marginBottom: tokens.spacing.lg,
-            }}
-          >
-            <svg
-              style={{
-                width: "48px",
-                height: "48px",
-                marginBottom: tokens.spacing.md,
-                fill: "var(--ref-neutral-variant-neutral-variant40)",
-              }}
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
-            </svg>
-            <p
-              style={{
-                ...tokens.typography.titleMedium,
-                color: "var(--ref-neutral-variant-neutral-variant30)",
-                margin: 0,
-                marginBottom: tokens.spacing.xs,
-              }}
-            >
-              No projects yet
-            </p>
-            <p
-              style={{
-                ...tokens.typography.bodySmall,
-                color: "var(--ref-neutral-variant-neutral-variant40)",
-                opacity: 0.8,
-                margin: 0,
-              }}
-            >
-              Create your first project to get started
-            </p>
-          </div>
-          <button
-            onClick={() => setShowForm(true)}
-            style={{
-              padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-              backgroundColor: tokens.colors.primary,
-              color: tokens.colors.onPrimary,
-              border: "none",
-              borderRadius: tokens.radius.md,
-              cursor: "pointer",
-              ...tokens.typography.labelLarge,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primaryContainer;
-              e.currentTarget.style.color = tokens.colors.onPrimaryContainer;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = tokens.colors.primary;
-              e.currentTarget.style.color = tokens.colors.onPrimary;
-            }}
-          >
-            Create Project
-          </button>
-        </div>
+        <EmptyState
+          icon="folder"
+          title="No projects yet"
+          description="Create your first project to get started"
+          actionLabel="Create Project"
+          onAction={() => setShowForm(true)}
+        />
       ) : (
         <div
           style={{

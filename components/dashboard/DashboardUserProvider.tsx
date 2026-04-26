@@ -15,6 +15,11 @@ export interface DashboardUser {
   name: string;
   email: string;
   companyName?: string | null;
+  reportAuthor?: string | null;
+  reportCompany?: string | null;
+  reportSubtitle?: string | null;
+  includeConfidence?: boolean;
+  includeImages?: boolean;
   createdAt?: string;
 }
 
@@ -23,6 +28,7 @@ interface DashboardUserContextValue {
   loading: boolean;
   setUser: (user: DashboardUser | null) => void;
   refreshUser: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const DashboardUserContext = createContext<DashboardUserContextValue | null>(
@@ -38,23 +44,32 @@ export function DashboardUserProvider({
   const [user, setUser] = useState<DashboardUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Failed to logout:", err);
+    } finally {
+      setUser(null);
+      router.push("/login");
+    }
+  }, [router]);
+
   const refreshUser = useCallback(async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/me");
 
       if (res.ok) {
         const data = await res.json();
         setUser(data.data ?? null);
-        return;
-      }
-
-      if (res.status === 401 || res.status === 404) {
-        await fetch("/api/auth/logout", { method: "POST" });
+      } else if (res.status === 401 || res.status === 404) {
         setUser(null);
         router.push("/login");
       }
     } catch (err) {
       console.error("Failed to fetch dashboard user:", err);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -70,8 +85,9 @@ export function DashboardUserProvider({
       loading,
       setUser,
       refreshUser,
+      logout,
     }),
-    [loading, refreshUser, user]
+    [loading, refreshUser, user, logout]
   );
 
   return (

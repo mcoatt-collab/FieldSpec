@@ -12,11 +12,17 @@ interface EmptyStateProps {
 export function EmptyState({ type, onAction }: EmptyStateProps) {
   const isNoImages = type === "no_images";
   const iconName = isNoImages ? "inbox" : "search_off";
+  const title = isNoImages ? "Upload images to get started" : "No images found";
+  const description = isNoImages
+    ? "Drag and drop your images here or click to browse."
+    : "Try adjusting your filters or search.";
+  const actionLabel = isNoImages ? "Upload Images" : "Clear Filters";
 
   return (
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         gap: tokens.spacing.lg,
         width: "100%",
@@ -24,6 +30,7 @@ export function EmptyState({ type, onAction }: EmptyStateProps) {
         borderRadius: tokens.radius.lg,
         border: `1px dashed ${tokens.colors.outlineVariant}`,
         backgroundColor: tokens.colors.surface,
+        textAlign: "center",
       }}
     >
       <div
@@ -31,19 +38,19 @@ export function EmptyState({ type, onAction }: EmptyStateProps) {
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: tokens.spacing.md,
+          width: "80px",
+          height: "80px",
           borderRadius: tokens.radius.pill,
           backgroundColor: tokens.colors.surfaceContainer,
           color: tokens.colors.onSurfaceVariant,
         }}
       >
-        <span className="material-icons" style={{ fontSize: tokens.typography.labelLarge.lineHeight }}>{iconName}</span>
+        <span className="material-icons" style={{ fontSize: "40px" }}>{iconName}</span>
       </div>
 
       <div
         style={{
           display: "flex",
-          flex: 1,
           flexDirection: "column",
           gap: tokens.spacing.xs,
         }}
@@ -58,7 +65,7 @@ export function EmptyState({ type, onAction }: EmptyStateProps) {
             letterSpacing: tokens.typography.titleMedium.letterSpacing,
           }}
         >
-          {isNoImages ? "Upload images to get started" : "No images found"}
+          {title}
         </h3>
 
         <p
@@ -71,34 +78,30 @@ export function EmptyState({ type, onAction }: EmptyStateProps) {
             letterSpacing: tokens.typography.bodyMedium.letterSpacing,
           }}
         >
-          {isNoImages
-            ? "Drag and drop your images here or click to browse."
-            : "Try adjusting your filters or search."}
+          {description}
         </p>
 
         {onAction && (
-          <div>
-            <button
-              onClick={onAction}
-              style={{
-                marginTop: tokens.spacing.sm,
-                paddingInline: tokens.spacing.lg,
-                paddingBlock: tokens.spacing.sm,
-                borderRadius: tokens.radius.md,
-                border: `1px solid ${tokens.colors.outline}`,
-                backgroundColor: tokens.colors.surface,
-                color: tokens.colors.onSurface,
-                cursor: "pointer",
-                fontFamily: tokens.typography.labelLarge.fontFamily,
-                fontSize: tokens.typography.labelLarge.fontSize,
-                fontWeight: tokens.typography.labelLarge.fontWeight,
-                lineHeight: tokens.typography.labelLarge.lineHeight,
-                letterSpacing: tokens.typography.labelLarge.letterSpacing,
-              }}
-            >
-              {isNoImages ? "Upload Images" : "Clear Filters"}
-            </button>
-          </div>
+          <button
+            onClick={onAction}
+            style={{
+              marginTop: tokens.spacing.sm,
+              paddingInline: tokens.spacing.lg,
+              paddingBlock: tokens.spacing.sm,
+              borderRadius: tokens.radius.md,
+              border: `1px solid ${tokens.colors.outline}`,
+              backgroundColor: tokens.colors.surface,
+              color: tokens.colors.onSurface,
+              cursor: "pointer",
+              fontFamily: tokens.typography.labelLarge.fontFamily,
+              fontSize: tokens.typography.labelLarge.fontSize,
+              fontWeight: tokens.typography.labelLarge.fontWeight,
+              lineHeight: tokens.typography.labelLarge.lineHeight,
+              letterSpacing: tokens.typography.labelLarge.letterSpacing,
+            }}
+          >
+            {actionLabel}
+          </button>
         )}
       </div>
     </div>

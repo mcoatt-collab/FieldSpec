@@ -1,93 +1,105 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 
-export function EmptyState() {
-  const router = useRouter();
+interface EmptyStateProps {
+  icon?: string;
+  title: string;
+  description?: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
+export function EmptyState({ icon = "folder_open", title, description, actionLabel, onAction }: EmptyStateProps) {
 
   return (
     <div
       style={{
-        backgroundColor: tokens.colors.surface,
-        borderColor: tokens.colors.outlineVariant,
-        borderWidth: "1px",
-        borderStyle: "solid",
-        borderRadius: tokens.radius.xl,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: tokens.spacing.lg,
+        width: "100%",
         padding: tokens.spacing.xl,
+        borderRadius: tokens.radius.lg,
+        border: `1px dashed ${tokens.colors.outlineVariant}`,
+        backgroundColor: tokens.colors.surface,
         textAlign: "center",
       }}
     >
       <div
         style={{
-          width: "80px",
-          height: "80px",
-          marginLeft: "auto",
-          marginRight: "auto",
-          marginBottom: tokens.spacing.md,
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: tokens.colors.surfaceVariant,
-        }}
-      >
-        <span
-          className="material-icons"
-          style={{ fontSize: "40px", color: tokens.colors.onSurfaceVariant }}
-        >
-          folder_open
-        </span>
-      </div>
-
-      <h3
-        style={{ 
-          color: tokens.colors.onSurface, 
-          fontSize: tokens.typography.titleLarge.fontSize,
-          fontWeight: tokens.typography.titleLarge.fontWeight,
-          marginBottom: tokens.spacing.sm,
-        }}
-      >
-        No projects yet
-      </h3>
-
-      <p
-        style={{ 
-          color: tokens.colors.onSurfaceVariant, 
-          fontSize: tokens.typography.bodyMedium.fontSize,
-          marginBottom: tokens.spacing.lg,
-          maxWidth: "400px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        Create your first project to start generating AI reports from your drone images.
-      </p>
-
-      <button
-        onClick={() => router.push("/dashboard/projects?new=true")}
-        style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: tokens.spacing.sm,
-          paddingLeft: tokens.spacing.lg,
-          paddingRight: tokens.spacing.lg,
-          paddingTop: tokens.spacing.sm,
-          paddingBottom: tokens.spacing.sm,
+          justifyContent: "center",
+          width: "80px",
+          height: "80px",
           borderRadius: tokens.radius.pill,
-          backgroundColor: tokens.colors.primary,
-          color: tokens.colors.onPrimary,
-          border: "none",
-          fontSize: tokens.typography.labelLarge.fontSize,
-          fontWeight: tokens.typography.labelLarge.fontWeight,
-          cursor: "pointer",
+          backgroundColor: tokens.colors.surfaceContainer,
+          color: tokens.colors.onSurfaceVariant,
         }}
       >
-        <span className="material-icons" style={{ fontSize: tokens.typography.titleMedium.fontSize }}>
-          add
-        </span>
-        Create First Project
-      </button>
+        <span className="material-icons" style={{ fontSize: "40px" }}>{icon}</span>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: tokens.spacing.xs,
+        }}
+      >
+        <h3
+          style={{
+            color: tokens.colors.onSurface,
+            fontFamily: tokens.typography.titleMedium.fontFamily,
+            fontSize: tokens.typography.titleMedium.fontSize,
+            fontWeight: tokens.typography.titleMedium.fontWeight,
+            lineHeight: tokens.typography.titleMedium.lineHeight,
+            letterSpacing: tokens.typography.titleMedium.letterSpacing,
+          }}
+        >
+          {title}
+        </h3>
+
+        {description && (
+          <p
+            style={{
+              color: tokens.colors.onSurfaceVariant,
+              fontFamily: tokens.typography.bodyMedium.fontFamily,
+              fontSize: tokens.typography.bodyMedium.fontSize,
+              fontWeight: tokens.typography.bodyMedium.fontWeight,
+              lineHeight: tokens.typography.bodyMedium.lineHeight,
+              letterSpacing: tokens.typography.bodyMedium.letterSpacing,
+            }}
+          >
+            {description}
+          </p>
+        )}
+
+        {onAction && actionLabel && (
+          <button
+            onClick={onAction}
+            style={{
+              marginTop: tokens.spacing.sm,
+              paddingInline: tokens.spacing.lg,
+              paddingBlock: tokens.spacing.sm,
+              borderRadius: tokens.radius.md,
+              border: `1px solid ${tokens.colors.outline}`,
+              backgroundColor: tokens.colors.surface,
+              color: tokens.colors.onSurface,
+              cursor: "pointer",
+              fontFamily: tokens.typography.labelLarge.fontFamily,
+              fontSize: tokens.typography.labelLarge.fontSize,
+              fontWeight: tokens.typography.labelLarge.fontWeight,
+              lineHeight: tokens.typography.labelLarge.lineHeight,
+              letterSpacing: tokens.typography.labelLarge.letterSpacing,
+            }}
+          >
+            {actionLabel}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

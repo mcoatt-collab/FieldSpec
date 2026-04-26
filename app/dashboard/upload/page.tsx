@@ -412,30 +412,6 @@ export default function UploadPage() {
                 Upload and organize field inspection images
               </p>
             </div>
-
-            <button
-              onClick={() => window.open("/docs/upload-guide", "_blank")}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: tokens.spacing.sm,
-                paddingInline: tokens.spacing.md,
-                paddingBlock: tokens.spacing.sm,
-                borderRadius: tokens.radius.md,
-                border: `1px solid ${tokens.colors.outline}`,
-                backgroundColor: tokens.colors.surface,
-                color: tokens.colors.onSurface,
-                cursor: "pointer",
-                fontFamily: tokens.typography.labelLarge.fontFamily,
-                fontSize: tokens.typography.labelLarge.fontSize,
-                fontWeight: tokens.typography.labelLarge.fontWeight,
-                lineHeight: tokens.typography.labelLarge.lineHeight,
-                letterSpacing: tokens.typography.labelLarge.letterSpacing,
-              }}
-            >
-              <span className="material-icons" style={{ fontSize: tokens.typography.labelLarge.lineHeight }}>upload_file</span>
-              Upload Guide
-            </button>
           </div>
 
 

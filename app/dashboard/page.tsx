@@ -9,6 +9,7 @@ import { StatsCards } from "@/components/dashboard/StatsCards";
 import { InsightPreviewCard } from "@/components/dashboard/InsightPreviewCard";
 import { MapPreview } from "@/components/dashboard/MapPreview";
 import { EmptyState } from "@/components/dashboard/EmptyState";
+import { useRouter } from "next/navigation";
 import { useProjectsStore } from "@/store/useProjectsStore";
 import {
   mockJobs,
@@ -20,6 +21,7 @@ import {
 } from "@/components/dashboard/mockData";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { projects, loading: projectsLoading, fetchProjects } = useProjectsStore();
   const [stats, setStats] = useState<Stats>({
     totalProjects: 0,
@@ -157,7 +159,13 @@ export default function DashboardPage() {
 
         {!hasProjects ? (
           <section style={{ marginBottom: tokens.spacing.lg }}>
-            <EmptyState />
+            <EmptyState
+              icon="folder"
+              title="No projects yet"
+              description="Create your first project to start generating AI reports from your drone images."
+              actionLabel="Create First Project"
+              onAction={() => router.push("/dashboard/projects?new=true")}
+            />
           </section>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: tokens.spacing.lg }}>
