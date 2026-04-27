@@ -678,31 +678,43 @@ export default function MarketingPage() {
         `}} />
       </section>
 
-      {/* How It Works */}
-<section
+{/* How It Works */}
+      <section
         id="how-it-works"
         style={{
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg} ${tokens.spacing.xxl}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
         <div
           style={{
-            maxWidth: "1266px",
+            maxWidth: "80rem",
             marginLeft: "auto",
             marginRight: "auto",
-            paddingInline: tokens.spacing.md,
+            paddingInline: tokens.spacing.xl,
           }}
         >
           <style
             dangerouslySetInnerHTML={{
               __html: `
-            .hiw-card {
+            .hiw-grid {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 24px;
+              margin-top: 48px;
+            }
+.hiw-card {
               padding: 32px;
               display: flex;
               flex-direction: column;
               overflow: hidden;
               position: relative;
+            }
+            .hiw-grid {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 24px;
+              margin-top: 48px;
             }
             .hiw-card-icon {
               width: 56px;
