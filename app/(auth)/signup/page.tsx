@@ -311,12 +311,6 @@ export default function SignupPage() {
           disabled={loading}
           className="p-md bg-primary text-on-primary rounded-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 text-label-large"
           style={{ width: "352px", transition: "all 0.2s ease", border: "none", textDecoration: "none" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "color-mix(in srgb, var(--sys-primary) 85%, white)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--sys-primary)";
-          }}
         >
           {loading ? "Creating account..." : "Create Account"}
         </button>
