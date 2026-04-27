@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
+import exifReader from "exif-reader";
 
 import { getValidatedUserId } from "@/lib/auth/get-user";
 import { cache } from "@/lib/cache";
@@ -19,6 +20,70 @@ function sanitizeBaseName(filename: string) {
     .replace(/[^a-z0-9-_]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 48) || "image";
+}
+
+async function extractGPSCoordinates(buffer: Buffer): Promise<{ gpsLat: number; gpsLng: number } | null> {
+  try {
+    // Use sharp to extract metadata (includes EXIF) without loading full image
+    const { exif } = await sharp(buffer).metadata();
+    
+    if (!exif) {
+      console.log("No EXIF data found in image");
+      return null;
+    }
+
+    const tags = exifReader(Buffer.from(exif));
+    
+    if (!tags?.GPSInfo) {
+      console.log("No GPSInfo in EXIF");
+      return null;
+    }
+
+    const gps = tags.GPSInfo;
+
+    // GPSLatitude and GPSLongitude are typically arrays: [degrees, minutes, seconds]
+    // GPSLatitudeRef: "N" or "S", GPSLongitudeRef: "E" or "W"
+    if (!gps.GPSLatitude || !gps.GPSLongitude) {
+      console.log("Missing GPSLatitude or GPSLongitude");
+      return null;
+    }
+
+    const lat = convertDMSToDecimal(gps.GPSLatitude, gps.GPSLatitudeRef);
+    const lng = convertDMSToDecimal(gps.GPSLongitude, gps.GPSLongitudeRef);
+
+    if (lat === null || lng === null) {
+      console.log("Failed to convert GPS coordinates");
+      return null;
+    }
+
+    // Validate coordinates are within valid ranges
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      console.log("GPS coordinates out of range", { lat, lng });
+      return null;
+    }
+
+    console.log("Extracted GPS:", { lat, lng });
+    return { gpsLat: lat, gpsLng: lng };
+  } catch (error) {
+    console.error("GPS extraction error:", error);
+    return null;
+  }
+}
+
+function convertDMSToDecimal(
+  dms: number[],
+  ref?: string,
+): number | null {
+  if (!dms || dms.length < 3) return null;
+
+  let decimal = dms[0] + dms[1] / 60 + dms[2] / 3600;
+
+  // Apply reference direction (S and W are negative)
+  if (ref === "S" || ref === "W") {
+    decimal = decimal * -1;
+  }
+
+  return decimal;
 }
 
 export async function POST(request: NextRequest) {
@@ -82,6 +147,9 @@ export async function POST(request: NextRequest) {
     const assetIdBase = `${Date.now()}-${baseName}`;
     const folder = `fieldspec/${userId}/projects/${projectId}`;
 
+    // Extract GPS coordinates BEFORE Sharp processing (strips EXIF)
+    const gpsCoords = await extractGPSCoordinates(inputBuffer);
+
     const optimizedBuffer = await sharp(inputBuffer)
       .rotate()
       .resize({
@@ -124,6 +192,8 @@ export async function POST(request: NextRequest) {
           url: uploadedImage.secureUrl,
           thumbnailUrl: uploadedThumbnail.secureUrl,
           category: "general",
+          gpsLat: gpsCoords?.gpsLat ?? null,
+          gpsLng: gpsCoords?.gpsLng ?? null,
         },
         select: {
           id: true,
@@ -131,6 +201,8 @@ export async function POST(request: NextRequest) {
           thumbnailUrl: true,
           category: true,
           notes: true,
+          gpsLat: true,
+          gpsLng: true,
           createdAt: true,
         },
       });

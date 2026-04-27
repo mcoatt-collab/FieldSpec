@@ -651,20 +651,28 @@ export default function MapPageClient() {
             {imagesWithoutGps.length > 0 && (
               <div
                 style={{
-                  padding: tokens.spacing.sm,
-                  backgroundColor: tokens.colors.surfaceVariant,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: tokens.spacing.sm,
+                  padding: tokens.spacing.md,
                   borderRadius: tokens.radius.md,
+                  backgroundColor: tokens.colors.tertiaryContainer,
                   flexShrink: 0,
                 }}
               >
+                <span className="material-icons"
+                  style={{ color: tokens.colors.onTertiaryContainer, fontSize: "18px" }}
+                >
+                  location_off
+                </span>
                 <p
                   style={{
                     ...tokens.typography.bodySmall,
-                    color: tokens.colors.onSurfaceVariant,
+                    color: tokens.colors.onTertiaryContainer,
                   }}
                 >
                   {imagesWithoutGps.length} of {images.length} images do not
-                  have GPS data and cannot be shown on the map.
+                  contain GPS data and cannot be shown on the map.
                 </p>
               </div>
             )}

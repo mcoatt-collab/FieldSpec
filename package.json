@@ -43,6 +43,7 @@
     "bullmq": "^5.73.5",
     "cloudinary": "^2.7.0",
     "dotenv": "^17.4.2",
+    "exif-reader": "^2.0.3",
     "html2pdf.js": "^0.14.0",
     "ioredis": "^5.10.1",
     "jsonwebtoken": "^9.0.2",
