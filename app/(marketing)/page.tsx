@@ -716,7 +716,7 @@ export default function MarketingPage() {
             }
             .hiw-card:hover {
               transform: translateY(-4px);
-              box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+              box-shadow: 0 8px 16px rgba(0,0,0,0.08);
               border-color: var(--sys-outline-roles-outline-variant);
             }
             .hiw-card-icon {
