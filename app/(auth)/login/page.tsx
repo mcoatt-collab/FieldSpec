@@ -9,12 +9,62 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
+
+  function validateEmail(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  function validateField(field: string, value: string) {
+    const errors: { email?: string; password?: string } = {};
+    
+    if (field === "email" || field === "all") {
+      if (!value.trim()) {
+        errors.email = "This field is required";
+      } else if (!validateEmail(value)) {
+        errors.email = "Enter a valid email address";
+      }
+    }
+    if (field === "password" || field === "all") {
+      if (!value) {
+        errors.password = "This field is required";
+      }
+    }
+    
+    return errors;
+  }
+
+  function handleBlur(field: string) {
+    const fieldValue = field === "email" ? email : password;
+    const errors = validateField(field, fieldValue);
+    setFieldErrors((prev) => ({ ...prev, ...errors }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    
+    const errors = validateField("all", "");
+    if (email) {
+      if (!validateEmail(email)) {
+        errors.email = "Enter a valid email address";
+      } else {
+        errors.email = undefined;
+      }
+    }
+    if (password) errors.password = undefined;
+    
+    setFieldErrors(errors);
+    
+    const hasErrors = Object.values(errors).some(e => e);
+    if (hasErrors) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -54,28 +104,42 @@ export default function LoginPage() {
             Email <span className="text-primary">*</span>
           </label>
           <div 
-            className="flex items-center border border-outline rounded-sm"
+            className="flex items-center border rounded-sm"
             style={{ 
-              borderColor: "var(--sys-outline)",
+              borderColor: fieldErrors.email ? "var(--sys-error)" : "var(--sys-outline)",
               transition: "border-color 0.2s ease",
               width: "352px",
               height: "37.6px",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-primary)";
+              e.currentTarget.style.borderColor = fieldErrors.email ? "var(--sys-error)" : "var(--sys-primary)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-outline)";
+              e.currentTarget.style.borderColor = fieldErrors.email ? "var(--sys-error)" : "var(--sys-outline)";
             }}
           >
             <input
               type="email"
+              autoComplete="email"
+              data-form-type="other"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (e.target.value.trim() && validateEmail(e.target.value)) {
+                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                }
+              }}
+              onBlur={() => handleBlur("email")}
               className="flex-1 box-border px-md py-sm border-none text-on-surface focus:outline-none text-body-medium bg-transparent"
+              style={{ 
+                backgroundColor: "transparent",
+                outline: "none",
+              }}
             />
           </div>
+          {fieldErrors.email && (
+            <p className="mt-xs text-error text-label-small">{fieldErrors.email}</p>
+          )}
         </div>
 
         <div className="mb-lg">
@@ -88,9 +152,9 @@ export default function LoginPage() {
             </Link>
           </div>
           <div 
-            className="flex items-center border border-outline rounded-sm"
+            className="flex items-center border rounded-sm"
             style={{ 
-              borderColor: "var(--sys-outline)",
+              borderColor: fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)",
               transition: "border-color 0.2s ease",
               width: "352px",
               height: "37.6px",
@@ -99,26 +163,42 @@ export default function LoginPage() {
               e.currentTarget.style.borderColor = "var(--sys-primary)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--sys-outline)";
+              e.currentTarget.style.borderColor = fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)";
             }}
           >
             <input
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              data-form-type="other"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (e.target.value) {
+                  setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                }
+              }}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => {
+                setIsPasswordFocused(false);
+                handleBlur("password");
+              }}
               className="flex-1 box-border px-md py-sm border-none text-on-surface focus:outline-none text-body-medium bg-transparent"
+              style={{ 
+                transition: "border-color 0.2s ease",
+                backgroundColor: "transparent",
+                outline: "none",
+              }}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="px-sm py-sm cursor-pointer flex items-center justify-center bg-transparent border-none"
-              style={{ color: "var(--sys-outline)" }}
+              style={{ color: fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)" }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = "var(--sys-primary)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--sys-outline)";
+                e.currentTarget.style.color = fieldErrors.password ? "var(--sys-error)" : "var(--sys-outline)";
               }}
             >
               <span className="material-icons" style={{ fontSize: "16px" }}>
@@ -126,6 +206,17 @@ export default function LoginPage() {
               </span>
             </button>
           </div>
+          {fieldErrors.password && (
+            <p className="mt-xs text-error text-label-small">{fieldErrors.password}</p>
+          )}
+          {isPasswordFocused && (
+            <div className="mt-xs text-on-surface-variant text-label-small flex flex-col gap-1">
+              {password.length < 8 && <span>• Must be at least 8 characters</span>}
+              {!/[A-Z]/.test(password) && <span>• Must contain at least an uppercase letter</span>}
+              {!/[0-9]/.test(password) && <span>• Must contain at least one number</span>}
+              {!/[!@#$%^&*(),.?":{}|<>]/.test(password) && <span>• Must include a special character</span>}
+            </div>
+          )}
         </div>
 
         {error && (
@@ -160,7 +251,7 @@ export default function LoginPage() {
           type="button"
           onClick={() => window.location.href = "/api/auth/oauth/google"}
           className="flex items-center justify-center gap-sm py-sm px-md border border-outline rounded-sm bg-surface"
-          style={{ width: "352px", transition: "all 0.2s ease" }}
+          style={{ width: "352px", transition: "all 0.2s ease", outline: "none", boxShadow: "none" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "var(--sys-surface-container)";
           }}
