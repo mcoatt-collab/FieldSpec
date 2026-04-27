@@ -58,28 +58,19 @@ export default function MarketingPage() {
 
   const useCases = [
     {
-      title: "Agricultural Inspections",
-      description:
-        "Assess crop health, map pest damage, and monitor irrigation across hundreds of acres. Deliver clear reports growers can act on.",
-      imageUrl: "/images/agricultural-inspections.jpg",
+      title: "Drone Operators",
+      description: "Deliver professional reports to clients faster",
+      imageUrl: "/images/drone-operators.jpg",
     },
     {
-      title: "Land Surveys",
-      description:
-        "Document site conditions, track changes between surveys, and produce professional reports clients trust for decision-making.",
-      imageUrl: "/images/land-surveys.jpg",
-    },
-    {
-      title: "Infrastructure Inspections",
-      description:
-        "Inspect roofs, bridges, and utility assets from the air. Generate professional reports without putting boots on the ground.",
+      title: "Infrastructure Inspectors",
+      description: "Standardize inspection workflows across teams",
       imageUrl: "/images/infrastructure-inspections.jpg",
     },
     {
-      title: "Drone Service Providers",
-      description:
-        "Stand out from competitors by delivering polished inspection reports with every flight. Turn aerial data into a premium service.",
-      imageUrl: "/images/drone-operators.jpg",
+      title: "Field Teams",
+      description: "Organize and analyze large sets of field images",
+      imageUrl: "/images/land-surveys.jpg",
     },
   ];
 
@@ -936,278 +927,160 @@ export default function MarketingPage() {
       <section
         id="use-cases"
         style={{
-          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
           backgroundColor: "var(--color-section-bg)",
-          position: "relative",
         }}
       >
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          .bento-grid {
+          .use-cases-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 48px;
+            max-width: 1200px;
+            margin: 0 auto;
           }
-          .use-case-card-bento {
-             background: var(--sys-surface-roles-surface-container);
-            border: 1px solid var(--sys-outline-variant);
-            border-radius: 8px;
+          .use-case-card {
+            border-radius: 16px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 488px;
           }
-          .bento-span-2 {
-            grid-column: span 2;
+          .use-case-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
           }
-          .bento-span-1 {
-            grid-column: span 1;
+          .use-case-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
           }
-          @media (max-width: 900px) {
-            .bento-grid {
+          .use-case-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          .use-case-content {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+            min-height: 488px;
+            background: linear-gradient(to bottom, transparent 0%, transparent 35%, rgba(0,0,0,0.85) 100%);
+          }
+          .use-case-card-title {
+            font-family: var(--sys-typescale-title-large-fontfamily);
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          }
+          .use-case-card-desc {
+            font-family: var(--sys-typescale-body-medium-fontfamily);
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.5;
+          }
+          @media (max-width: 768px) {
+            .use-cases-cards {
               grid-template-columns: 1fr;
-            }
-            .bento-span-2, .bento-span-1 {
-              grid-column: span 1;
             }
           }
         `,
           }}
         />
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "60px", textAlign: "center" }}>
-            <span
-              style={{
-                color: tokens.colors.primary,
-                fontSize: "14px",
-                fontWeight: 600,
-                fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                display: "block",
-                marginBottom: "12px",
-                letterSpacing: "0.01em",
-              }}
-            >
-              Who It&apos;s For
-            </span>
-            <h2
-              style={{
-                ...tokens.typography.headlineLarge,
-                color: tokens.colors.onSurface,
-                textAlign: "center",
-                margin: "0 auto",
-                maxWidth: "800px",
-              }}
-            >
-              Built for Field Professionals
-            </h2>
-          </div>
-
-          <div
-            className="bento-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "24px",
-              marginTop: "48px",
-            }}
-          >
-            {useCases.map((useCase, i) => {
-              const spanClass =
-                i === 0 || i === 3 ? "bento-span-2" : "bento-span-1";
-
-              return (
-                <div key={i} className={`use-case-card-bento ${spanClass}`}>
-                  {useCase.imageUrl && (
-                    <div
-                      style={{
-                        height: "240px",
-                        width: "100%",
-                        backgroundColor: "#0B1120",
-                        borderBottom: "1px solid rgba(255,255,255,0.05)",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src={useCase.imageUrl}
-                        alt={useCase.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          opacity: 0.85,
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      padding: "32px",
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: tokens.colors.onSurfaceVariant,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                        marginBottom: "8px",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {useCase.title.split(" ")[0]}
-                    </span>
-                    <h4
-                      style={{
-                        color: tokens.colors.onSurface,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "20px",
-                        fontWeight: "500",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {useCase.title}
-                    </h4>
-                    <p
-                      style={{
-                        color: tokens.colors.onSurfaceVariant,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "14px",
-                        lineHeight: 1.6,
-                        opacity: 0.7,
-                      }}
-                    >
-                      {useCase.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div className="use-cases-cards">
+          {useCases.map((useCase, i) => (
+            <div key={i} className="use-case-card">
+              <div className="use-case-image">
+                <img src={useCase.imageUrl} alt={useCase.title} />
+              </div>
+              <div className="use-case-content">
+                <h3 className="use-case-card-title">{useCase.title}</h3>
+                <p className="use-case-card-desc">{useCase.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Final CTA */}
+{/* Final CTA */}
       <section
         style={{
-          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
-          backgroundColor: "var(--color-section-bg)",
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
         }}
       >
         <style
           dangerouslySetInnerHTML={{
             __html: `
-           .cta-card {
-              background-color: var(--sys-surface-roles-surface-container);
-             background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
-             border: 1px solid var(--sys-outline-variant);
-             border-radius: 8px;
-             padding: 50px 24px;
-             text-align: center;
-
-
-             position: relative;
-             overflow: hidden;
-             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-           }
+            .cta-card {
+              text-align: center;
+              position: relative;
+              overflow: visible;
+              padding: 48px 24px;
+              background: transparent;
+              box-shadow: none;
+              border: none;
+            }
             .cta-primary-btn {
               background-color: var(--sys-primary);
               color: var(--sys-on-primary);
-              padding: 12px 24px;
-             border-radius: 8px;
-             font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             transition: background-color 0.2s, transform 0.2s;
-             border: none;
-             display: inline-block;
-           }
-           .cta-primary-btn:hover {
-             background-color: var(--sys-primary-container);
-             color: var(--sys-on-primary-container);
-             transform: translateY(-1px);
-           }
-            .cta-secondary-link {
+              padding: 16px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              text-decoration: none;
+              transition: all 0.2s ease;
+              border: none;
+              display: inline-block;
+            }
+            .cta-primary-btn:hover {
+              opacity: 0.9;
+              transform: translateY(-2px);
+            }
+            .cta-trust {
+              font-family: var(--sys-typescale-body-medium-fontfamily);
+              font-size: 14px;
               color: var(--sys-on-surface);
-              font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             display: inline-flex;
-             align-items: center;
-             gap: 6px;
-             transition: color 0.2s, transform 0.2s;
-           }
-           .cta-secondary-link:hover {
-             color: rgba(255,255,255,0.8);
-           }
-         `,
+              margin-top: -18px;
+              opacity: 0.8;
+              line-height: 2.34;
+            }
+          `,
           }}
         />
         <div
           className="cta-card"
-          style={{ maxWidth: "1100px", margin: "0 auto" }}
+          style={{ maxWidth: "700px", margin: "0 auto" }}
         >
-          <div
+          <h2
             style={{
-              maxWidth: "700px",
-              margin: "0 auto",
-              position: "relative",
-              zIndex: 1,
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "clamp(28px, 5vw, 40px)",
+              fontWeight: 600,
+              color: tokens.colors.onSurface,
+              letterSpacing: "-0.02em",
+              lineHeight: 0.9,
+              textAlign: "center",
+              marginBottom: "24px",
             }}
           >
-            <h2
-              style={{
-                fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-                fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                fontWeight: 600,
-                color: tokens.colors.onSurface,
-                marginBottom: "24px",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                textAlign: "center",
-              }}
-            >
-              Go From Images to Report in Minutes
-            </h2>
-            <p
-              style={{
-                fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                fontSize: "17px",
-                color: tokens.colors.onSurfaceVariant,
-                lineHeight: 1.6,
-                marginBottom: "40px",
-                maxWidth: "540px",
-                margin: "0 auto 40px",
-                textAlign: "center",
-              }}
-            >
-              Upload your first set of images and see what FieldSpec can do. No
-              credit card required.
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "24px",
-                flexWrap: "wrap",
-                marginTop: "40px",
-              }}
-            >
-              <Link href="/signup" className="cta-primary-btn">
-                Start Free
-              </Link>
-              <Link href="#how-it-works" className="cta-secondary-link">
-                Watch the Demo <span aria-hidden="true">&rarr;</span>
-              </Link>
-            </div>
+            Start generating inspection reports in minutes
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+            <p className="cta-trust">No credit card required</p>
+            <Link href="/signup" className="cta-primary-btn">
+              Get Started
+            </Link>
           </div>
         </div>
       </section>
