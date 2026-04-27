@@ -113,23 +113,23 @@ export default function MarketingPage() {
       <section
         className="hero-section"
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: "32px",
-          paddingBottom: "24px",
-          paddingInline: tokens.spacing.xl,
+          paddingTop: tokens.spacing.section,
+          paddingBottom: tokens.spacing.section,
+          paddingInline: tokens.spacing.md,
         }}
       >
         {/* Section Heading (Outside Box) */}
-        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        <div style={{ textAlign: "center", marginBottom: tokens.spacing.xl }}>
           <h1
             style={{
               ...tokens.typography.displaySmall,
               fontSize: "clamp(24px, 5vw, 36px)",
               color: tokens.colors.onSurface,
               fontWeight: 500,
-              marginBottom: "12px",
+              marginBottom: tokens.spacing.xs,
               letterSpacing: "-0.02em",
             }}
           >
@@ -170,7 +170,7 @@ export default function MarketingPage() {
               justifyContent: "center",
               alignItems: "center",
               gap: tokens.spacing.xxl,
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
+              padding: `${tokens.spacing.xxl} ${tokens.spacing.md}`,
               textAlign: "center",
               height: "100%",
             }}
@@ -242,7 +242,7 @@ export default function MarketingPage() {
                 href="/sample-report"
                 className="hero-btn-secondary"
                 style={{
-                  padding: `${tokens.spacing.md} ${tokens.spacing.md}`,
+padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
                   backgroundColor: "transparent",
                   color: tokens.colors.onSurface,
                   borderRadius: tokens.radius.lg,
@@ -323,12 +323,12 @@ export default function MarketingPage() {
       {/* Trust Strip */}
       <div
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
-          paddingInline: tokens.spacing.xl,
-          paddingTop: tokens.spacing.lg,
-          paddingBottom: tokens.spacing.lg,
+paddingInline: tokens.spacing.md,
+          paddingTop: tokens.spacing.md,
+          paddingBottom: tokens.spacing.md,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -376,12 +376,12 @@ export default function MarketingPage() {
       {/* Problem → Solution Section */}
       <section
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: "32px",
-          paddingBottom: "24px",
-          paddingInline: tokens.spacing.xl,
+          paddingTop: tokens.spacing.section,
+          paddingBottom:tokens.spacing.lg,
+          paddingInline: tokens.spacing.md,
           borderRadius: tokens.radius.lg,
           overflow: "hidden",
         }}
@@ -550,12 +550,11 @@ export default function MarketingPage() {
       {/* Transformation Engine Visual */}
       <section
         style={{
-          maxWidth: "1200px",
+          maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: "32px",
-          paddingBottom: "48px",
-          paddingInline: tokens.spacing.xl,
+          paddingBottom: tokens.spacing.section,
+          paddingInline: tokens.spacing.md,
         }}
       >
         <div style={{
@@ -571,20 +570,20 @@ export default function MarketingPage() {
         }}>
           {/* Mock App Header */}
           <div style={{ height: "56px", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, display: "flex", alignItems: "center", padding: "0 20px", backgroundColor: tokens.colors.surfaceContainer, zIndex: 2 }}>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: tokens.spacing.xxxs }}>
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.error }} />
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#facc15" }} />
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.primary }} />
             </div>
-            <div style={{ marginLeft: "24px", ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, fontWeight: 600, letterSpacing: "0.5px" }}>FieldSpec Transformation Engine</div>
+            <div style={{ marginLeft: tokens.spacing.lg, ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, fontWeight: 600, letterSpacing: "0.5px" }}>FieldSpec Transformation Engine</div>
           </div>
           
           {/* Split Interface Container */}
           <div className="transformation-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", minHeight: "400px", backgroundColor: tokens.colors.surface, position: "relative" }}>
             
             {/* Image Input side */}
-            <div style={{ padding: "32px", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, marginBottom: "20px", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Raw Drone Data</div>
+            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Raw Drone Data</div>
               <div style={{ flex: 1, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, position: "relative", overflow: "hidden", backgroundImage: 'url("/images/map-visualisation.jpg")', backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.15)", minHeight: "250px" }}>
                 {/* Scanning animation overlay */}
                 <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "3px", backgroundColor: tokens.colors.primary, boxShadow: `0 4px 16px ${tokens.colors.primary}`, animation: "scanLine 3s infinite linear", zIndex: 10 }} />
@@ -608,12 +607,12 @@ export default function MarketingPage() {
             </div>
 
             {/* Report Output side */}
-            <div style={{ padding: "32px", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.primary, marginBottom: "20px", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Structured Report</div>
-              <div style={{ flex: 1, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, padding: "24px", display: "flex", flexDirection: "column", gap: "16px", boxShadow: "0 12px 32px rgba(0,0,0,0.1)", overflow: "hidden", position: "relative", minHeight: "250px" }}>
+            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.primary, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Structured Report</div>
+              <div style={{ flex: 1, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, padding: tokens.spacing.lg, display: "flex", flexDirection: "column", gap: tokens.spacing.md, boxShadow: "0 12px 32px rgba(0,0,0,0.1)", overflow: "hidden", position: "relative", minHeight: "250px" }}>
                 
                 {/* Report Header Actual Data */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, paddingBottom: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, paddingBottom: tokens.spacing.md }}>
                   <div>
                     <div style={{ ...tokens.typography.titleMedium, color: tokens.colors.onSurface, fontWeight: 700 }}>Inspection Report #492</div>
                     <div style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, marginTop: "4px" }}>Site: North Ridge Solar Array</div>
@@ -629,7 +628,7 @@ export default function MarketingPage() {
                 </div>
 
                 {/* Report List Items */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
                   {[
                     { color: tokens.colors.error, title: "Critical: Severe Rust", desc: "Found on support structure B4", confidence: "98% Match" },
                     { color: "#facc15", title: "Warning: Micro-cracking", desc: "Detected on panel array 12", confidence: "87% Match" },
@@ -692,16 +691,16 @@ export default function MarketingPage() {
       <section
         id="how-it-works"
         style={{
-          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg} ${tokens.spacing.xxl}`,
+          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
         <div
           style={{
-            maxWidth: "80rem",
+            maxWidth: "1266px",
             marginLeft: "auto",
             marginRight: "auto",
-            paddingInline: tokens.spacing.xl,
+            paddingInline: tokens.spacing.md,
           }}
         >
           <style
@@ -717,7 +716,7 @@ export default function MarketingPage() {
               background: var(--sys-surface-roles-surface-container-low);
               border: 1px solid var(--sys-outline-roles-outline);
               border-radius: 8px;
-              padding: 40px 36px;
+              padding: 32px;
               display: flex;
               flex-direction: column;
               overflow: hidden;
@@ -836,17 +835,17 @@ export default function MarketingPage() {
       <section
         id="features"
         style={{
-          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
+          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "64px" }}>
+        <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: tokens.spacing.xxl }}>
             <h2
               style={{
                 ...tokens.typography.headlineLarge,
                 color: tokens.colors.onSurface,
-                marginBottom: "16px",
+                marginBottom: tokens.spacing.md,
               }}
             >
               Everything You Need to Deliver Professional Reports
@@ -936,7 +935,7 @@ export default function MarketingPage() {
       <section
         id="use-cases"
         style={{
-          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
           backgroundColor: "var(--color-section-bg)",
           position: "relative",
         }}
@@ -975,7 +974,7 @@ export default function MarketingPage() {
         `,
           }}
         />
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
           <div style={{ marginBottom: "60px", textAlign: "center" }}>
             <span
               style={{
@@ -984,7 +983,7 @@ export default function MarketingPage() {
                 fontWeight: 600,
                 fontFamily: "var(--sys-typescale-body-large-fontfamily)",
                 display: "block",
-                marginBottom: "12px",
+                marginBottom: tokens.spacing.xs,
                 letterSpacing: "0.01em",
               }}
             >
@@ -1008,8 +1007,8 @@ export default function MarketingPage() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "24px",
-              marginTop: "48px",
+              gap: tokens.spacing.lg,
+              marginTop: tokens.spacing.lg,
             }}
           >
             {useCases.map((useCase, i) => {
@@ -1042,7 +1041,7 @@ export default function MarketingPage() {
                   )}
                   <div
                     style={{
-                      padding: "32px",
+                      padding: tokens.spacing.lg,
                       flex: 1,
                       display: "flex",
                       flexDirection: "column",
@@ -1069,7 +1068,7 @@ export default function MarketingPage() {
                           "var(--sys-typescale-body-large-fontfamily)",
                         fontSize: "20px",
                         fontWeight: "500",
-                        marginBottom: "12px",
+                        marginBottom: tokens.spacing.xs,
                       }}
                     >
                       {useCase.title}
@@ -1097,7 +1096,8 @@ export default function MarketingPage() {
       {/* Final CTA */}
       <section
         style={{
-          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+          paddingTop: tokens.spacing.section, paddingInline:tokens.spacing.md,
+           
           backgroundColor: "var(--color-section-bg)",
         }}
       >
@@ -1109,14 +1109,13 @@ export default function MarketingPage() {
              background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
              border: 1px solid var(--sys-outline-variant);
              border-radius: 8px;
-             padding: 50px 24px;
-             text-align: center;
+padding: 50px 24px;
+              text-align: center;
 
 
-             position: relative;
-             overflow: hidden;
-             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-           }
+              position: relative;
+              overflow: hidden;
+            }
             .cta-primary-btn {
               background-color: var(--sys-primary);
               color: var(--sys-on-primary);
@@ -1152,7 +1151,7 @@ export default function MarketingPage() {
         />
         <div
           className="cta-card"
-          style={{ maxWidth: "1100px", margin: "0 auto" }}
+          style={{ maxWidth: "1266px", margin: "0 auto" }}
         >
           <div
             style={{
@@ -1168,7 +1167,7 @@ export default function MarketingPage() {
                 fontSize: "clamp(2rem, 5vw, 3.5rem)",
                 fontWeight: 600,
                 color: tokens.colors.onSurface,
-                marginBottom: "24px",
+                marginBottom: tokens.spacing.lg,
                 letterSpacing: "-0.02em",
                 lineHeight: 1.1,
                 textAlign: "center",
@@ -1196,7 +1195,7 @@ export default function MarketingPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "24px",
+                gap: tokens.spacing.lg,
                 flexWrap: "wrap",
                 marginTop: "40px",
               }}
@@ -1204,9 +1203,7 @@ export default function MarketingPage() {
               <Link href="/signup" className="cta-primary-btn">
                 Start Free
               </Link>
-              <Link href="#how-it-works" className="cta-secondary-link">
-                Watch the Demo <span aria-hidden="true">&rarr;</span>
-              </Link>
+              
             </div>
           </div>
         </div>
@@ -1216,7 +1213,7 @@ export default function MarketingPage() {
         style={{
           backgroundColor: "var(--footer-bg)",
           borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
           fontFamily: tokens.typography.bodyMedium.fontFamily,
         }}
       >
@@ -1229,7 +1226,7 @@ export default function MarketingPage() {
 
         <div
           style={{
-            maxWidth: "1200px",
+            maxWidth: "1266px",
             margin: "0 auto",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -1390,7 +1387,7 @@ export default function MarketingPage() {
 
         <div
           style={{
-            maxWidth: "1200px",
+            maxWidth: "1266px",
             margin: `${tokens.spacing.xl} auto 0`,
             paddingTop: tokens.spacing.lg,
             borderTop: `1px solid ${tokens.colors.outlineVariant}`,
@@ -1412,7 +1409,7 @@ export default function MarketingPage() {
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
             <a
-              href="https://x.com/fieldspec"
+              href="https://x.com/FieldspecHQ"
               target="_blank"
               rel="noopener noreferrer"
               className="social-footer-icon"
@@ -1445,23 +1442,7 @@ export default function MarketingPage() {
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
               </svg>
             </a>
-            <a
-              href="https://github.com/fieldspec"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-footer-icon"
-              aria-label="GitHub"
-              style={{ padding: "6px" }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-              </svg>
-            </a>
+            
           </div>
         </div>
       </footer>
