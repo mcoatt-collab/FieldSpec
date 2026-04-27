@@ -90,16 +90,18 @@ model AIJob {
 }
 
 model AIOutput {
-  id              String   @id @default(uuid())
-  imageId         String   @unique
-  caption         String
-  finding         String
-  recommendation  String
+  id              String    @id @default(uuid())
+  imageId         String    @unique
+  relevance      String    @default("relevant_inspection_image")
+  isExcluded     Boolean   @default(false)
+  caption        String
+  finding        String
+  recommendation String
   confidenceScore Float?
-  isEdited        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  image           Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  isEdited       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  image          Image     @relation(fields: [imageId], references: [id], onDelete: Cascade)
 }
 
 model Report {

@@ -4,7 +4,11 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_MODEL = "deepseek-chat";
 const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
 
+export const ImageRelevanceSchema = z.enum(["relevant_inspection_image", "irrelevant_image", "unclear_image"]);
+export type ImageRelevance = z.infer<typeof ImageRelevanceSchema>;
+
 export const AIResponseSchema = z.object({
+  relevance: ImageRelevanceSchema,
   caption: z.string().min(1),
   finding: z.string().min(1),
   recommendation: z.string().min(1),
@@ -18,6 +22,14 @@ interface GenerateCaptionInput {
   context?: string;
 }
 
+const RELEVANCE_SYSTEM_PROMPT = `You are a field inspection image classifier. Your task is to analyze images and classify them as:
+
+- relevant_inspection_image: Shows farmland, crops, land/terrain, infrastructure (roads, buildings, pipelines), aerial/drone survey views, or environmental/site inspection content
+- irrelevant_image: Indoor scenes, personal photos, unrelated objects with no inspection context
+- unclear_image: Cannot determine if image is relevant or not
+
+First classify the image, then provide analysis.`;
+
 export async function generateCaption(input: GenerateCaptionInput): Promise<AIResponse | null> {
   if (!DEEPSEEK_API_KEY) {
     console.error("[AI] DEEPSEEK_API_KEY not configured");
@@ -26,19 +38,29 @@ export async function generateCaption(input: GenerateCaptionInput): Promise<AIRe
 
   const { category, userNote, context } = input;
 
-  const prompt = `You are an agricultural field inspection AI. Analyze the image and provide structured findings.
+  const prompt = `Analyze this inspection image.
 
-Based on the following information:
-- Category: ${category || "general"}
-- User Note: ${userNote || "None"}
-- Context: ${context || "Field inspection"}
+Category: ${category || "general"}
+User Note: ${userNote || "None"}
+Context: ${context || "Field inspection"}
+
+First determine if this image is relevant to a field or site inspection:
+- RELEVANT if it shows: farmland, crops, land, terrain, infrastructure, aerial views, environmental content
+- IRRELEVANT if it shows: indoor scenes, personal photos, unrelated objects
+- UNCLEAR if you cannot determine
 
 Respond with ONLY a JSON object in this exact format:
 {
-  "caption": "A brief description of what the image shows (max 100 chars)",
+  "relevance": "relevant_inspection_image" OR "irrelevant_image" OR "unclear_image",
+  "caption": "Brief description of what the image shows (max 100 chars)",
   "finding": "Key observation or issue identified (max 200 chars)",
   "recommendation": "Suggested action or follow-up (max 200 chars)"
 }
+
+For irrelevant images, use these safe outputs:
+- caption: "This image does not appear to be relevant to a field or site inspection."
+- finding: "No inspection-related insights could be derived."
+- recommendation: "Exclude this image from the report."
 
 Do NOT include any text outside the JSON object. Do NOT use markdown formatting.`;
 
@@ -52,7 +74,7 @@ Do NOT include any text outside the JSON object. Do NOT use markdown formatting.
       body: JSON.stringify({
         model: DEEPSEEK_MODEL,
         messages: [
-          { role: "system", content: "You are a precise agricultural analysis AI. Always respond with valid JSON only." },
+          { role: "system", content: RELEVANCE_SYSTEM_PROMPT },
           { role: "user", content: prompt },
         ],
         temperature: 0.3,
@@ -104,6 +126,7 @@ export async function generateCaptionWithRetry(input: GenerateCaptionInput, maxR
 
   console.warn("[AI] All retries failed, using fallback");
   return {
+    relevance: "unclear_image",
     caption: "Analysis pending",
     finding: "Unable to generate findings automatically",
     recommendation: "Please review manually",

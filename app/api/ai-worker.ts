@@ -172,12 +172,14 @@ async function processAIJob(job: Job<AIJobData, void, string>) {
           context: `Project: ${project.name}`,
         });
 
+        const relevance = aiResult.relevance || "relevant_inspection_image";
         const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
 
         await prisma.aIOutput.upsert({
           where: { imageId: image.id },
           create: {
             imageId: image.id,
+            relevance,
             caption: aiResult.caption,
             finding: aiResult.finding,
             recommendation: aiResult.recommendation,
@@ -185,6 +187,7 @@ async function processAIJob(job: Job<AIJobData, void, string>) {
             isEdited: false,
           },
           update: {
+            relevance,
             caption: aiResult.caption,
             finding: aiResult.finding,
             recommendation: aiResult.recommendation,
