@@ -2,7 +2,7 @@ import Image from "next/image";
 
 interface BrandProps {
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "dash";
 }
 
 export default function Brand({

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useDashboardUser } from "@/components/dashboard/DashboardUserProvider";
@@ -11,7 +11,7 @@ interface ReportPreferences {
 }
 
 export default function SettingsPage() {
-  const { user, loading: userLoading, setUser, setShowLogoutModal } = useDashboardUser();
+  const { user, loading: userLoading, setUser, logout } = useDashboardUser();
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -117,7 +117,7 @@ export default function SettingsPage() {
   }
 
   async function handleLogout() {
-    setShowLogoutModal(true);
+    await logout();
   }
 
   if (userLoading) {
@@ -131,11 +131,21 @@ export default function SettingsPage() {
           transition: all 0.2s ease;
         }
         .custom-input:hover {
-          border-color: ${tokens.colors.primary} !important;
+          border-color: ${tokens.colors.outline} !important;
         }
         .custom-input:focus {
           outline: none;
           border-color: ${tokens.colors.primary} !important;
+        }
+        @keyframes slideUpFade {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .animate-content {
           animation: slideUpFade 0.4s ease-out forwards;
@@ -189,22 +199,17 @@ export default function SettingsPage() {
           padding-bottom: ${tokens.spacing.sm};
           border-bottom: 1px solid ${tokens.colors.outlineVariant};
         }
-        .logout-btn-custom {
-          transition: all 0.2s ease;
-        }
-        .logout-btn-custom:hover {
-          background-color: ${tokens.colors.error} !important;
-          color: ${tokens.colors.onError} !important;
-        }
       `}</style>
-        <div className="animate-content" style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: tokens.spacing.xl }}>
-          <h2 style={{ ...tokens.typography.headlineSmall, color: tokens.colors.onSurface, margin: 0 }}>
+      <div style={{ marginBottom: tokens.spacing.xl }}>
+        <div className="animate-content">
+          <h2 style={{ ...tokens.typography.headlineMedium, color: tokens.colors.onSurface }}>
             Settings
           </h2>
-          <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, margin: 0 }}>
+          <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, marginTop: tokens.spacing.xs }}>
             Configure your profile and report preferences
           </p>
         </div>
+      </div>
 
       <div
         style={{
@@ -241,7 +246,7 @@ export default function SettingsPage() {
                     width: "100%",
                     boxSizing: "border-box",
                     padding: tokens.spacing.md,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    border: `1px solid ${tokens.colors.outline}`,
                     borderRadius: tokens.radius.md,
                     backgroundColor: tokens.colors.surface,
                     color: tokens.colors.onSurface,
@@ -300,7 +305,7 @@ export default function SettingsPage() {
                     width: "100%",
                     boxSizing: "border-box",
                     padding: tokens.spacing.md,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    border: `1px solid ${tokens.colors.outline}`,
                     borderRadius: tokens.radius.md,
                     backgroundColor: tokens.colors.surface,
                     color: tokens.colors.onSurface,
@@ -336,7 +341,7 @@ export default function SettingsPage() {
                     width: "100%",
                     boxSizing: "border-box",
                     padding: tokens.spacing.md,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    border: `1px solid ${tokens.colors.outline}`,
                     borderRadius: tokens.radius.md,
                     backgroundColor: tokens.colors.surface,
                     color: tokens.colors.onSurface,
@@ -366,7 +371,7 @@ export default function SettingsPage() {
                     width: "100%",
                     boxSizing: "border-box",
                     padding: tokens.spacing.md,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    border: `1px solid ${tokens.colors.outline}`,
                     borderRadius: tokens.radius.md,
                     backgroundColor: tokens.colors.surface,
                     color: tokens.colors.onSurface,
@@ -396,7 +401,7 @@ export default function SettingsPage() {
                     width: "100%",
                     boxSizing: "border-box",
                     padding: tokens.spacing.md,
-                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    border: `1px solid ${tokens.colors.outline}`,
                     borderRadius: tokens.radius.md,
                     backgroundColor: tokens.colors.surface,
                     color: tokens.colors.onSurface,
@@ -412,7 +417,7 @@ export default function SettingsPage() {
               Report Preferences
             </h3>
             <div style={{ display: "grid", gap: tokens.spacing.md }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: "transparent", border: `1px solid ${tokens.colors.outlineVariant}`, borderRadius: tokens.radius.md }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: tokens.colors.surfaceContainer, borderRadius: tokens.radius.md }}>
                 <div>
                   <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurface, margin: 0 }}>
                     Include Confidence Scores
@@ -431,7 +436,7 @@ export default function SettingsPage() {
                 </label>
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: "transparent", border: `1px solid ${tokens.colors.outlineVariant}`, borderRadius: tokens.radius.md }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: tokens.colors.surfaceContainer, borderRadius: tokens.radius.md }}>
                 <div>
                   <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurface, margin: 0 }}>
                     Include Images in Export
@@ -459,7 +464,6 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={handleLogout}
-              className="logout-btn-custom"
               style={{
                 padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
                 backgroundColor: "transparent",

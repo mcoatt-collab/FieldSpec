@@ -149,18 +149,45 @@ function DashboardLayoutShell({
             }}
             aria-label="Account menu"
           >
-            {getInitials(userName)}
+            {user?.avatarUrl ? (
+              <img 
+                src={user.avatarUrl} 
+                alt={userName} 
+                className="rounded-full object-cover"
+                style={{ width: "100%", height: "100%" }}
+              />
+            ) : (
+              getInitials(userName)
+            )}
           </button>
+
+          {/* Dropdown Overlay */}
+          {showDropdown && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                zIndex: 50,
+              }}
+              onClick={() => setShowDropdown(false)}
+            />
+          )}
 
           {/* Dropdown Menu - Material 3 Style */}
           {showDropdown && (
             <div
-              className="absolute right-0 top-full mt-sm rounded-2xl overflow-hidden animate-dropdown"
+              className="absolute right-0 top-full mt-sm overflow-hidden animate-dropdown"
               style={{
                 right: 0,
                 backgroundColor: tokens.colors.surface,
-                boxShadow: tokens.elevation.level2,
+                boxShadow: tokens.elevation.level1,
                 minWidth: "200px",
+                borderRadius: "8px",
+                border: `1px solid ${tokens.colors.outlineVariant}`,
                 zIndex: 100,
               }}
             >
@@ -187,12 +214,73 @@ function DashboardLayoutShell({
                     color: tokens.colors.onSurfaceVariant,
                   }}
                 >
-                  Signed in
+                  Signed in as
+                </p>
+                <p
+                  className="truncate"
+                  style={{
+                    ...tokens.typography.labelSmall,
+                    color: tokens.colors.onSurface,
+                  }}
+                >
+                  {user?.email}
                 </p>
               </div>
 
               {/* Menu Items */}
               <div className="py-sm">
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setShowDropdown(false)}
+                  className="flex items-center gap-md w-full px-md py-sm text-left transition-colors no-underline"
+                  style={{
+                    color: tokens.colors.onSurface,
+                    ...tokens.typography.labelLarge,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      tokens.colors.surfaceContainer;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <span className="material-icons" style={{ fontSize: "20px" }}>
+                    settings
+                  </span>
+                  Settings
+                </Link>
+
+                <Link
+                  href="/dashboard/clients"
+                  onClick={() => setShowDropdown(false)}
+                  className="flex items-center gap-md w-full px-md py-sm text-left transition-colors no-underline"
+                  style={{
+                    color: tokens.colors.onSurface,
+                    ...tokens.typography.labelLarge,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      tokens.colors.surfaceContainer;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <span className="material-icons" style={{ fontSize: "20px" }}>
+                    group
+                  </span>
+                  Clients
+                </Link>
+
+                <div
+                  style={{
+                    height: "1px",
+                    backgroundColor: tokens.colors.outlineVariant,
+                    margin: `${tokens.spacing.xs} 0`,
+                  }}
+                />
+
                 <button
                   onClick={() => {
                     setShowDropdown(false);

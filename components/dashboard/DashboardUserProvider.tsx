@@ -20,6 +20,7 @@ export interface DashboardUser {
   reportSubtitle?: string | null;
   includeConfidence?: boolean;
   includeImages?: boolean;
+  avatarUrl?: string | null;
   createdAt?: string;
 }
 

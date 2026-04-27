@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
         name: true,
         email: true,
         companyName: true,
+        avatarUrl: true,
         createdAt: true,
       },
     });
@@ -86,6 +87,7 @@ export async function PATCH(request: NextRequest) {
         name: true,
         email: true,
         companyName: true,
+        avatarUrl: true,
         createdAt: true,
       },
     });
