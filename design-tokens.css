@@ -459,8 +459,7 @@
 .problem-solution-card,
 .step-card,
 .feature-card,
-.use-case-card-bento,
-.cta-card {
+.use-case-card-bento {
   background-color: var(--ref-primary-primary40) !important; /* #315F9B */
   border-color: var(--ref-primary-primary30) !important; /* #254774 */
 }
@@ -477,8 +476,7 @@
 :root.light .problem-solution-card,
 :root.light .step-card,
 :root.light .feature-card,
-:root.light .use-case-card-bento,
-:root.light .cta-card {
+:root.light .use-case-card-bento {
   background-color: #D8E4F3 !important;
   border-color: #c3d5ed !important;
 }

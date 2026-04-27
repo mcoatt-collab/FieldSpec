@@ -1,3 +1,4 @@
+import { Prisma, PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import exifReader from "exif-reader";
@@ -251,7 +252,7 @@ export async function POST(request: NextRequest) {
 
     uploadedAssetIds.push(uploadedImage.publicId, uploadedThumbnail.publicId);
 
-    const createdImage = await prisma.$transaction(async (tx) => {
+    const createdImage = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const image = await tx.image.create({
         data: {
           projectId,

@@ -58,28 +58,19 @@ export default function MarketingPage() {
 
   const useCases = [
     {
-      title: "Agricultural Inspections",
-      description:
-        "Assess crop health, map pest damage, and monitor irrigation across hundreds of acres. Deliver clear reports growers can act on.",
-      imageUrl: "/images/agricultural-inspections.jpg",
+      title: "Drone Operators",
+      description: "Deliver professional reports to clients faster",
+      imageUrl: "/images/drone-operators.jpg",
     },
     {
-      title: "Land Surveys",
-      description:
-        "Document site conditions, track changes between surveys, and produce professional reports clients trust for decision-making.",
-      imageUrl: "/images/land-surveys.jpg",
-    },
-    {
-      title: "Infrastructure Inspections",
-      description:
-        "Inspect roofs, bridges, and utility assets from the air. Generate professional reports without putting boots on the ground.",
+      title: "Infrastructure Inspectors",
+      description: "Standardize inspection workflows across teams",
       imageUrl: "/images/infrastructure-inspections.jpg",
     },
     {
-      title: "Drone Service Providers",
-      description:
-        "Stand out from competitors by delivering polished inspection reports with every flight. Turn aerial data into a premium service.",
-      imageUrl: "/images/drone-operators.jpg",
+      title: "Field Teams",
+      description: "Organize and analyze large sets of field images",
+      imageUrl: "/images/land-surveys.jpg",
     },
   ];
 
@@ -113,23 +104,23 @@ export default function MarketingPage() {
       <section
         className="hero-section"
         style={{
-          maxWidth: "1266px",
+          maxWidth: "1200px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: tokens.spacing.section,
-          paddingBottom: tokens.spacing.section,
-          paddingInline: tokens.spacing.md,
+          paddingTop: "32px",
+          paddingBottom: "24px",
+          paddingInline: tokens.spacing.xl,
         }}
       >
         {/* Section Heading (Outside Box) */}
-        <div style={{ textAlign: "center", marginBottom: tokens.spacing.xl }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
           <h1
             style={{
               ...tokens.typography.displaySmall,
               fontSize: "clamp(24px, 5vw, 36px)",
               color: tokens.colors.onSurface,
               fontWeight: 500,
-              marginBottom: tokens.spacing.xs,
+              marginBottom: "12px",
               letterSpacing: "-0.02em",
             }}
           >
@@ -170,7 +161,7 @@ export default function MarketingPage() {
               justifyContent: "center",
               alignItems: "center",
               gap: tokens.spacing.xxl,
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.md}`,
+              padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
               textAlign: "center",
               height: "100%",
             }}
@@ -242,7 +233,7 @@ export default function MarketingPage() {
                 href="/sample-report"
                 className="hero-btn-secondary"
                 style={{
-padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
+                  padding: `${tokens.spacing.md} ${tokens.spacing.md}`,
                   backgroundColor: "transparent",
                   color: tokens.colors.onSurface,
                   borderRadius: tokens.radius.lg,
@@ -323,12 +314,12 @@ padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
       {/* Trust Strip */}
       <div
         style={{
-          maxWidth: "1266px",
+          maxWidth: "1200px",
           margin: "0 auto",
           width: "100%",
-paddingInline: tokens.spacing.md,
-          paddingTop: tokens.spacing.md,
-          paddingBottom: tokens.spacing.md,
+          paddingInline: tokens.spacing.xl,
+          paddingTop: tokens.spacing.lg,
+          paddingBottom: tokens.spacing.lg,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -376,12 +367,12 @@ paddingInline: tokens.spacing.md,
       {/* Problem → Solution Section */}
       <section
         style={{
-          maxWidth: "1266px",
+          maxWidth: "1200px",
           margin: "0 auto",
           width: "100%",
-          paddingTop: tokens.spacing.section,
-          paddingBottom:tokens.spacing.lg,
-          paddingInline: tokens.spacing.md,
+          paddingTop: "32px",
+          paddingBottom: "24px",
+          paddingInline: tokens.spacing.xl,
           borderRadius: tokens.radius.lg,
           overflow: "hidden",
         }}
@@ -550,11 +541,12 @@ paddingInline: tokens.spacing.md,
       {/* Transformation Engine Visual */}
       <section
         style={{
-          maxWidth: "1266px",
+          maxWidth: "1200px",
           margin: "0 auto",
           width: "100%",
-          paddingBottom: tokens.spacing.section,
-          paddingInline: tokens.spacing.md,
+          paddingTop: "32px",
+          paddingBottom: "48px",
+          paddingInline: tokens.spacing.xl,
         }}
       >
         <div style={{
@@ -570,20 +562,20 @@ paddingInline: tokens.spacing.md,
         }}>
           {/* Mock App Header */}
           <div style={{ height: "56px", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, display: "flex", alignItems: "center", padding: "0 20px", backgroundColor: tokens.colors.surfaceContainer, zIndex: 2 }}>
-            <div style={{ display: "flex", gap: tokens.spacing.xxxs }}>
+            <div style={{ display: "flex", gap: "8px" }}>
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.error }} />
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#facc15" }} />
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.primary }} />
             </div>
-            <div style={{ marginLeft: tokens.spacing.lg, ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, fontWeight: 600, letterSpacing: "0.5px" }}>FieldSpec Transformation Engine</div>
+            <div style={{ marginLeft: "24px", ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, fontWeight: 600, letterSpacing: "0.5px" }}>FieldSpec Transformation Engine</div>
           </div>
           
           {/* Split Interface Container */}
           <div className="transformation-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", minHeight: "400px", backgroundColor: tokens.colors.surface, position: "relative" }}>
             
             {/* Image Input side */}
-            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Raw Drone Data</div>
+            <div style={{ padding: "32px", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, marginBottom: "20px", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Raw Drone Data</div>
               <div style={{ flex: 1, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, position: "relative", overflow: "hidden", backgroundImage: 'url("/images/map-visualisation.jpg")', backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.15)", minHeight: "250px" }}>
                 {/* Scanning animation overlay */}
                 <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "3px", backgroundColor: tokens.colors.primary, boxShadow: `0 4px 16px ${tokens.colors.primary}`, animation: "scanLine 3s infinite linear", zIndex: 10 }} />
@@ -607,12 +599,12 @@ paddingInline: tokens.spacing.md,
             </div>
 
             {/* Report Output side */}
-            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.primary, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Structured Report</div>
-              <div style={{ flex: 1, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, padding: tokens.spacing.lg, display: "flex", flexDirection: "column", gap: tokens.spacing.md, boxShadow: "0 12px 32px rgba(0,0,0,0.1)", overflow: "hidden", position: "relative", minHeight: "250px" }}>
+            <div style={{ padding: "32px", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.primary, marginBottom: "20px", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Structured Report</div>
+              <div style={{ flex: 1, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, padding: "24px", display: "flex", flexDirection: "column", gap: "16px", boxShadow: "0 12px 32px rgba(0,0,0,0.1)", overflow: "hidden", position: "relative", minHeight: "250px" }}>
                 
                 {/* Report Header Actual Data */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, paddingBottom: tokens.spacing.md }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, paddingBottom: "16px" }}>
                   <div>
                     <div style={{ ...tokens.typography.titleMedium, color: tokens.colors.onSurface, fontWeight: 700 }}>Inspection Report #492</div>
                     <div style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, marginTop: "4px" }}>Site: North Ridge Solar Array</div>
@@ -628,7 +620,7 @@ paddingInline: tokens.spacing.md,
                 </div>
 
                 {/* Report List Items */}
-                <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   {[
                     { color: tokens.colors.error, title: "Critical: Severe Rust", desc: "Found on support structure B4", confidence: "98% Match" },
                     { color: "#facc15", title: "Warning: Micro-cracking", desc: "Detected on panel array 12", confidence: "87% Match" },
@@ -691,16 +683,16 @@ paddingInline: tokens.spacing.md,
       <section
         id="how-it-works"
         style={{
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg} ${tokens.spacing.xxl}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
         <div
           style={{
-            maxWidth: "1266px",
+            maxWidth: "80rem",
             marginLeft: "auto",
             marginRight: "auto",
-            paddingInline: tokens.spacing.md,
+            paddingInline: tokens.spacing.xl,
           }}
         >
           <style
@@ -716,7 +708,7 @@ paddingInline: tokens.spacing.md,
               background: var(--sys-surface-roles-surface-container-low);
               border: 1px solid var(--sys-outline-roles-outline);
               border-radius: 8px;
-              padding: 32px;
+              padding: 40px 36px;
               display: flex;
               flex-direction: column;
               overflow: hidden;
@@ -835,17 +827,17 @@ paddingInline: tokens.spacing.md,
       <section
         id="features"
         style={{
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
-        <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: tokens.spacing.xxl }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "64px" }}>
             <h2
               style={{
                 ...tokens.typography.headlineLarge,
                 color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
+                marginBottom: "16px",
               }}
             >
               Everything You Need to Deliver Professional Reports
@@ -935,276 +927,160 @@ paddingInline: tokens.spacing.md,
       <section
         id="use-cases"
         style={{
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
           backgroundColor: "var(--color-section-bg)",
-          position: "relative",
         }}
       >
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          .bento-grid {
+          .use-cases-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 48px;
+            max-width: 1200px;
+            margin: 0 auto;
           }
-          .use-case-card-bento {
-             background: var(--sys-surface-roles-surface-container);
-            border: 1px solid var(--sys-outline-variant);
-            border-radius: 8px;
+          .use-case-card {
+            border-radius: 16px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 488px;
           }
-          .bento-span-2 {
-            grid-column: span 2;
+          .use-case-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
           }
-          .bento-span-1 {
-            grid-column: span 1;
+          .use-case-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
           }
-          @media (max-width: 900px) {
-            .bento-grid {
+          .use-case-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          .use-case-content {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+            min-height: 488px;
+            background: linear-gradient(to bottom, transparent 0%, transparent 35%, rgba(0,0,0,0.85) 100%);
+          }
+          .use-case-card-title {
+            font-family: var(--sys-typescale-title-large-fontfamily);
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          }
+          .use-case-card-desc {
+            font-family: var(--sys-typescale-body-medium-fontfamily);
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.5;
+          }
+          @media (max-width: 768px) {
+            .use-cases-cards {
               grid-template-columns: 1fr;
-            }
-            .bento-span-2, .bento-span-1 {
-              grid-column: span 1;
             }
           }
         `,
           }}
         />
-        <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "60px", textAlign: "center" }}>
-            <span
-              style={{
-                color: tokens.colors.primary,
-                fontSize: "14px",
-                fontWeight: 600,
-                fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                display: "block",
-                marginBottom: tokens.spacing.xs,
-                letterSpacing: "0.01em",
-              }}
-            >
-              Who It&apos;s For
-            </span>
-            <h2
-              style={{
-                ...tokens.typography.headlineLarge,
-                color: tokens.colors.onSurface,
-                textAlign: "center",
-                margin: "0 auto",
-                maxWidth: "800px",
-              }}
-            >
-              Built for Field Professionals
-            </h2>
-          </div>
-
-          <div
-            className="bento-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: tokens.spacing.lg,
-              marginTop: tokens.spacing.lg,
-            }}
-          >
-            {useCases.map((useCase, i) => {
-              const spanClass =
-                i === 0 || i === 3 ? "bento-span-2" : "bento-span-1";
-
-              return (
-                <div key={i} className={`use-case-card-bento ${spanClass}`}>
-                  {useCase.imageUrl && (
-                    <div
-                      style={{
-                        height: "240px",
-                        width: "100%",
-                        backgroundColor: "#0B1120",
-                        borderBottom: "1px solid rgba(255,255,255,0.05)",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src={useCase.imageUrl}
-                        alt={useCase.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          opacity: 0.85,
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      padding: tokens.spacing.lg,
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: tokens.colors.onSurfaceVariant,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                        marginBottom: "8px",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {useCase.title.split(" ")[0]}
-                    </span>
-                    <h4
-                      style={{
-                        color: tokens.colors.onSurface,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "20px",
-                        fontWeight: "500",
-                        marginBottom: tokens.spacing.xs,
-                      }}
-                    >
-                      {useCase.title}
-                    </h4>
-                    <p
-                      style={{
-                        color: tokens.colors.onSurfaceVariant,
-                        fontFamily:
-                          "var(--sys-typescale-body-large-fontfamily)",
-                        fontSize: "14px",
-                        lineHeight: 1.6,
-                        opacity: 0.7,
-                      }}
-                    >
-                      {useCase.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div className="use-cases-cards">
+          {useCases.map((useCase, i) => (
+            <div key={i} className="use-case-card">
+              <div className="use-case-image">
+                <img src={useCase.imageUrl} alt={useCase.title} />
+              </div>
+              <div className="use-case-content">
+                <h3 className="use-case-card-title">{useCase.title}</h3>
+                <p className="use-case-card-desc">{useCase.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Final CTA */}
+{/* Final CTA */}
       <section
         style={{
-          paddingTop: tokens.spacing.section, paddingInline:tokens.spacing.md,
-           
-          backgroundColor: "var(--color-section-bg)",
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
         }}
       >
         <style
           dangerouslySetInnerHTML={{
             __html: `
-           .cta-card {
-              background-color: var(--sys-surface-roles-surface-container);
-             background-image: radial-gradient(ellipse at bottom, var(--sys-primary) 0%, transparent 60%);
-             border: 1px solid var(--sys-outline-variant);
-             border-radius: 8px;
-padding: 50px 24px;
+            .cta-card {
               text-align: center;
-
-
               position: relative;
-              overflow: hidden;
+              overflow: visible;
+              padding: 48px 24px;
+              background: transparent;
+              box-shadow: none;
+              border: none;
             }
             .cta-primary-btn {
               background-color: var(--sys-primary);
               color: var(--sys-on-primary);
-              padding: 12px 24px;
-             border-radius: 8px;
-             font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             transition: background-color 0.2s, transform 0.2s;
-             border: none;
-             display: inline-block;
-           }
-           .cta-primary-btn:hover {
-             background-color: var(--sys-primary-container);
-             color: var(--sys-on-primary-container);
-             transform: translateY(-1px);
-           }
-            .cta-secondary-link {
+              padding: 16px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              text-decoration: none;
+              transition: all 0.2s ease;
+              border: none;
+              display: inline-block;
+            }
+            .cta-primary-btn:hover {
+              opacity: 0.9;
+              transform: translateY(-2px);
+            }
+            .cta-trust {
+              font-family: var(--sys-typescale-body-medium-fontfamily);
+              font-size: 14px;
               color: var(--sys-on-surface);
-              font-size: 15px;
-             font-weight: 500;
-             text-decoration: none;
-             display: inline-flex;
-             align-items: center;
-             gap: 6px;
-             transition: color 0.2s, transform 0.2s;
-           }
-           .cta-secondary-link:hover {
-             color: rgba(255,255,255,0.8);
-           }
-         `,
+              margin-top: -18px;
+              opacity: 0.8;
+              line-height: 2.34;
+            }
+          `,
           }}
         />
         <div
           className="cta-card"
-          style={{ maxWidth: "1266px", margin: "0 auto" }}
+          style={{ maxWidth: "700px", margin: "0 auto" }}
         >
-          <div
+          <h2
             style={{
-              maxWidth: "700px",
-              margin: "0 auto",
-              position: "relative",
-              zIndex: 1,
+              fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
+              fontSize: "clamp(28px, 5vw, 40px)",
+              fontWeight: 600,
+              color: tokens.colors.onSurface,
+              letterSpacing: "-0.02em",
+              lineHeight: 0.9,
+              textAlign: "center",
+              marginBottom: "24px",
             }}
           >
-            <h2
-              style={{
-                fontFamily: "var(--sys-typescale-headline-large-fontfamily)",
-                fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                fontWeight: 600,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.lg,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                textAlign: "center",
-              }}
-            >
-              Go From Images to Report in Minutes
-            </h2>
-            <p
-              style={{
-                fontFamily: "var(--sys-typescale-body-large-fontfamily)",
-                fontSize: "17px",
-                color: tokens.colors.onSurfaceVariant,
-                lineHeight: 1.6,
-                marginBottom: "40px",
-                maxWidth: "540px",
-                margin: "0 auto 40px",
-                textAlign: "center",
-              }}
-            >
-              Upload your first set of images and see what FieldSpec can do. No
-              credit card required.
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: tokens.spacing.lg,
-                flexWrap: "wrap",
-                marginTop: "40px",
-              }}
-            >
-              <Link href="/signup" className="cta-primary-btn">
-                Start Free
-              </Link>
-              
-            </div>
+            Start generating inspection reports in minutes
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+            <p className="cta-trust">No credit card required</p>
+            <Link href="/signup" className="cta-primary-btn">
+              Get Started
+            </Link>
           </div>
         </div>
       </section>
@@ -1213,7 +1089,7 @@ padding: 50px 24px;
         style={{
           backgroundColor: "var(--footer-bg)",
           borderTop: `1px solid ${tokens.colors.outlineVariant}`,
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
           fontFamily: tokens.typography.bodyMedium.fontFamily,
         }}
       >
@@ -1226,7 +1102,7 @@ padding: 50px 24px;
 
         <div
           style={{
-            maxWidth: "1266px",
+            maxWidth: "1200px",
             margin: "0 auto",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -1387,7 +1263,7 @@ padding: 50px 24px;
 
         <div
           style={{
-            maxWidth: "1266px",
+            maxWidth: "1200px",
             margin: `${tokens.spacing.xl} auto 0`,
             paddingTop: tokens.spacing.lg,
             borderTop: `1px solid ${tokens.colors.outlineVariant}`,
@@ -1409,7 +1285,7 @@ padding: 50px 24px;
           </p>
           <div style={{ display: "flex", gap: tokens.spacing.md }}>
             <a
-              href="https://x.com/FieldspecHQ"
+              href="https://x.com/fieldspec"
               target="_blank"
               rel="noopener noreferrer"
               className="social-footer-icon"
@@ -1442,7 +1318,23 @@ padding: 50px 24px;
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
               </svg>
             </a>
-            
+            <a
+              href="https://github.com/fieldspec"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-footer-icon"
+              aria-label="GitHub"
+              style={{ padding: "6px" }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+              </svg>
+            </a>
           </div>
         </div>
       </footer>
