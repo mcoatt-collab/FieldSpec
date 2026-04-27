@@ -709,7 +709,7 @@ export default function MarketingPage() {
               flex-direction: column;
               overflow: hidden;
               position: relative;
-              border: 1px solid var(--sys-outline-variant);
+              border: 1px solid var(--sys-outline-roles-outline-variant);
               border-radius: 12px;
               background: var(--sys-surface-roles-surface-container-low);
               transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -717,7 +717,7 @@ export default function MarketingPage() {
             .hiw-card:hover {
               transform: translateY(-4px);
               box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-              border-color: var(--sys-primary);
+              border-color: var(--sys-outline-roles-outline-variant);
             }
             .hiw-card-icon {
               width: 56px;
