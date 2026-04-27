@@ -32,8 +32,24 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [insight, setInsight] = useState<Insight | null>(null);
 
+  const fetchActiveJobs = async () => {
+    try {
+      const response = await fetch("/api/ai/active-jobs");
+      const result = await response.json();
+      if (result.data) {
+        setJobs(result.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch active jobs:", error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
+    fetchActiveJobs();
+    
+    const jobsInterval = setInterval(fetchActiveJobs, 5000);
+    return () => clearInterval(jobsInterval);
   }, [fetchProjects]);
 
   useEffect(() => {
@@ -60,7 +76,6 @@ export default function DashboardPage() {
   }, [projects]);
 
   useEffect(() => {
-    setJobs(mockJobs);
     setInsight(mockInsight);
   }, []);
 
