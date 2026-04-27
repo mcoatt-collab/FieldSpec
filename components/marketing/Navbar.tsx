@@ -18,9 +18,9 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
       width: "100%",
     }}>
       <div style={{
-        maxWidth: "1200px",
+        maxWidth: "1266px",
         margin: "0 auto",
-        padding: `${tokens.spacing.md} ${tokens.spacing.xl}`,
+        padding: `${tokens.spacing.md} ${tokens.spacing.md}`,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",

@@ -93,6 +93,9 @@ export const tokens = {
     lg: "var(--sys-spacing-spacing-lg)",
     xl: "var(--sys-spacing-spacing-xl)",
     xxl: "var(--sys-spacing-spacing-xxl)",
+    section: "64px",
+    xxs: "4px",
+    xxxs: "8px",
   },
   elevation: {
     level1: "var(--sys-elevation-3d-pnumbra)",
