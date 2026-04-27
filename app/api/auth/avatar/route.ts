@@ -29,7 +29,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!file.type.startsWith("image/")) {
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tiff", ".heic", ".heif"];
+    const fileName = file.name.toLowerCase();
+    const hasAllowedExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    const hasValidMimeType = file.type && file.type.startsWith("image/");
+    
+    if (!hasValidMimeType && !hasAllowedExtension) {
       return NextResponse.json(
         { error: { message: "Only image uploads are supported", code: "VALIDATION_ERROR" } },
         { status: 400 }
@@ -51,15 +56,25 @@ export async function POST(request: NextRequest) {
 
     const inputBuffer = Buffer.from(await file.arrayBuffer());
     
+    let processedBuffer: Buffer;
+    
     // Process image: square crop and resize
-    const processedBuffer = await sharp(inputBuffer)
-      .rotate()
-      .resize(AVATAR_SIZE, AVATAR_SIZE, {
-        fit: "cover",
-        position: "center",
-      })
-      .jpeg({ quality: 85 })
-      .toBuffer();
+    try {
+      processedBuffer = await sharp(inputBuffer)
+        .rotate()
+        .resize(AVATAR_SIZE, AVATAR_SIZE, {
+          fit: "cover",
+          position: "center",
+        })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+    } catch (sharpError) {
+      console.error("Sharp processing error:", sharpError);
+      return NextResponse.json(
+        { error: { message: "Failed to process HEIC image. Please convert to JPEG first.", code: "PROCESSING_ERROR" } },
+        { status: 400 }
+      );
+    }
 
     const folder = `fieldspec/${userId}/profile`;
     const publicId = `avatar-${Date.now()}`;

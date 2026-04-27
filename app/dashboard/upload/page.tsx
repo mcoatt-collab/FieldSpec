@@ -519,11 +519,6 @@ export default function UploadPage() {
                 }}
               >
                 <UploadZone onUpload={handleUpload} isUploading={isUploading} />
-                <UploadQueue
-                  items={uploadQueue}
-                  onRemoveItem={handleRemoveUploadItem}
-                  onClearCompleted={handleClearCompletedUploads}
-                />
               </div>
 
               <BulkActionBar

@@ -16,14 +16,18 @@ export default function ReportPage() {
   }
 
   return (
-    <div style={{ maxWidth: "1200px", padding: `0 ${tokens.spacing.md}` }}>
-      <div className="animate-content" style={{ marginBottom: tokens.spacing.xl, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        <h1 style={{ ...tokens.typography.headlineSmall, color: tokens.colors.onSurface, margin: 0 }}>
-          Analysis Reports
-        </h1>
-        <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, margin: 0 }}>
-          Generate and manage professional survey reports
-        </p>
+    <div style={{ maxWidth: "1200px", padding: `0 ${tokens.spacing.md}`, paddingBottom: tokens.spacing.xxl }}>
+      <div style={{ marginBottom: tokens.spacing.xl, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <h1 style={{ ...tokens.typography.headlineSmall, color: tokens.colors.onSurface, margin: 0 }}>
+              Analysis Reports
+            </h1>
+            <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, margin: 0 }}>
+              Generate and manage professional survey reports
+            </p>
+          </div>
+        </div>
       </div>
 
       <ReportProjectSelector
@@ -35,8 +39,10 @@ export default function ReportPage() {
 
       {state.error && (
         <div
-          className="animate-content"
           style={{
+            display: "flex",
+            alignItems: "center",
+            gap: tokens.spacing.sm,
             padding: tokens.spacing.md,
             marginBottom: tokens.spacing.lg,
             backgroundColor: tokens.colors.errorContainer,
@@ -45,6 +51,7 @@ export default function ReportPage() {
             ...tokens.typography.bodyMedium,
           }}
         >
+          <span className="material-icons" style={{ fontSize: "18px" }}>error</span>
           {state.error}
         </div>
       )}
@@ -68,25 +75,21 @@ export default function ReportPage() {
             <div className="animate-content" style={{ position: "relative" }}>
               <div
                 style={{
-                  position: "sticky",
-                  top: tokens.spacing.md,
-                  zIndex: 10,
                   display: "flex",
                   justifyContent: "flex-end",
                   marginBottom: tokens.spacing.md,
                   pointerEvents: "none",
                 }}
               >
-                <div style={{ pointerEvents: "auto", display: "flex", gap: tokens.spacing.sm }}>
+                <div style={{ pointerEvents: "auto", display: "flex", gap: tokens.spacing.md, alignItems: "center" }}>
                   {state.hasUnsavedChanges && (
                     <span
                       style={{
-                        padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                        padding: `${tokens.spacing.xs} ${tokens.spacing.sm}`,
                         backgroundColor: tokens.colors.tertiaryContainer,
                         color: tokens.colors.onTertiaryContainer,
-                        borderRadius: tokens.radius.pill,
-                        ...tokens.typography.labelMedium,
-                        boxShadow: tokens.elevation.level1,
+                        borderRadius: tokens.radius.sm,
+                        ...tokens.typography.labelSmall,
                         display: "flex",
                         alignItems: "center",
                       }}
@@ -98,31 +101,19 @@ export default function ReportPage() {
                     onClick={actions.handleSaveReport}
                     disabled={state.saveState === "saving" || !state.hasUnsavedChanges}
                     style={{
-                      padding: `${tokens.spacing.sm} ${tokens.spacing.xl}`,
-                      backgroundColor: state.saveState === "saving" || !state.hasUnsavedChanges
+                      padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                      backgroundColor: !state.hasUnsavedChanges
                         ? tokens.colors.surfaceVariant
                         : tokens.colors.primary,
-                      color: state.saveState === "saving" || !state.hasUnsavedChanges
+                      color: !state.hasUnsavedChanges
                         ? tokens.colors.onSurfaceVariant
                         : tokens.colors.onPrimary,
                       border: "none",
-                      borderRadius: tokens.radius.pill,
-                      cursor: state.saveState === "saving" || !state.hasUnsavedChanges ? "not-allowed" : "pointer",
-                      ...tokens.typography.labelLarge,
-                      boxShadow: tokens.elevation.level2,
+                      borderRadius: tokens.radius.md,
+                      cursor: !state.hasUnsavedChanges ? "not-allowed" : "pointer",
+                      opacity: !state.hasUnsavedChanges ? 0.6 : 1,
+                      ...tokens.typography.labelMedium,
                       transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (state.saveState !== "saving" && state.hasUnsavedChanges) {
-                        e.currentTarget.style.backgroundColor = tokens.colors.primaryContainer;
-                        e.currentTarget.style.color = tokens.colors.onPrimaryContainer;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (state.saveState !== "saving" && state.hasUnsavedChanges) {
-                        e.currentTarget.style.backgroundColor = tokens.colors.primary;
-                        e.currentTarget.style.color = tokens.colors.onPrimary;
-                      }
                     }}
                   >
                     {state.saveState === "saving" ? "Saving..." : state.saveState === "saved" ? "Saved!" : "Save Changes"}
@@ -132,8 +123,10 @@ export default function ReportPage() {
 
               {state.saveError && (
                 <div
-                  className="animate-content"
                   style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: tokens.spacing.sm,
                     padding: tokens.spacing.md,
                     marginBottom: tokens.spacing.md,
                     backgroundColor: tokens.colors.errorContainer,
@@ -142,6 +135,7 @@ export default function ReportPage() {
                     ...tokens.typography.bodySmall,
                   }}
                 >
+                  <span className="material-icons" style={{ fontSize: "18px" }}>error</span>
                   {state.saveError}
                 </div>
               )}
@@ -173,7 +167,6 @@ export default function ReportPage() {
 
           {!state.editedReport && state.selectedProjectId && (
             <div
-              className="animate-content"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -182,7 +175,6 @@ export default function ReportPage() {
                 padding: tokens.spacing.xl,
                 backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
-                boxShadow: tokens.elevation.level1,
                 border: `1px solid ${tokens.colors.outlineVariant}`,
               }}
             >
@@ -193,29 +185,26 @@ export default function ReportPage() {
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-                  backgroundColor: "var(--ref-primary-primary95)",
+                  padding: tokens.spacing.xxl,
+                  backgroundColor: tokens.colors.surfaceContainerHigh,
                   borderRadius: tokens.radius.lg,
                   textAlign: "center",
-                  border: `2px dashed var(--ref-neutral-variant-neutral-variant90)`,
+                  border: `2px dashed ${tokens.colors.outline}`,
                 }}
               >
-                <svg
+                <span className="material-icons"
                   style={{
-                    width: "48px",
-                    height: "48px",
+                    color: tokens.colors.onSurfaceVariant,
+                    fontSize: "48px",
                     marginBottom: tokens.spacing.md,
-                    fill: "var(--ref-primary-primary40)",
                   }}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                </svg>
+                  description
+                </span>
                 <p
                   style={{
                     ...tokens.typography.titleMedium,
-                    color: "var(--ref-primary-primary40)",
+                    color: tokens.colors.onSurface,
                     margin: 0,
                     marginBottom: tokens.spacing.xs,
                   }}
@@ -225,8 +214,7 @@ export default function ReportPage() {
                 <p
                   style={{
                     ...tokens.typography.bodySmall,
-                    color: "var(--ref-neutral-variant-neutral-variant40)",
-                    opacity: 0.8,
+                    color: tokens.colors.onSurfaceVariant,
                     margin: 0,
                   }}
                 >

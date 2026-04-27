@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
+import exifReader from "exif-reader";
 
 import { getValidatedUserId } from "@/lib/auth/get-user";
 import { cache } from "@/lib/cache";
@@ -19,6 +20,70 @@ function sanitizeBaseName(filename: string) {
     .replace(/[^a-z0-9-_]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 48) || "image";
+}
+
+async function extractGPSCoordinates(buffer: Buffer): Promise<{ gpsLat: number; gpsLng: number } | null> {
+  try {
+    // Use sharp to extract metadata (includes EXIF) without loading full image
+    const { exif } = await sharp(buffer).metadata();
+    
+    if (!exif) {
+      console.log("No EXIF data found in image");
+      return null;
+    }
+
+    const tags = exifReader(Buffer.from(exif));
+    
+    if (!tags?.GPSInfo) {
+      console.log("No GPSInfo in EXIF");
+      return null;
+    }
+
+    const gps = tags.GPSInfo;
+
+    // GPSLatitude and GPSLongitude are typically arrays: [degrees, minutes, seconds]
+    // GPSLatitudeRef: "N" or "S", GPSLongitudeRef: "E" or "W"
+    if (!gps.GPSLatitude || !gps.GPSLongitude) {
+      console.log("Missing GPSLatitude or GPSLongitude");
+      return null;
+    }
+
+    const lat = convertDMSToDecimal(gps.GPSLatitude, gps.GPSLatitudeRef);
+    const lng = convertDMSToDecimal(gps.GPSLongitude, gps.GPSLongitudeRef);
+
+    if (lat === null || lng === null) {
+      console.log("Failed to convert GPS coordinates");
+      return null;
+    }
+
+    // Validate coordinates are within valid ranges
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      console.log("GPS coordinates out of range", { lat, lng });
+      return null;
+    }
+
+    console.log("Extracted GPS:", { lat, lng });
+    return { gpsLat: lat, gpsLng: lng };
+  } catch (error) {
+    console.error("GPS extraction error:", error);
+    return null;
+  }
+}
+
+function convertDMSToDecimal(
+  dms: number[],
+  ref?: string,
+): number | null {
+  if (!dms || dms.length < 3) return null;
+
+  let decimal = dms[0] + dms[1] / 60 + dms[2] / 3600;
+
+  // Apply reference direction (S and W are negative)
+  if (ref === "S" || ref === "W") {
+    decimal = decimal * -1;
+  }
+
+  return decimal;
 }
 
 export async function POST(request: NextRequest) {
@@ -51,9 +116,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!file.type.startsWith("image/")) {
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"];
+    
+    const fileName = file.name.toLowerCase();
+    const hasAllowedMime = ALLOWED_MIME_TYPES.includes(file.type);
+    const hasAllowedExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
+    
+    if (!hasAllowedMime && !hasAllowedExtension) {
       return NextResponse.json(
-        { error: { message: "Only image uploads are supported", code: "VALIDATION_ERROR" } },
+        { error: { message: "Only JPG, PNG, WEBP, HEIC, and HEIF images are supported", code: "VALIDATION_ERROR" } },
         { status: 400 },
       );
     }
@@ -81,8 +153,36 @@ export async function POST(request: NextRequest) {
     const baseName = sanitizeBaseName(file.name);
     const assetIdBase = `${Date.now()}-${baseName}`;
     const folder = `fieldspec/${userId}/projects/${projectId}`;
+    const isHeic = fileName.endsWith(".heic") || fileName.endsWith(".heif");
 
-    const optimizedBuffer = await sharp(inputBuffer)
+    // Extract GPS coordinates BEFORE Sharp processing (strips EXIF)
+    // Note: May fail for HEIC/HEIF if Sharp doesn't have libvips support
+    let gpsCoords: { gpsLat: number; gpsLng: number } | null = null;
+    try {
+      gpsCoords = await extractGPSCoordinates(inputBuffer);
+    } catch (gpsError) {
+      console.log("GPS extraction failed, continuing without GPS:", gpsError);
+    }
+
+    // Convert HEIC/HEIF to JPEG if needed (Sharp may not support HEIC natively)
+    let processingBuffer: Buffer = inputBuffer;
+    if (isHeic) {
+      try {
+        const converted = await sharp(inputBuffer)
+          .jpeg({ quality: 90 })
+          .toBuffer();
+        processingBuffer = Buffer.from(converted);
+        console.log("Converted HEIC/HEIF to JPEG for processing");
+      } catch (heicError) {
+        console.error("HEIC conversion error:", heicError);
+        return NextResponse.json(
+          { error: { message: "Failed to process HEIC/HEIF image. Please convert to JPEG first.", code: "PROCESSING_ERROR" } },
+          { status: 400 }
+        );
+      }
+    }
+
+    const optimizedBuffer = await sharp(processingBuffer)
       .rotate()
       .resize({
         width: MAX_IMAGE_DIMENSION,
@@ -93,7 +193,7 @@ export async function POST(request: NextRequest) {
       .jpeg({ quality: 82, mozjpeg: true })
       .toBuffer();
 
-    const thumbnailBuffer = await sharp(inputBuffer)
+    const thumbnailBuffer = await sharp(processingBuffer)
       .rotate()
       .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, {
         fit: "cover",
@@ -124,6 +224,8 @@ export async function POST(request: NextRequest) {
           url: uploadedImage.secureUrl,
           thumbnailUrl: uploadedThumbnail.secureUrl,
           category: "general",
+          gpsLat: gpsCoords?.gpsLat ?? null,
+          gpsLng: gpsCoords?.gpsLng ?? null,
         },
         select: {
           id: true,
@@ -131,6 +233,8 @@ export async function POST(request: NextRequest) {
           thumbnailUrl: true,
           category: true,
           notes: true,
+          gpsLat: true,
+          gpsLng: true,
           createdAt: true,
         },
       });

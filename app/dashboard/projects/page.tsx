@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 import { LoadingScreen } from "@/lib/components/loading";
-import { EmptyState } from "@/components/dashboard/EmptyState";
 
 interface Project {
   id: string;
@@ -166,25 +165,45 @@ export default function ProjectsPage() {
           marginBottom: tokens.spacing.xl,
         }}
       >
-        <div className="animate-content" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <h2
+        <div className="animate-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <h2
+              style={{
+                ...tokens.typography.headlineSmall,
+                color: tokens.colors.onSurface,
+                margin: 0,
+              }}
+            >
+              Projects
+            </h2>
+            <p
+              style={{
+                ...tokens.typography.bodyMedium,
+                color: tokens.colors.onSurfaceVariant,
+                margin: 0,
+              }}
+            >
+              Manage your field inspection projects
+            </p>
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
             style={{
-              ...tokens.typography.headlineSmall,
-              color: tokens.colors.onSurface,
-              margin: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: tokens.spacing.xs,
+              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              backgroundColor: tokens.colors.primary,
+              color: tokens.colors.onPrimary,
+              border: "none",
+              borderRadius: tokens.radius.md,
+              cursor: "pointer",
+              ...tokens.typography.labelMedium,
             }}
           >
-            Projects
-          </h2>
-          <p
-            style={{
-              ...tokens.typography.bodyMedium,
-              color: tokens.colors.onSurfaceVariant,
-              margin: 0,
-            }}
-          >
-            Manage your field inspection projects
-          </p>
+            <span className="material-icons" style={{ fontSize: "18px" }}>add</span>
+            Add Project
+          </button>
         </div>
       </div>
 
@@ -196,7 +215,6 @@ export default function ProjectsPage() {
             padding: tokens.spacing.lg,
             backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
             border: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
@@ -217,7 +235,6 @@ export default function ProjectsPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="custom-input"
                 style={{
                   width: "100%",
                   boxSizing: "border-box",
@@ -227,6 +244,16 @@ export default function ProjectsPage() {
                   backgroundColor: tokens.colors.surface,
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
+                  transition: "all 0.2s ease",
+                  outline: "none",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = tokens.colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 1px ${tokens.colors.primary}`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = tokens.colors.outlineVariant;
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               />
             </div>
@@ -248,7 +275,6 @@ export default function ProjectsPage() {
               <select
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
-                className="custom-select"
                 style={{
                   width: "100%",
                   boxSizing: "border-box",
@@ -259,6 +285,16 @@ export default function ProjectsPage() {
                   color: tokens.colors.onSurface,
                   ...tokens.typography.bodyLarge,
                   cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  outline: "none",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = tokens.colors.primary;
+                  e.currentTarget.style.boxShadow = `0 0 0 1px ${tokens.colors.primary}`;
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = tokens.colors.outlineVariant;
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
                 <option value="">No client linked</option>
@@ -293,6 +329,9 @@ export default function ProjectsPage() {
             {error && (
               <div
                 style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: tokens.spacing.sm,
                   padding: tokens.spacing.md,
                   marginBottom: tokens.spacing.md,
                   backgroundColor: tokens.colors.errorContainer,
@@ -301,6 +340,7 @@ export default function ProjectsPage() {
                   ...tokens.typography.bodySmall,
                 }}
               >
+                <span className="material-icons" style={{ fontSize: "18px" }}>error</span>
                 {error}
               </div>
             )}
@@ -363,16 +403,69 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      {loading ? (
+{loading ? (
         <LoadingScreen message="Loading projects..." />
       ) : projects.length === 0 ? (
-        <EmptyState
-          icon="folder"
-          title="No projects yet"
-          description="Create your first project to get started"
-          actionLabel="Create Project"
-          onAction={() => setShowForm(true)}
-        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: tokens.spacing.md,
+            padding: tokens.spacing.xxl,
+            borderRadius: tokens.radius.lg,
+            border: `1px solid ${tokens.colors.outlineVariant}`,
+            backgroundColor: tokens.colors.surface,
+            textAlign: "center",
+          }}
+        >
+          <span className="material-icons"
+            style={{
+              color: tokens.colors.onSurfaceVariant,
+              fontSize: "48px",
+            }}
+          >
+            folder_off
+          </span>
+          <div>
+            <p
+              style={{
+                ...tokens.typography.bodyLarge,
+                color: tokens.colors.onSurface,
+                marginBottom: tokens.spacing.xs,
+              }}
+            >
+              No projects yet
+            </p>
+            <p
+              style={{
+                ...tokens.typography.bodyMedium,
+                color: tokens.colors.onSurfaceVariant,
+              }}
+            >
+              Create your first project to get started
+            </p>
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: tokens.spacing.xs,
+              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+              backgroundColor: tokens.colors.primary,
+              color: tokens.colors.onPrimary,
+              border: "none",
+              borderRadius: tokens.radius.md,
+              cursor: "pointer",
+              ...tokens.typography.labelMedium,
+            }}
+          >
+            <span className="material-icons" style={{ fontSize: "18px" }}>add</span>
+            Create Project
+          </button>
+        </div>
       ) : (
         <div
           style={{
@@ -389,22 +482,17 @@ export default function ProjectsPage() {
                 padding: tokens.spacing.lg,
                 backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
-                boxShadow: tokens.elevation.level1,
                 border: `1px solid ${tokens.colors.outlineVariant}`,
-                animation: `slideUpFade 0.4s ease-out forwards ${index * 0.05}s`,
-                opacity: 0,
                 transition: "all 0.2s ease",
                 cursor: "pointer",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = tokens.elevation.level2;
                 e.currentTarget.style.borderColor = tokens.colors.primary;
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = tokens.elevation.level1;
                 e.currentTarget.style.borderColor = tokens.colors.outlineVariant;
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
               <h3

@@ -59,6 +59,7 @@ export function UploadZone({ onUpload, isUploading }: UploadZoneProps) {
         id="file-upload"
         type="file"
         multiple
+        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
         style={{ display: "none" }}
         onChange={(e) => e.target.files && onUpload(e.target.files)}
         disabled={isUploading}
@@ -105,7 +106,7 @@ export function UploadZone({ onUpload, isUploading }: UploadZoneProps) {
             letterSpacing: tokens.typography.bodyMedium.letterSpacing,
           }}
         >
-          Supports: PNG, JPG, JPEG, WEBP
+          Supports: PNG, JPG, JPEG, WEBP, HEIC, HEIF
         </p>
 
         <p

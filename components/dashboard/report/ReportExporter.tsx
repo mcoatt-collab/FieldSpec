@@ -29,8 +29,9 @@ export function ReportExporter({
         style={{
           marginBottom: tokens.spacing.lg,
           padding: tokens.spacing.lg,
-          backgroundColor: tokens.colors.surfaceVariant,
+          backgroundColor: tokens.colors.surface,
           borderRadius: tokens.radius.lg,
+          border: `1px solid ${tokens.colors.outlineVariant}`,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -66,38 +67,42 @@ export function ReportExporter({
                 borderRadius: tokens.radius.md,
                 cursor: "pointer",
                 textDecoration: "none",
-                ...tokens.typography.labelLarge,
+                ...tokens.typography.labelMedium,
                 display: "flex",
                 alignItems: "center",
                 gap: tokens.spacing.xs,
               }}
             >
-              View Exported PDF
+              <span className="material-icons" style={{ fontSize: "18px" }}>visibility</span>
+              View PDF
             </a>
           )}
           <button
             onClick={onExport}
             disabled={exportState === "loading" || exportState === "generating"}
             style={{
-              padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
+              padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
               backgroundColor: exportState === "loading" || exportState === "generating"
                 ? tokens.colors.surfaceVariant
-                : tokens.colors.secondary,
+                : tokens.colors.primary,
               color: exportState === "loading" || exportState === "generating"
                 ? tokens.colors.onSurfaceVariant
-                : tokens.colors.onSecondary,
+                : tokens.colors.onPrimary,
               border: "none",
               borderRadius: tokens.radius.md,
               cursor: exportState === "loading" || exportState === "generating"
                 ? "not-allowed"
                 : "pointer",
               opacity: exportState === "generating" ? 0.7 : 1,
-              ...tokens.typography.labelLarge,
+              ...tokens.typography.labelMedium,
               display: "flex",
               alignItems: "center",
-              gap: tokens.spacing.sm,
+              gap: tokens.spacing.xs,
             }}
           >
+            <span className="material-icons" style={{ fontSize: "18px" }}>
+              {exportState === "loading" || exportState === "generating" ? "sync" : exportState === "success" ? "check" : "download"}
+            </span>
             {exportState === "loading" && "Preparing..."}
             {exportState === "generating" && "Generating PDF..."}
             {exportState === "success" && "Export Complete!"}

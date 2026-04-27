@@ -177,40 +177,62 @@ export default function ClientsPage() {
       `}</style>
       <div style={{ marginBottom: tokens.spacing.xl }}>
         <div className="animate-content" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <h2 style={{ ...tokens.typography.headlineSmall, color: tokens.colors.onSurface, margin: 0 }}>
-            Clients
-          </h2>
-          <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, margin: 0 }}>
-            Manage your clients and their projects
-          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <h2 style={{ ...tokens.typography.headlineSmall, color: tokens.colors.onSurface, margin: 0 }}>
+                Clients
+              </h2>
+              <p style={{ ...tokens.typography.bodyMedium, color: tokens.colors.onSurfaceVariant, margin: 0 }}>
+                Manage your clients and their projects
+              </p>
+            </div>
+            <button
+              onClick={() => setShowCreateForm(true)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: tokens.spacing.xs,
+                padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                backgroundColor: tokens.colors.primary,
+                color: tokens.colors.onPrimary,
+                border: "none",
+                borderRadius: tokens.radius.md,
+                cursor: "pointer",
+                ...tokens.typography.labelMedium,
+              }}
+            >
+              <span className="material-icons" style={{ fontSize: "18px" }}>add</span>
+              Add Client
+            </button>
+          </div>
         </div>
       </div>
 
       {error && (
         <div
-          className="animate-content"
           style={{
+            display: "flex",
+            alignItems: "center",
+            gap: tokens.spacing.sm,
             padding: tokens.spacing.md,
-            marginBottom: tokens.spacing.md,
             backgroundColor: tokens.colors.errorContainer,
             color: tokens.colors.onErrorContainer,
             borderRadius: tokens.radius.md,
             ...tokens.typography.bodySmall,
           }}
         >
+          <span className="material-icons" style={{ fontSize: "18px" }}>error</span>
           {error}
         </div>
       )}
 
       {showCreateForm && (
         <div
-          className="animate-content"
           style={{
             padding: tokens.spacing.xl,
             backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
-            marginBottom: tokens.spacing.lg,
+            border: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >
           <h3
@@ -383,22 +405,29 @@ export default function ClientsPage() {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             gap: tokens.spacing.md,
+            marginTop: showCreateForm ? tokens.spacing.lg : 0,
           }}
         >
           {clients.map((client, index) => (
             <div
               key={client.id}
-              className="client-card"
               onClick={() => router.push(`/dashboard/clients/${client.id}`)}
               style={{
                 padding: tokens.spacing.lg,
                 backgroundColor: tokens.colors.surface,
                 borderRadius: tokens.radius.lg,
-                boxShadow: tokens.elevation.level1,
+                border: `1px solid ${tokens.colors.outlineVariant}`,
                 cursor: "pointer",
                 position: "relative",
-                animation: `slideUpFade 0.4s ease-out forwards ${index * 0.05}s`,
-                opacity: 0,
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.primary;
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = tokens.colors.outlineVariant;
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
               <div style={{ position: "relative" }}>

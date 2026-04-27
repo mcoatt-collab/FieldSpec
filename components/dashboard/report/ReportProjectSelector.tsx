@@ -84,7 +84,6 @@ export function ReportProjectSelector({
             padding: tokens.spacing.lg,
             backgroundColor: tokens.colors.surface,
             borderRadius: tokens.radius.lg,
-            boxShadow: tokens.elevation.level1,
             border: `1px solid ${tokens.colors.outlineVariant}`,
           }}
         >

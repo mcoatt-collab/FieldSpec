@@ -139,8 +139,8 @@ export default function SettingsPage() {
       }
       
       const data = await res.json();
-      if (data.data?.url && user) {
-        setUser({ ...user, avatarUrl: data.data.url });
+      if (data.data?.avatarUrl && user) {
+        setUser({ ...user, avatarUrl: data.data.avatarUrl });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload avatar");
