@@ -11,7 +11,7 @@ interface ReportPreferences {
 }
 
 export default function SettingsPage() {
-  const { user, loading: userLoading, setUser, logout } = useDashboardUser();
+  const { user, loading: userLoading, setUser, logout, showLogoutModal, setShowLogoutModal } = useDashboardUser();
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -114,10 +114,6 @@ export default function SettingsPage() {
       setError("An error occurred. Please try again.");
       setSaving(false);
     }
-  }
-
-  async function handleLogout() {
-    await logout();
   }
 
   if (userLoading) {
@@ -252,6 +248,8 @@ export default function SettingsPage() {
                     color: tokens.colors.onSurface,
                     ...tokens.typography.bodyLarge,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.primary); }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.outline); }}
                 />
               </div>
 
@@ -311,6 +309,8 @@ export default function SettingsPage() {
                     color: tokens.colors.onSurface,
                     ...tokens.typography.bodyLarge,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.primary); }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.outline); }}
                 />
               </div>
             </div>
@@ -347,6 +347,8 @@ export default function SettingsPage() {
                     color: tokens.colors.onSurface,
                     ...tokens.typography.bodyLarge,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.primary); }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.outline); }}
                 />
               </div>
 
@@ -377,6 +379,8 @@ export default function SettingsPage() {
                     color: tokens.colors.onSurface,
                     ...tokens.typography.bodyLarge,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.primary); }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.outline); }}
                 />
               </div>
 
@@ -407,6 +411,8 @@ export default function SettingsPage() {
                     color: tokens.colors.onSurface,
                     ...tokens.typography.bodyLarge,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.primary); }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = String(tokens.colors.outline); }}
                 />
               </div>
             </div>
@@ -417,7 +423,7 @@ export default function SettingsPage() {
               Report Preferences
             </h3>
             <div style={{ display: "grid", gap: tokens.spacing.md }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: tokens.colors.surfaceContainer, borderRadius: tokens.radius.md }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, border: `1px solid ${tokens.colors.outlineVariant}`, borderRadius: tokens.radius.md }}>
                 <div>
                   <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurface, margin: 0 }}>
                     Include Confidence Scores
@@ -436,7 +442,7 @@ export default function SettingsPage() {
                 </label>
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, backgroundColor: tokens.colors.surfaceContainer, borderRadius: tokens.radius.md }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: tokens.spacing.md, border: `1px solid ${tokens.colors.outlineVariant}`, borderRadius: tokens.radius.md }}>
                 <div>
                   <p style={{ ...tokens.typography.bodyLarge, color: tokens.colors.onSurface, margin: 0 }}>
                     Include Images in Export
@@ -463,7 +469,15 @@ export default function SettingsPage() {
             </h3>
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = tokens.colors.error;
+                e.currentTarget.style.color = tokens.colors.onError;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = tokens.colors.error;
+              }}
               style={{
                 padding: `${tokens.spacing.sm} ${tokens.spacing.lg}`,
                 backgroundColor: "transparent",
@@ -471,6 +485,7 @@ export default function SettingsPage() {
                 border: `1px solid ${tokens.colors.error}`,
                 borderRadius: tokens.radius.md,
                 cursor: "pointer",
+                transition: "all 0.2s ease",
                 ...tokens.typography.labelLarge,
               }}
             >
@@ -527,6 +542,106 @@ export default function SettingsPage() {
           </button>
         </form>
       </div>
+
+      {showLogoutModal && (
+        <>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              zIndex: 40,
+            }}
+            onClick={() => setShowLogoutModal(false)}
+          />
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 200,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+              }}
+              onClick={() => setShowLogoutModal(false)}
+            />
+            <div
+              className="relative rounded-lg overflow-hidden"
+              style={{
+                backgroundColor: tokens.colors.surface,
+                boxShadow: tokens.elevation.level3,
+                width: "100%",
+                maxWidth: "320px",
+                margin: tokens.spacing.lg,
+              }}
+            >
+              <div className="p-lg">
+                <h2
+                  style={{
+                    ...tokens.typography.headlineSmall,
+                    color: tokens.colors.onSurface,
+                    marginBottom: tokens.spacing.sm,
+                  }}
+                >
+                  Confirm Logout
+                </h2>
+                <p
+                  style={{
+                    ...tokens.typography.bodyMedium,
+                    color: tokens.colors.onSurfaceVariant,
+                    marginBottom: tokens.spacing.lg,
+                  }}
+                >
+                  Are you sure you want to logout of your account?
+                </p>
+
+                <div className="flex justify-end gap-sm">
+                  <button
+                    onClick={() => setShowLogoutModal(false)}
+                    className="px-md py-sm rounded-pill text-label-large transition-colors"
+                    style={{
+                      backgroundColor: tokens.colors.surface,
+                      color: tokens.colors.primary,
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="px-md py-sm rounded-pill text-label-large transition-colors"
+                    style={{
+                      backgroundColor: tokens.colors.error,
+                      color: tokens.colors.onError,
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
