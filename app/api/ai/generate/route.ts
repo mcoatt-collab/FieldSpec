@@ -58,14 +58,16 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
     });
 
     if (existingAI) {
-      groupedByCategory.get(category)!.push({
-        imageId: image.id,
-        imageUrl: image.url,
-        caption: existingAI.caption,
-        finding: existingAI.finding,
-        recommendation: existingAI.recommendation,
-        confidenceScore: existingAI.confidenceScore,
-      });
+    groupedByCategory.get(category)!.push({
+      imageId: image.id,
+      imageUrl: image.url,
+      caption: existingAI.caption,
+      finding: existingAI.finding,
+      recommendation: existingAI.recommendation,
+      confidenceScore: existingAI.confidenceScore,
+      gpsLat: image.gpsLat,
+      gpsLng: image.gpsLng,
+    });
       processedCount++;
       const progress = 10 + Math.floor((processedCount / totalImages) * 70);
       onProgress(progress, `Using cached result for image ${processedCount}/${totalImages}`);
@@ -79,6 +81,15 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
       userNote: image.notes || null,
       context: `Project: ${project.name}`,
     });
+
+    // Skip irrelevant images in the report
+    if (aiResult.relevance === "irrelevant_image") {
+      console.log(`[AI] Skipping irrelevant image: ${image.id}`);
+      processedCount++;
+      const progress = 10 + Math.floor((processedCount / totalImages) * 70);
+      onProgress(progress, `Skipped irrelevant image ${processedCount}/${totalImages}`);
+      continue;
+    }
 
     const confidenceScore = calculateConfidenceScore(category, !!image.notes, !!project.name);
 
@@ -108,6 +119,8 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
       finding: aiResult.finding,
       recommendation: aiResult.recommendation,
       confidenceScore,
+      gpsLat: image.gpsLat,
+      gpsLng: image.gpsLng,
     });
 
     processedCount++;

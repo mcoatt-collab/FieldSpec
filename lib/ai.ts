@@ -104,6 +104,21 @@ Do NOT include any text outside the JSON object. Do NOT use markdown formatting.
       return null;
     }
 
+    // Check if image is relevant to field inspection
+    if (result.data.relevance === "irrelevant_image") {
+      console.log("[AI] Image classified as irrelevant");
+      return {
+        relevance: "irrelevant_image",
+        caption: result.data.caption,
+        finding: "This image does not appear to be relevant to a field or site inspection.",
+        recommendation: "Exclude this image from the report.",
+      };
+    }
+
+    if (result.data.relevance === "unclear_image") {
+      console.log("[AI] Image classification unclear");
+    }
+
     return result.data;
   } catch (error) {
     console.error("[AI] Request failed:", error);

@@ -83,7 +83,7 @@ export function ImageCard({
         borderRadius: tokens.radius.lg,
         border: `1px solid ${isSelected ? tokens.colors.primary : tokens.colors.outlineVariant}`,
         backgroundColor: tokens.colors.surface,
-        boxShadow: isSelected ? tokens.elevation.level1 : "none",
+        boxShadow: isSelected ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
         padding: tokens.spacing.sm,
       }}
     >

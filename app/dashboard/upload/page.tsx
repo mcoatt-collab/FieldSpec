@@ -13,7 +13,6 @@ import {
 import { FilterBar } from "@/components/dashboard/upload/FilterBar";
 import { BulkActionBar } from "@/components/dashboard/upload/BulkActionBar";
 import { ImageCard } from "@/components/dashboard/upload/ImageCard";
-import { EmptyState } from "@/components/dashboard/upload/EmptyState";
 import { StatusType } from "@/components/dashboard/upload/StatusBadge";
 import { LoadingScreen } from "@/lib/components/loading";
 
@@ -50,6 +49,9 @@ export default function UploadPage() {
   const [editingImage, setEditingImage] = useState<ImageType | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchImages = useCallback(async (projectId: string) => {
     try {
@@ -88,7 +90,10 @@ export default function UploadPage() {
   }, [selectedProjectId, fetchImages]);
 
   const handleUpload = async (files: FileList) => {
-    if (!selectedProjectId) return;
+    if (!selectedProjectId) {
+      setError("Please create a project first before uploading images.");
+      return;
+    }
 
     setIsUploading(true);
     setError("");
@@ -247,32 +252,53 @@ export default function UploadPage() {
   };
 
   const handleDeleteImage = async (imageId: string) => {
-    if (!confirm("Are you sure you want to delete this image?")) return;
+    setDeleteImageId(imageId);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteImageId) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/images/${imageId}`, { method: "DELETE" });
+      const res = await fetch(`/api/images/${deleteImageId}`, { method: "DELETE" });
 
       if (res.ok) {
-        setImages((prev) => prev.filter((image) => image.id !== imageId));
+        setImages((prev) => prev.filter((image) => image.id !== deleteImageId));
         setSelectedImageIds((prev) => {
           const next = new Set(prev);
-          next.delete(imageId);
+          next.delete(deleteImageId);
           return next;
         });
       }
     } catch (err) {
       setError("Failed to delete image");
+    } finally {
+      setIsDeleting(false);
+      setDeleteImageId(null);
     }
   };
 
   const handleBulkDelete = async () => {
-    if (!confirm(`Delete ${selectedImageIds.size} images?`)) return;
+    setShowBulkDeleteModal(true);
+  };
+
+  const confirmBulkDelete = async () => {
+    setIsDeleting(true);
 
     for (const id of Array.from(selectedImageIds)) {
-      await handleDeleteImage(id);
+      try {
+        const res = await fetch(`/api/images/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          setImages((prev) => prev.filter((image) => image.id !== id));
+        }
+      } catch (err) {
+        setError("Failed to delete some images");
+      }
     }
 
     setSelectedImageIds(new Set());
+    setIsDeleting(false);
+    setShowBulkDeleteModal(false);
   };
 
   const handleBulkCategorize = async (category: string) => {
@@ -412,10 +438,52 @@ export default function UploadPage() {
 
 
           {projects.length === 0 ? (
-            <EmptyState
-              type="no_images"
-              onAction={() => (window.location.href = "/dashboard/projects")}
-            />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: tokens.spacing.md,
+              }}
+            >
+              <div
+                style={{
+                  padding: tokens.spacing.xl,
+                  textAlign: "center",
+                  borderRadius: tokens.radius.lg,
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  backgroundColor: tokens.colors.surface,
+                }}
+              >
+                <p
+                  style={{
+                    ...tokens.typography.bodyLarge,
+                    color: tokens.colors.onSurfaceVariant,
+                    marginBottom: tokens.spacing.md,
+                  }}
+                >
+                  You need to create a project first before uploading images.
+                </p>
+                <button
+                  onClick={() => (window.location.href = "/dashboard/projects")}
+                  style={{
+                    paddingInline: tokens.spacing.lg,
+                    paddingBlock: tokens.spacing.sm,
+                    borderRadius: tokens.radius.md,
+                    border: "none",
+                    backgroundColor: tokens.colors.primary,
+                    color: tokens.colors.onPrimary,
+                    cursor: "pointer",
+                    fontFamily: tokens.typography.labelLarge.fontFamily,
+                    fontSize: tokens.typography.labelLarge.fontSize,
+                    fontWeight: tokens.typography.labelLarge.fontWeight,
+                    lineHeight: tokens.typography.labelLarge.lineHeight,
+                    letterSpacing: tokens.typography.labelLarge.letterSpacing,
+                  }}
+                >
+                  Create Project
+                </button>
+              </div>
+            </div>
           ) : (
             <div
               style={{
@@ -521,6 +589,12 @@ export default function UploadPage() {
                 <UploadZone onUpload={handleUpload} isUploading={isUploading} />
               </div>
 
+              <UploadQueue
+                items={uploadQueue}
+                onRemoveItem={handleRemoveUploadItem}
+                onClearCompleted={handleClearCompletedUploads}
+              />
+
               <BulkActionBar
                 totalCount={filteredAndSortedImages.length}
                 selectedCount={selectedImageIds.size}
@@ -564,34 +638,17 @@ export default function UploadPage() {
                 </div>
               ) : null}
 
-              {(images.length === 0 || filteredAndSortedImages.length === 0) && (
-                <div
+               {(images.length === 0 || filteredAndSortedImages.length === 0) && (
+                <p
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                    gap: tokens.spacing.md,
+                    ...tokens.typography.bodyMedium,
+                    color: tokens.colors.onSurfaceVariant,
+                    textAlign: "center",
+                    padding: tokens.spacing.lg,
                   }}
                 >
-                  {images.length === 0 ? (
-                    <EmptyState
-                      type="no_images"
-                      onAction={() =>
-                        document.getElementById("file-upload")?.click()
-                      }
-                    />
-                  ) : null}
-
-                  {images.length > 0 && filteredAndSortedImages.length === 0 ? (
-                    <EmptyState
-                      type="no_results"
-                      onAction={() => {
-                        setCategoryFilter("all");
-                        setStatusFilter("all");
-                        setSearchQuery("");
-                      }}
-                    />
-                  ) : null}
-                </div>
+                  {images.length === 0 ? "No images yet. Upload your first image above." : "No images match your filters."}
+                </p>
               )}
             </div>
           )}
@@ -855,6 +912,186 @@ export default function UploadPage() {
               close
             </span>
           </button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteImageId && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 200,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+            onClick={() => setDeleteImageId(null)}
+          />
+
+          <div
+            className="relative rounded-lg overflow-hidden"
+            style={{
+              backgroundColor: tokens.colors.surface,
+              boxShadow: tokens.elevation.level3,
+              width: "100%",
+              maxWidth: "320px",
+              margin: tokens.spacing.lg,
+            }}
+          >
+            <div className="p-lg">
+              <h2
+                style={{
+                  ...tokens.typography.headlineSmall,
+                  color: tokens.colors.onSurface,
+                  marginBottom: tokens.spacing.sm,
+                }}
+              >
+                Confirm Delete
+              </h2>
+              <p
+                style={{
+                  ...tokens.typography.bodyMedium,
+                  color: tokens.colors.onSurfaceVariant,
+                  marginBottom: tokens.spacing.lg,
+                }}
+              >
+                Are you sure you want to delete this image?
+              </p>
+
+              <div className="flex justify-end gap-sm">
+                <button
+                  onClick={() => setDeleteImageId(null)}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.surface,
+                    color: tokens.colors.primary,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={isDeleting}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.error,
+                    color: tokens.colors.onError,
+                    border: "none",
+                    cursor: isDeleting ? "not-allowed" : "pointer",
+                    opacity: isDeleting ? 0.7 : 1,
+                  }}
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      {showBulkDeleteModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 200,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+            onClick={() => setShowBulkDeleteModal(false)}
+          />
+
+          <div
+            className="relative rounded-lg overflow-hidden"
+            style={{
+              backgroundColor: tokens.colors.surface,
+              boxShadow: tokens.elevation.level3,
+              width: "100%",
+              maxWidth: "320px",
+              margin: tokens.spacing.lg,
+            }}
+          >
+            <div className="p-lg">
+              <h2
+                style={{
+                  ...tokens.typography.headlineSmall,
+                  color: tokens.colors.onSurface,
+                  marginBottom: tokens.spacing.sm,
+                }}
+              >
+                Confirm Delete
+              </h2>
+              <p
+                style={{
+                  ...tokens.typography.bodyMedium,
+                  color: tokens.colors.onSurfaceVariant,
+                  marginBottom: tokens.spacing.lg,
+                }}
+              >
+                Are you sure you want to delete {selectedImageIds.size} image{selectedImageIds.size !== 1 ? "s" : ""}?
+              </p>
+
+              <div className="flex justify-end gap-sm">
+                <button
+                  onClick={() => setShowBulkDeleteModal(false)}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.surface,
+                    color: tokens.colors.primary,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmBulkDelete}
+                  disabled={isDeleting}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.error,
+                    color: tokens.colors.onError,
+                    border: "none",
+                    cursor: isDeleting ? "not-allowed" : "pointer",
+                    opacity: isDeleting ? 0.7 : 1,
+                  }}
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -90,6 +90,8 @@ async function assembleStructuredReport(projectId: string, projectName: string, 
       finding: image.aiOutput?.finding || "Analysis pending",
       recommendation: image.aiOutput?.recommendation || "",
       confidenceScore: image.aiOutput?.confidenceScore || 0,
+      gpsLat: image.gpsLat,
+      gpsLng: image.gpsLng,
     };
 
     groupedByCategory.get(category)!.push(entry);
@@ -174,6 +176,12 @@ async function processAIJob(job: Job<AIJobData, void, string>) {
 
         const relevance = aiResult.relevance || "relevant_inspection_image";
         const confidenceScore = calculateConfidenceScore(category, !!userNote, hasContext);
+
+        // Skip irrelevant images
+        if (relevance === "irrelevant_image") {
+          console.log(`[AI Worker] Skipping irrelevant image: ${image.id}`);
+          continue;
+        }
 
         await prisma.aIOutput.upsert({
           where: { imageId: image.id },

@@ -1,7 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN || process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
 export const dynamic = "force-dynamic";
+
+async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  if (!MAPBOX_TOKEN) return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+  try {
+    const res = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&types=place,region,country&limit=1`
+    );
+    if (!res.ok) return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+    const data = await res.json();
+    if (data.features && data.features.length > 0) {
+      const place = data.features[0].place_name as string;
+      return place || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    }
+  } catch (err) {
+    console.error("[Geocode] Failed:", err);
+  }
+
+  return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,6 +91,26 @@ export async function POST(request: NextRequest) {
       return "#ef4444";
     };
 
+    // Pre-compute GPS location displays for all images
+    const allImages = sections.flatMap((s: any) => s.images || []);
+    const allImageLocations = new Map<string, string>();
+    for (const img of allImages) {
+      if (img.gpsLat != null && img.gpsLng != null) {
+        allImageLocations.set(img.imageId, await reverseGeocode(img.gpsLat, img.gpsLng));
+      }
+    }
+
+    // Compute a single location name for report metadata
+    const imagesWithGps = allImages.filter((img: any) => img.gpsLat != null && img.gpsLng != null);
+    let locationDisplay = content.projectLocation || "Not specified";
+    if (imagesWithGps.length > 0) {
+      const { gpsLat, gpsLng } = imagesWithGps[0];
+      const geocoded = await reverseGeocode(gpsLat, gpsLng);
+      locationDisplay = content.projectLocation
+        ? `${content.projectLocation} (${geocoded})`
+        : geocoded;
+    }
+
     const generatedDate = new Date(content.generatedAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -79,15 +122,15 @@ export async function POST(request: NextRequest) {
       const accent = categoryColor(s.category);
       const label  = categoryLabel(s.category);
 
-      // Images — table layout so html2canvas renders them correctly
       const imagesHtml = s.images?.length
         ? s.images.map((img: any) => {
-            const score = img.confidenceScore ?? 0;
-            const badge = badgeColor(score);
-            const pct   = Math.round(score * 100);
-            return `
+              const score = img.confidenceScore ??0;
+              const badge = badgeColor(score);
+              const pct   = Math.round(score * 100);
+              const gpsDisplay = allImageLocations.get(img.imageId) || "N/A";
+              return `
 <table width="100%" cellpadding="0" cellspacing="0"
-  style="margin-bottom:10px;border:1px solid #e8e8e8;border-radius:4px;background-color:#f8f8f8;">
+   style="margin-bottom:10px;border:1px solid #e8e8e8;border-radius:4px;background-color:#f8f8f8;">
   <tr>
     <td width="130" valign="top" style="padding:10px;">
       <img src="${img.imageUrl}"
@@ -104,6 +147,9 @@ export async function POST(request: NextRequest) {
       </p>
       <p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:8.5pt;color:#666666;">
         <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Recommendation&nbsp;</span>${img.recommendation || "N/A"}
+      </p>
+      <p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:8.5pt;color:#666666;">
+        <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Location (GPS)&nbsp;</span>${gpsDisplay}
       </p>
       <span style="font-size:7pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;">Confidence&nbsp;</span>
       <span style="display:inline-block;padding:2px 8px;border-radius:8px;font-size:8pt;font-weight:bold;background-color:${badge};color:#ffffff;">${pct}%</span>
@@ -178,10 +224,10 @@ export async function POST(request: NextRequest) {
         <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Project</p>
         <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.projectName}</p>
       </td>
-      <td width="25%" valign="top">
-        <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Location</p>
-        <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.projectLocation || "Not specified"}</p>
-      </td>
+       <td width="25%" valign="top">
+         <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Location</p>
+         <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${locationDisplay}</p>
+       </td>
       <td width="25%" valign="top">
         <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#888888;text-transform:uppercase;letter-spacing:0.3pt;margin:0 0 2px 0;">Images Analyzed</p>
         <p style="font-family:Arial,sans-serif;font-size:10pt;font-weight:bold;color:#1a1a1a;margin:0;">${content.totalImages}</p>

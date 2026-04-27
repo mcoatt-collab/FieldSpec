@@ -24,6 +24,8 @@ export interface ReportImageEntry {
   finding: string;
   recommendation: string;
   confidenceScore: number;
+  gpsLat: number | null;
+  gpsLng: number | null;
 }
 
 export interface ReportSection {
@@ -514,6 +516,28 @@ export function useReportState() {
     }
   }
 
+  async function handleDeleteReport() {
+    if (!selectedProjectId || !report) return;
+    if (!confirm("Are you sure you want to delete this report?")) return;
+
+    try {
+      const res = await fetch(`/api/reports/${selectedProjectId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error?.message || "Failed to delete report");
+      }
+
+      setReport(null);
+      setEditedReport(null);
+      setExportedFileUrl(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete report");
+    }
+  }
+
   function pollExportStatus(jobId: string) {
     const interval = setInterval(async () => {
       try {
@@ -695,6 +719,7 @@ export function useReportState() {
       handleCancelJob,
       handleGenerateReport,
       handleSaveReport,
+      handleDeleteReport,
       handleExport,
       updateReportTitle,
       updateSectionSummary,

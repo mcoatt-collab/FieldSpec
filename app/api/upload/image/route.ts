@@ -171,8 +171,8 @@ export async function POST(request: NextRequest) {
         const converted = await sharp(inputBuffer)
           .jpeg({ quality: 90 })
           .toBuffer();
-        processingBuffer = Buffer.from(converted);
-        console.log("Converted HEIC/HEIF to JPEG for processing");
+        processingBuffer = converted;
+        console.log("Converted HEIC/HEIF to JPEG for processing, buffer size:", processingBuffer.length);
       } catch (heicError) {
         console.error("HEIC conversion error:", heicError);
         return NextResponse.json(
@@ -182,38 +182,72 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const optimizedBuffer = await sharp(processingBuffer)
-      .rotate()
-      .resize({
-        width: MAX_IMAGE_DIMENSION,
-        height: MAX_IMAGE_DIMENSION,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .jpeg({ quality: 82, mozjpeg: true })
-      .toBuffer();
+    console.log("About to create optimized buffer...");
+    let optimizedBuffer: Buffer;
+    try {
+      optimizedBuffer = await sharp(processingBuffer)
+        .rotate()
+        .resize({
+          width: MAX_IMAGE_DIMENSION,
+          height: MAX_IMAGE_DIMENSION,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .jpeg({ quality: 82, mozjpeg: true })
+        .toBuffer();
+      console.log("Optimized image buffer created, size:", optimizedBuffer.length);
+    } catch (sharpError: any) {
+      console.error("Sharp optimization error:", sharpError?.message);
+      return NextResponse.json(
+        { error: { message: "Failed to optimize image: " + (sharpError?.message || "unknown error"), code: "PROCESSING_ERROR" } },
+        { status: 400 }
+      );
+    }
 
-    const thumbnailBuffer = await sharp(processingBuffer)
-      .rotate()
-      .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, {
-        fit: "cover",
-        position: "attention",
-      })
-      .webp({ quality: 72 })
-      .toBuffer();
+    console.log("About to create thumbnail buffer...");
+    let thumbnailBuffer: Buffer;
+    try {
+      thumbnailBuffer = await sharp(processingBuffer)
+        .rotate()
+        .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, {
+          fit: "cover",
+          position: "attention",
+        })
+        .webp({ quality: 72 })
+        .toBuffer();
+      console.log("Thumbnail buffer created, size:", thumbnailBuffer.length);
+    } catch (sharpError: any) {
+      console.error("Sharp thumbnail error:", sharpError?.message);
+      return NextResponse.json(
+        { error: { message: "Failed to create thumbnail: " + (sharpError?.message || "unknown error"), code: "PROCESSING_ERROR" } },
+        { status: 400 }
+      );
+    }
 
-    const [uploadedImage, uploadedThumbnail] = await Promise.all([
-      uploadBufferToCloudinary(optimizedBuffer, {
-        folder,
-        publicId: assetIdBase,
-        format: "jpg",
-      }),
-      uploadBufferToCloudinary(thumbnailBuffer, {
-        folder,
-        publicId: `${assetIdBase}-thumb`,
-        format: "webp",
-      }),
-    ]);
+    console.log("About to upload to Cloudinary...");
+    let uploadedImage: { publicId: string; secureUrl: string };
+    let uploadedThumbnail: { publicId: string; secureUrl: string };
+    try {
+      [uploadedImage, uploadedThumbnail] = await Promise.all([
+        uploadBufferToCloudinary(optimizedBuffer, {
+          folder,
+          publicId: assetIdBase,
+          format: "jpg",
+        }),
+        uploadBufferToCloudinary(thumbnailBuffer, {
+          folder,
+          publicId: `${assetIdBase}-thumb`,
+          format: "webp",
+        }),
+      ]);
+      console.log("Uploaded to Cloudinary successfully");
+    } catch (cloudinaryError: any) {
+      console.error("Cloudinary upload error:", cloudinaryError?.message);
+      return NextResponse.json(
+        { error: { message: "Failed to upload image to storage: " + (cloudinaryError?.message || "unknown error"), code: "UPLOAD_ERROR" } },
+        { status: 400 }
+      );
+    }
 
     uploadedAssetIds.push(uploadedImage.publicId, uploadedThumbnail.publicId);
 
@@ -251,7 +285,7 @@ export async function POST(request: NextRequest) {
     await cache.delete(cache.buildKey("images", projectId, userId));
 
     return NextResponse.json({ data: createdImage }, { status: 201 });
-  } catch (error) {
+    } catch (error: any) {
     await Promise.all(
       uploadedAssetIds.map(async (assetId) => {
         try {
@@ -262,9 +296,9 @@ export async function POST(request: NextRequest) {
       }),
     );
 
-    console.error("POST /api/upload/image error:", error);
+    console.error("POST /api/upload/image error:", error?.message, error?.stack);
     return NextResponse.json(
-      { error: { message: "Failed to upload image", code: "UPLOAD_ERROR" } },
+      { error: { message: error?.message || "Failed to upload image", code: "UPLOAD_ERROR" } },
       { status: 500 },
     );
   }
