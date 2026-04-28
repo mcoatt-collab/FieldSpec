@@ -456,7 +456,6 @@
 }
 
 /* ─── Dark mode: card backgrounds ─────────────────────────────────────────── */
-.problem-solution-card,
 .step-card,
 .feature-card,
 .use-case-card-bento {
@@ -466,14 +465,12 @@
 
 .step-card:hover,
 .feature-card:hover,
-.use-case-card-bento:hover,
-.problem-solution-card:hover {
+.use-case-card-bento:hover {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
   border-color: var(--ref-primary-primary20) !important; /* #182f4e */
 }
 
 /* ─── Light mode: card backgrounds ─────────────────────────────────────────── */
-:root.light .problem-solution-card,
 :root.light .step-card,
 :root.light .feature-card,
 :root.light .use-case-card-bento {
@@ -483,8 +480,7 @@
 
 :root.light .step-card:hover,
 :root.light .feature-card:hover,
-:root.light .use-case-card-bento:hover,
-:root.light .problem-solution-card:hover {
+:root.light .use-case-card-bento:hover {
   box-shadow: 0 12px 32px rgba(49, 87, 155, 0.14) !important;
   border-color: #31579b !important;
 }

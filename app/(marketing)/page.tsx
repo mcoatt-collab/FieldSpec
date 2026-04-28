@@ -22,79 +22,46 @@ export const metadata: Metadata = {
   ],
 };
 
+const useCases = [
+  {
+    title: "Drone Operators",
+    description: "Deliver professional reports to clients faster",
+    imageUrl: "/images/drone-operators.jpg",
+  },
+  {
+    title: "Infrastructure Inspectors",
+    description: "Standardize inspection workflows across teams",
+    imageUrl: "/images/infrastructure-inspections.jpg",
+  },
+  {
+    title: "Field Teams",
+    description: "Organize and analyze large sets of field images",
+    imageUrl: "/images/land-surveys.jpg",
+  },
+];
+
+const steps = [
+  {
+    title: "Upload Images",
+    description:
+      "Drag and drop your drone images. GPS data is extracted automatically.",
+  },
+  {
+    title: "AI Analyzes & Generates Findings",
+    description:
+      "AI detects patterns, flags issues, and generates findings for every image.",
+  },
+  {
+    title: "Review & Edit",
+    description: "Review findings, make edits, and add your notes.",
+  },
+  {
+    title: "Export Report",
+    description: "Generate a polished PDF and share with stakeholders.",
+  },
+];
+
 export default function MarketingPage() {
-  const features = [
-    {
-      title: "Skip the Manual Analysis",
-      description:
-        "AI examines every image and produces findings automatically. No more staring at photos wondering what to write.",
-      imageUrl: "/images/ai-generated-insights.jpg",
-    },
-    {
-      title: "GPS-Tagged Analysis",
-      description:
-        "Upload images with GPS coordinates. AI extracts patterns tied to exact locations so you know where issues are, not just what they are.",
-      imageUrl: "/images/image-based-analysis.jpg",
-    },
-    {
-      title: "Consistent Reports Every Time",
-      description:
-        "Generate formatted, professional PDF reports with one click. Your clients get the same quality, project after project.",
-      imageUrl: "/images/structured-reports.jpg",
-    },
-    {
-      title: "Pinpoint Issues on a Map",
-      description:
-        "Every image appears on an interactive map. See exactly where problems are without flipping through folders.",
-      imageUrl: "/images/map-visualisation.jpg",
-    },
-    {
-      title: "Export & Share in One Click",
-      description:
-        "Generate a PDF and share with stakeholders instantly. No formatting, no file conversion, no delays.",
-      imageUrl: "/images/hand-holding-stopwatch.jpg",
-    },
-  ];
-
-  const useCases = [
-    {
-      title: "Drone Operators",
-      description: "Deliver professional reports to clients faster",
-      imageUrl: "/images/drone-operators.jpg",
-    },
-    {
-      title: "Infrastructure Inspectors",
-      description: "Standardize inspection workflows across teams",
-      imageUrl: "/images/infrastructure-inspections.jpg",
-    },
-    {
-      title: "Field Teams",
-      description: "Organize and analyze large sets of field images",
-      imageUrl: "/images/land-surveys.jpg",
-    },
-  ];
-
-  const steps = [
-    {
-      title: "Upload Images",
-      description:
-        "Drag and drop your drone images. GPS data is extracted automatically.",
-    },
-    {
-      title: "AI Analyzes & Generates Findings",
-      description:
-        "AI detects patterns, flags issues, and generates findings for every image.",
-    },
-    {
-      title: "Review & Edit",
-      description: "Review findings, make edits, and add your notes.",
-    },
-    {
-      title: "Export Report",
-      description: "Generate a polished PDF and share with stakeholders.",
-    },
-  ];
-
   return (
     <main className="flex flex-col min-h-screen">
       {/* Navigation */}
@@ -186,7 +153,7 @@ export default function MarketingPage() {
                   maxWidth: "480px",
                 }}
               >
-                Eliminate your biggest pain
+                We eliminate your biggest pain
               </h2>
               <p
                 style={{
@@ -317,51 +284,55 @@ export default function MarketingPage() {
           maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
-          paddingInline: tokens.spacing.md,
           paddingTop: tokens.spacing.md,
           paddingBottom: tokens.spacing.md,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: tokens.spacing.xxl,
+          overflow: "hidden",
+          position: "relative",
         }}
       >
-        <p
-          style={{
-            ...tokens.typography.bodyLarge,
-            fontWeight: "600",
-            color: tokens.colors.onSurfaceVariant,
-          }}
-        >
-          Construction
-        </p>
-        <p
-          style={{
-            ...tokens.typography.bodyLarge,
-            fontWeight: "600",
-            color: tokens.colors.onSurfaceVariant,
-          }}
-        >
-          Infrastructure
-        </p>
-        <p
-          style={{
-            ...tokens.typography.bodyLarge,
-            fontWeight: "600",
-            color: tokens.colors.onSurfaceVariant,
-          }}
-        >
-          Agriculture
-        </p>
-        <p
-          style={{
-            ...tokens.typography.bodyLarge,
-            fontWeight: "600",
-            color: tokens.colors.onSurfaceVariant,
-          }}
-        >
-          Land Surveys
-        </p>
+        <style>{`
+          .trust-strip-track {
+            display: flex;
+            align-items: center;
+            gap: ${tokens.spacing.xxl};
+            width: max-content;
+            margin: 0 auto;
+          }
+          @media (max-width: 768px) {
+            .trust-strip-track {
+              margin: 0;
+              gap: ${tokens.spacing.xl};
+              animation: scrollTrust 20s linear infinite;
+            }
+            @keyframes scrollTrust {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+          }
+        `}</style>
+        <div className="trust-strip-track">
+          {["Construction", "Infrastructure", "Agriculture", "Land Surveys"]
+            .concat([
+              "Construction",
+              "Infrastructure",
+              "Agriculture",
+              "Land Surveys",
+            ])
+            .map((text, idx) => (
+              <p
+                key={idx}
+                style={{
+                  ...tokens.typography.bodyLarge,
+                  fontWeight: "600",
+                  color: tokens.colors.onSurfaceVariant,
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {text}
+              </p>
+            ))}
+        </div>
       </div>
 
       {/* Problem → Solution Section */}
@@ -403,15 +374,18 @@ export default function MarketingPage() {
             @media (max-width: 900px) {
               .problem-solution-grid {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-                gap: 24px !important;
+                gap: ${tokens.spacing.lg} !important;
+                min-height: auto !important;
               }
             }
 @media (max-width: 640px) {
               .problem-solution-grid {
                 grid-template-columns: 1fr !important;
+                min-height: auto !important;
               }
               .problem-solution-card {
-                padding: 32px 24px !important;
+                padding: ${tokens.spacing.xl} ${tokens.spacing.lg} !important;
+                min-height: 400px;
               }
               .problem-solution-title {
                 font-size: 24px !important;
@@ -419,7 +393,7 @@ export default function MarketingPage() {
             }
            @media (max-width: 480px) {
              .problem-solution-card {
-               padding: 24px 20px !important;
+               padding: ${tokens.spacing.lg} 20px !important;
              }
              .problem-solution-title {
                font-size: 22px !important;
@@ -441,8 +415,8 @@ export default function MarketingPage() {
               gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
               gap: 0,
               alignItems: "stretch",
-              height: "600px",
-              borderRadius: tokens.radius.lg
+              minHeight: "600px",
+              borderRadius: tokens.radius.lg,
             }}
           >
             {/* Problem Card */}
@@ -450,7 +424,6 @@ export default function MarketingPage() {
               className="problem-solution-card"
               style={{
                 padding: tokens.spacing.lg,
-               
                 border: "none",
                 height: "100%",
                 display: "flex",
@@ -459,12 +432,12 @@ export default function MarketingPage() {
                 position: "relative",
                 overflow: "hidden",
                 backgroundImage:
-                  "url('/images/agriculture-healthy-food 1.jpg')",
+                  "url('/images/agriculture-healthy-food 1.avif')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
+                gap: tokens.spacing.md,
               }}
             >
-             
               <div />
               <h3
                 style={{
@@ -498,7 +471,7 @@ export default function MarketingPage() {
             <div
               className="problem-solution-card"
               style={{
-                padding: tokens.spacing.lg,
+                padding: `${tokens.spacing.lg} ${tokens.spacing.lg} 0 ${tokens.spacing.lg}`,
                 border: "none",
                 height: "100%",
                 display: "flex",
@@ -506,6 +479,7 @@ export default function MarketingPage() {
                 justifyContent: "flex-start",
                 position: "relative",
                 overflow: "hidden",
+                gap: tokens.spacing.md,
               }}
             >
               <h3
@@ -528,10 +502,29 @@ export default function MarketingPage() {
                   lineHeight: 1.6,
                 }}
               >
-                AI turns every image into consistent findings in minutes. Your
-                images and data are structured automatically. Reports are
-                generated automatically. They are accurate, consistent, and
-                client-ready.
+                AI turns every image into consistent findings in minute and
+                generates consistent, accurate, client-ready reports in
+                automatically.
+              </div>
+              <div
+                style={{
+                  marginTop: "auto",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}
+              >
+                <img
+                  src="/images/iPad.webp"
+                  alt="FieldSpec on iPad"
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    maxHeight: "350px",
+                    objectFit: "contain",
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -548,91 +541,449 @@ export default function MarketingPage() {
           paddingInline: tokens.spacing.md,
         }}
       >
-        <div style={{
-          width: "100%",
-          backgroundColor: tokens.colors.surfaceContainerLow,
-          border: `1px solid ${tokens.colors.outlineVariant}`,
-          borderRadius: "24px",
-          boxShadow: `0 32px 64px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.05) inset`,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-        }}>
+        <div
+          style={{
+            width: "100%",
+            backgroundColor: tokens.colors.surfaceContainerLow,
+            border: `1px solid ${tokens.colors.outlineVariant}`,
+            borderRadius: "24px",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+          }}
+        >
           {/* Mock App Header */}
-          <div style={{ height: "56px", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, display: "flex", alignItems: "center", padding: "0 20px", backgroundColor: tokens.colors.surfaceContainer, zIndex: 2 }}>
+          <div
+            style={{
+              height: "56px",
+              borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+              display: "flex",
+              alignItems: "center",
+              padding: "0 20px",
+              backgroundColor: tokens.colors.surfaceContainer,
+              zIndex: 2,
+            }}
+          >
             <div style={{ display: "flex", gap: tokens.spacing.xxxs }}>
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.error }} />
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#facc15" }} />
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: tokens.colors.primary }} />
+              <div
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  backgroundColor: tokens.colors.error,
+                }}
+              />
+              <div
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  backgroundColor: "#facc15",
+                }}
+              />
+              <div
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  backgroundColor: tokens.colors.primary,
+                }}
+              />
             </div>
-            <div style={{ marginLeft: tokens.spacing.lg, ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, fontWeight: 600, letterSpacing: "0.5px" }}>FieldSpec Transformation Engine</div>
+            <div
+              style={{
+                marginLeft: tokens.spacing.lg,
+                ...tokens.typography.labelMedium,
+                color: tokens.colors.onSurfaceVariant,
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+              }}
+            >
+              FieldSpec Transformation Engine
+            </div>
           </div>
-          
+
           {/* Split Interface Container */}
-          <div className="transformation-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", minHeight: "400px", backgroundColor: tokens.colors.surface, position: "relative" }}>
-            
+          <div
+            className="transformation-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
+              minHeight: "400px",
+              backgroundColor: tokens.colors.surface,
+              position: "relative",
+            }}
+          >
             {/* Image Input side */}
-            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurfaceVariant, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Raw Drone Data</div>
-              <div style={{ flex: 1, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, position: "relative", overflow: "hidden", backgroundImage: 'url("/images/map-visualisation.jpg")', backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.15)", minHeight: "250px" }}>
+            <div
+              style={{
+                padding: tokens.spacing.lg,
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              <div
+                style={{
+                  ...tokens.typography.labelMedium,
+                  color: tokens.colors.onSurfaceVariant,
+                  marginBottom: tokens.spacing.md,
+                  textTransform: "uppercase",
+                  letterSpacing: "1.5px",
+                  fontWeight: 700,
+                }}
+              >
+                Raw Drone Data
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  borderRadius: "12px",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  position: "relative",
+                  overflow: "hidden",
+                  backgroundImage: 'url("/images/map-visualisation.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  minHeight: "250px",
+                }}
+              >
                 {/* Scanning animation overlay */}
-                <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "3px", backgroundColor: tokens.colors.primary, boxShadow: `0 4px 16px ${tokens.colors.primary}`, animation: "scanLine 3s infinite linear", zIndex: 10 }} />
-                
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "3px",
+                    backgroundColor: tokens.colors.primary,
+                    boxShadow: `0 4px 16px ${tokens.colors.primary}`,
+                    animation: "scanLine 3s infinite linear",
+                    zIndex: 10,
+                  }}
+                />
+
                 {/* AI Bounding Boxes */}
-                <div style={{ position: "absolute", top: "30%", left: "40%", width: "60px", height: "60px", border: `2px solid ${tokens.colors.primary}`, borderRadius: "4px", backgroundColor: `color-mix(in srgb, ${tokens.colors.primary} 20%, transparent)`, animation: "pulseBox 2s infinite ease-in-out" }}>
-                  <div style={{ position: "absolute", top: "-20px", left: "-2px", backgroundColor: tokens.colors.primary, color: tokens.colors.onPrimary, fontSize: "10px", padding: "2px 6px", borderRadius: "2px", fontWeight: "bold" }}>Defect 98%</div>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "30%",
+                    left: "40%",
+                    width: "60px",
+                    height: "60px",
+                    border: `2px solid ${tokens.colors.primary}`,
+                    borderRadius: "4px",
+                    backgroundColor: `color-mix(in srgb, ${tokens.colors.primary} 20%, transparent)`,
+                    animation: "pulseBox 2s infinite ease-in-out",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-20px",
+                      left: "-2px",
+                      backgroundColor: tokens.colors.primary,
+                      color: tokens.colors.onPrimary,
+                      fontSize: "10px",
+                      padding: "2px 6px",
+                      borderRadius: "2px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Defect 98%
+                  </div>
                 </div>
-                <div style={{ position: "absolute", top: "60%", left: "20%", width: "80px", height: "50px", border: `2px solid ${tokens.colors.error}`, borderRadius: "4px", backgroundColor: `color-mix(in srgb, ${tokens.colors.error} 20%, transparent)`, animation: "pulseBox 2s infinite ease-in-out 1s" }}>
-                  <div style={{ position: "absolute", top: "-20px", left: "-2px", backgroundColor: tokens.colors.error, color: tokens.colors.onError, fontSize: "10px", padding: "2px 6px", borderRadius: "2px", fontWeight: "bold" }}>Rust 94%</div>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "60%",
+                    left: "20%",
+                    width: "80px",
+                    height: "50px",
+                    border: `2px solid ${tokens.colors.error}`,
+                    borderRadius: "4px",
+                    backgroundColor: `color-mix(in srgb, ${tokens.colors.error} 20%, transparent)`,
+                    animation: "pulseBox 2s infinite ease-in-out 1s",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-20px",
+                      left: "-2px",
+                      backgroundColor: tokens.colors.error,
+                      color: tokens.colors.onError,
+                      fontSize: "10px",
+                      padding: "2px 6px",
+                      borderRadius: "2px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Rust 94%
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Center Arrow Connector */}
-            <div className="transformation-connector" style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 2 }}>
-              <div className="transformation-arrow" style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: tokens.colors.primaryContainer, display: "flex", alignItems: "center", justifyContent: "center", border: `4px solid ${tokens.colors.surface}`, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", zIndex: 2 }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={tokens.colors.primary} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            <div
+              className="transformation-connector"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                zIndex: 2,
+              }}
+            >
+              <div
+                className="transformation-arrow"
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  backgroundColor: tokens.colors.primaryContainer,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: `4px solid ${tokens.colors.surface}`,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  zIndex: 2,
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={tokens.colors.primary}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
               </div>
-              <div className="transformation-dashed-line" style={{ position: "absolute", top: 0, bottom: 0, left: "50%", width: "1px", borderLeft: `1px dashed ${tokens.colors.outlineVariant}`, zIndex: 1, transform: "translateX(-50%)" }} />
+              <div
+                className="transformation-dashed-line"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: "50%",
+                  width: "1px",
+                  borderLeft: `1px dashed ${tokens.colors.outlineVariant}`,
+                  zIndex: 1,
+                  transform: "translateX(-50%)",
+                }}
+              />
             </div>
 
             {/* Report Output side */}
-            <div style={{ padding: tokens.spacing.lg, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-              <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.primary, marginBottom: tokens.spacing.md, textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: 700 }}>Structured Report</div>
-              <div style={{ flex: 1, backgroundColor: tokens.colors.surfaceContainerLow, borderRadius: "12px", border: `1px solid ${tokens.colors.outlineVariant}`, padding: tokens.spacing.lg, display: "flex", flexDirection: "column", gap: tokens.spacing.md, boxShadow: "0 12px 32px rgba(0,0,0,0.1)", overflow: "hidden", position: "relative", minHeight: "250px" }}>
-                
+            <div
+              style={{
+                padding: tokens.spacing.lg,
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              <div
+                style={{
+                  ...tokens.typography.labelMedium,
+                  color: tokens.colors.primary,
+                  marginBottom: tokens.spacing.md,
+                  textTransform: "uppercase",
+                  letterSpacing: "1.5px",
+                  fontWeight: 700,
+                }}
+              >
+                Structured Report
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  backgroundColor: tokens.colors.surfaceContainerLow,
+                  borderRadius: "12px",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  padding: tokens.spacing.lg,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: tokens.spacing.md,
+                  boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
+                  overflow: "hidden",
+                  position: "relative",
+                  minHeight: "250px",
+                }}
+              >
                 {/* Report Header Actual Data */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.colors.outlineVariant}`, paddingBottom: tokens.spacing.md }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+                    paddingBottom: tokens.spacing.md,
+                  }}
+                >
                   <div>
-                    <div style={{ ...tokens.typography.titleMedium, color: tokens.colors.onSurface, fontWeight: 700 }}>Inspection Report #492</div>
-                    <div style={{ ...tokens.typography.labelSmall, color: tokens.colors.onSurfaceVariant, marginTop: "4px" }}>Site: North Ridge Solar Array</div>
+                    <div
+                      style={{
+                        ...tokens.typography.titleMedium,
+                        color: tokens.colors.onSurface,
+                        fontWeight: 700,
+                      }}
+                    >
+                      Inspection Report #492
+                    </div>
+                    <div
+                      style={{
+                        ...tokens.typography.labelSmall,
+                        color: tokens.colors.onSurfaceVariant,
+                        marginTop: "4px",
+                      }}
+                    >
+                      Site: North Ridge Solar Array
+                    </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", backgroundColor: tokens.colors.primaryContainer, borderRadius: "8px", color: tokens.colors.onPrimaryContainer }}>
-                    <span className="material-icons" style={{ fontSize: "20px" }}>picture_as_pdf</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: tokens.colors.primaryContainer,
+                      borderRadius: "8px",
+                      color: tokens.colors.onPrimaryContainer,
+                    }}
+                  >
+                    <span
+                      className="material-icons"
+                      style={{ fontSize: "20px" }}
+                    >
+                      picture_as_pdf
+                    </span>
                   </div>
                 </div>
 
                 {/* Report Map/Image */}
-                <div style={{ width: "100%", height: "100px", borderRadius: "8px", overflow: "hidden", position: "relative" }}>
-                  <div style={{ position: "absolute", inset: 0, backgroundImage: 'url("/images/map-visualisation.jpg")', backgroundSize: "cover", backgroundPosition: "center" }} />
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100px",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      backgroundImage: 'url("/images/map-visualisation.jpg")',
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
                 </div>
 
                 {/* Report List Items */}
-                <div style={{ display: "flex", flexDirection: "column", gap: tokens.spacing.sm }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: tokens.spacing.sm,
+                  }}
+                >
                   {[
-                    { color: tokens.colors.error, title: "Critical: Severe Rust", desc: "Found on support structure B4", confidence: "98% Match" },
-                    { color: "#facc15", title: "Warning: Micro-cracking", desc: "Detected on panel array 12", confidence: "87% Match" },
-                    { color: tokens.colors.primary, title: "Routine: Maintenance", desc: "Scheduled cleaning needed", confidence: "Auto-tagged" }
+                    {
+                      color: tokens.colors.error,
+                      title: "Critical: Severe Rust",
+                      desc: "Found on support structure B4",
+                      confidence: "98% Match",
+                    },
+                    {
+                      color: "#facc15",
+                      title: "Warning: Micro-cracking",
+                      desc: "Detected on panel array 12",
+                      confidence: "87% Match",
+                    },
+                    {
+                      color: tokens.colors.primary,
+                      title: "Routine: Maintenance",
+                      desc: "Scheduled cleaning needed",
+                      confidence: "Auto-tagged",
+                    },
                   ].map((item, idx) => (
-                    <div key={idx} style={{ display: "flex", gap: "16px", alignItems: "flex-start", backgroundColor: tokens.colors.surface, padding: "12px", borderRadius: "8px", border: `1px solid ${tokens.colors.outlineVariant}` }}>
-                      <div style={{ marginTop: "4px", width: "12px", height: "12px", borderRadius: "50%", backgroundColor: item.color, flexShrink: 0 }} />
-                      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                          <div style={{ ...tokens.typography.labelMedium, color: tokens.colors.onSurface, fontWeight: 600 }}>{item.title}</div>
-                          <div style={{ ...tokens.typography.labelSmall, color: item.color, fontWeight: 600 }}>{item.confidence}</div>
+                    <div
+                      key={idx}
+                      style={{
+                        display: "flex",
+                        gap: "16px",
+                        alignItems: "flex-start",
+                        backgroundColor: tokens.colors.surface,
+                        padding: "12px",
+                        borderRadius: "8px",
+                        border: `1px solid ${tokens.colors.outlineVariant}`,
+                      }}
+                    >
+                      <div
+                        style={{
+                          marginTop: "4px",
+                          width: "12px",
+                          height: "12px",
+                          borderRadius: "50%",
+                          backgroundColor: item.color,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              ...tokens.typography.labelMedium,
+                              color: tokens.colors.onSurface,
+                              fontWeight: 600,
+                            }}
+                          >
+                            {item.title}
+                          </div>
+                          <div
+                            style={{
+                              ...tokens.typography.labelSmall,
+                              color: item.color,
+                              fontWeight: 600,
+                            }}
+                          >
+                            {item.confidence}
+                          </div>
                         </div>
-                        <div style={{ ...tokens.typography.bodySmall, color: tokens.colors.onSurfaceVariant }}>{item.desc}</div>
+                        <div
+                          style={{
+                            ...tokens.typography.bodySmall,
+                            color: tokens.colors.onSurfaceVariant,
+                          }}
+                        >
+                          {item.desc}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -641,7 +992,9 @@ export default function MarketingPage() {
             </div>
           </div>
         </div>
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @keyframes scanLine {
             0% { top: 0; opacity: 0; }
             10% { opacity: 1; }
@@ -675,152 +1028,148 @@ export default function MarketingPage() {
               transform: translateY(-50%) !important;
             }
           }
-        `}} />
+        `,
+          }}
+        />
       </section>
 
-{/* How It Works */}
+      {/* How It Works */}
       <section
         id="how-it-works"
         style={{
-          padding: `${tokens.spacing.xxl} ${tokens.spacing.lg} ${tokens.spacing.xxl}`,
-          backgroundColor: "var(--color-section-bg)",
+          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          backgroundColor: tokens.colors.secondary,
         }}
       >
         <div
           style={{
-            maxWidth: "80rem",
-            marginLeft: "auto",
-            marginRight: "auto",
-            paddingInline: tokens.spacing.xl,
+            maxWidth: "1266px",
+            margin: "0 auto",
           }}
         >
           <style
             dangerouslySetInnerHTML={{
               __html: `
-            .hiw-grid {
+            .hiw-split-grid {
               display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 24px;
-              margin-top: 48px;
+              grid-template-columns: 0.4fr 0.6fr;
+              gap: 80px;
             }
-.hiw-card {
-              padding: 32px;
+            .hiw-intro-block {
               display: flex;
               flex-direction: column;
-              overflow: hidden;
-              position: relative;
-              border: 1px solid var(--sys-outline-roles-outline-variant);
-              border-radius: 12px;
-              background: var(--sys-surface-roles-surface-container-low);
-              transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+              gap: 24px;
+              position: sticky;
+              top: 100px;
+              height: fit-content;
             }
-            .hiw-card:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-              border-color: var(--sys-outline-roles-outline-variant);
-            }
-            .hiw-card-icon {
-              width: 56px;
-              height: 56px;
-              border-radius: 12px;
-              background: linear-gradient(135deg, var(--sys-primary) 0%, var(--sys-secondary) 100%);
+            .hiw-steps-list {
               display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 24px;
+              flex-direction: column;
+              gap: ${tokens.spacing.xxl};
             }
-            .hiw-card-decoration {
-              position: absolute;
-              bottom: -20px;
-              right: -20px;
-              width: 120px;
-              height: 120px;
-              border-radius: 50%;
-              background: var(--sys-on-secondary-container);
-              opacity: 0.06;
+            .hiw-step-item {
+              display: flex;
+              flex-direction: column;
+              gap: ${tokens.spacing.sm};
+              padding-bottom: ${tokens.spacing.xxl};
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .hiw-card-icon span {
+            .hiw-step-item:last-child {
+              border-bottom: none;
+            }
+            .hiw-step-number {
+              color: var(--sys-primary);
+              font-weight: 700;
+              font-size: 18px;
+            }
+            .hiw-step-title {
+              font-family: var(--sys-typescale-headline-small-fontfamily);
               font-size: 24px;
-              color: var(--sys-on-primary);
-            }
-            .hiw-card-number {
-              font-family: var(--sys-typescale-title-small-fontfamily);
-              font-size: 13px;
               font-weight: 600;
-              color: var(--sys-on-surface-variant);
-              margin-bottom: 8px;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
+              color: var(--sys-on-secondary);
             }
-            .hiw-card-title {
-              font-family: var(--sys-typescale-title-large-fontfamily);
-              font-size: 20px;
+            .hiw-step-description {
+              font-family: var(--sys-typescale-body-large-fontfamily);
+              font-size: 18px;
+              color: var(--sys-on-secondary);
+              opacity: 0.8;
+              line-height: 1.6;
+              max-width: 480px;
+            }
+            .hiw-cta-link {
+              display: inline-flex;
+              align-items: center;
+              gap: ${tokens.spacing.xs};
+              color: var(--sys-primary);
+              text-decoration: none;
               font-weight: 600;
-              color: var(--sys-on-surface);
-              margin-bottom: 8px;
+              font-size: 18px;
+              transition: transform 0.2s ease;
             }
-            .hiw-card-description {
-              font-family: var(--sys-typescale-body-medium-fontfamily);
-              font-size: 15px;
-              color: var(--sys-on-surface-variant);
-              line-height: 1.5;
+            .hiw-cta-link:hover {
+              transform: translateX(4px);
             }
-            @media (max-width: 640px) {
-              .hiw-grid {
+            @media (max-width: 968px) {
+              .hiw-split-grid {
                 grid-template-columns: 1fr;
+                gap: ${tokens.spacing.xl};
               }
-              .hiw-card {
-                padding: 24px;
+              .hiw-intro-block {
+                position: static;
+              }
+              .hiw-step-item {
+                padding-bottom: ${tokens.spacing.xl};
+              }
+              .hiw-steps-list {
+                gap: ${tokens.spacing.xl};
               }
             }
-          `,
+            `,
             }}
           />
-          <div
-            style={{
-              margin: `${tokens.spacing.xl} 0`,
-              display: "flex",
-              flexDirection: "column",
-              gap: tokens.spacing.lg,
-            }}
-          >
-            <div style={{ textAlign: "left" }}>
-              <h2
+          <div className="hiw-split-grid">
+            {/* Left Column: Intro Block */}
+            <div className="hiw-intro-block">
+              <div
                 style={{
-                  ...tokens.typography.headlineLarge,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.xs,
+                  ...tokens.typography.labelLarge,
+                  color: tokens.colors.onSecondary,
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  padding: "4px 12px",
+                  borderRadius: tokens.radius.pill,
+                  width: "fit-content",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
                 }}
               >
                 How It Works
-              </h2>
-              <p
+              </div>
+              <h2
                 style={{
-                  ...tokens.typography.bodyLarge,
-                  color: tokens.colors.onSurfaceVariant,
+                  ...tokens.typography.displaySmall,
+                  fontSize: "clamp(32px, 4vw, 48px)",
+                  color: tokens.colors.onSecondary,
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                  margin: 0,
                 }}
               >
-                Get from drone flight to delivered report in 4 steps
-              </p>
+                Turn drone images into reports—fast
+              </h2>
+              <Link href="/signup" className="hiw-cta-link">
+                Get Started
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </Link>
             </div>
-            <div className="hiw-grid">
+
+            {/* Right Column: Steps List */}
+            <div className="hiw-steps-list">
               {steps.map((step, index) => (
-                <div key={index} className="hiw-card">
-                  <div className="hiw-card-decoration" />
-                  <div className="hiw-card-icon">
-                    <span className="material-symbols-outlined">
-                      {index === 0
-                        ? "cloud_upload"
-                        : index === 1
-                          ? "psychology"
-                          : index === 2
-                            ? "edit_note"
-                            : "picture_as_pdf"}
-                    </span>
-                  </div>
-                  <div className="hiw-card-number">Step {index + 1}</div>
-                  <h3 className="hiw-card-title">{step.title}</h3>
-                  <p className="hiw-card-description">{step.description}</p>
+                <div key={index} className="hiw-step-item">
+                  <div className="hiw-step-number">{index + 1}.</div>
+                  <h3 className="hiw-step-title">{step.title}</h3>
+                  <p className="hiw-step-description">{step.description}</p>
                 </div>
               ))}
             </div>
@@ -828,123 +1177,38 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Use Cases */}
       <section
-        id="features"
+        id="use-cases"
         style={{
-          padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.md}`,
           backgroundColor: "var(--color-section-bg)",
         }}
       >
         <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: tokens.spacing.xxl }}>
-            <h2
-              style={{
-                ...tokens.typography.headlineLarge,
-                color: tokens.colors.onSurface,
-                marginBottom: tokens.spacing.md,
-              }}
-            >
-              Everything You Need to Deliver Professional Reports
-            </h2>
-            <p
-              style={{
-                ...tokens.typography.bodyLarge,
-                color: tokens.colors.onSurfaceVariant,
-                maxWidth: "700px",
-                margin: "0 auto",
-              }}
-            >
-              FieldSpec automates the tedious parts of drone inspection
-              reporting, so you can focus on making decisions.
-            </p>
-          </div>
-
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: tokens.spacing.xl,
+              display: "inline-flex",
+              padding: "4px 12px",
+              borderRadius: tokens.radius.pill,
+              backgroundColor: tokens.colors.surfaceContainerHigh,
+              color: tokens.colors.onSurfaceVariant,
+              ...tokens.typography.labelMedium,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: tokens.spacing.xl,
             }}
           >
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: tokens.colors.surfaceContainer,
-                  borderRadius: tokens.radius.lg,
-                  border: `1px solid ${tokens.colors.outlineVariant}`,
-                  padding: tokens.spacing.xl,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: tokens.spacing.md,
-                }}
-                className="feature-card"
-              >
-                <div
-                  style={{
-                    width: "48px",
-                    height: "48px",
-                    borderRadius: "12px",
-                    backgroundColor: tokens.colors.primaryContainer,
-                    color: tokens.colors.onPrimaryContainer,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span className="material-symbols-outlined">
-                    {index === 0
-                      ? "psychology"
-                      : index === 1
-                        ? "location_on"
-                        : index === 2
-                          ? "description"
-                          : index === 3
-                            ? "map"
-                            : "speed"}
-                  </span>
-                </div>
-                <h3
-                  style={{
-                    ...tokens.typography.titleLarge,
-                    color: tokens.colors.onSurface,
-                  }}
-                >
-                  {feature.title}
-                </h3>
-                <p
-                  style={{
-                    ...tokens.typography.bodyMedium,
-                    color: tokens.colors.onSurfaceVariant,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+            Who it&apos;s built for
           </div>
-        </div>
-      </section>
-
-      {/* Use Cases */}
-<section
-        id="use-cases"
-        style={{
-          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
-          backgroundColor: "var(--color-section-bg)",
-        }}
-      >
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
           .use-cases-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
           }
           .use-case-card {
             border-radius: 16px;
@@ -1001,27 +1265,28 @@ export default function MarketingPage() {
             }
           }
         `,
-          }}
-        />
-        <div className="use-cases-cards">
-          {useCases.map((useCase, i) => (
-            <div key={i} className="use-case-card">
-              <div className="use-case-image">
-                <img src={useCase.imageUrl} alt={useCase.title} />
+            }}
+          />
+          <div className="use-cases-cards">
+            {useCases.map((useCase, i) => (
+              <div key={i} className="use-case-card">
+                <div className="use-case-image">
+                  <img src={useCase.imageUrl} alt={useCase.title} />
+                </div>
+                <div className="use-case-content">
+                  <h3 className="use-case-card-title">{useCase.title}</h3>
+                  <p className="use-case-card-desc">{useCase.description}</p>
+                </div>
               </div>
-              <div className="use-case-content">
-                <h3 className="use-case-card-title">{useCase.title}</h3>
-                <p className="use-case-card-desc">{useCase.description}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-{/* Final CTA */}
+      {/* Final CTA */}
       <section
         style={{
-          padding: `${tokens.spacing.xxl} ${tokens.spacing.xl}`,
+          padding: `${tokens.spacing.xxl} 16px`,
         }}
       >
         <style
@@ -1081,7 +1346,14 @@ export default function MarketingPage() {
           >
             Start generating inspection reports in minutes
           </h2>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <p className="cta-trust">No credit card required</p>
             <Link href="/signup" className="cta-primary-btn">
               Get Started
