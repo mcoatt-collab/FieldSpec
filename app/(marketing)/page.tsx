@@ -101,8 +101,7 @@ export default function MarketingPage() {
               color: tokens.colors.onSurfaceVariant,
             }}
           >
-            Upload inspection images. FieldSpec analyzes them and generates
-            stakeholder-ready reports in minutes.
+            Upload your inspection images. FieldSpec analyzes them, maps findings, and generates clear, ready-to-share reports.
           </p>
         </div>
 
@@ -153,7 +152,7 @@ export default function MarketingPage() {
                   maxWidth: "480px",
                 }}
               >
-                We eliminate your biggest pain
+                Stop manually turning images into reports
               </h2>
               <p
                 style={{
@@ -164,8 +163,7 @@ export default function MarketingPage() {
                   textAlign: "center",
                 }}
               >
-                Converting drone and field images into stakeholder-ready
-                reports, instantly.
+                FieldSpec organizes your images, extracts insights, and builds a complete report automatically.
               </p>
             </div>
 
@@ -1365,7 +1363,6 @@ export default function MarketingPage() {
       <footer
         style={{
           backgroundColor: "var(--footer-bg)",
-          borderTop: `1px solid ${tokens.colors.outlineVariant}`,
           padding: `${tokens.spacing.section} ${tokens.spacing.md}`,
           fontFamily: tokens.typography.bodyMedium.fontFamily,
         }}
@@ -1376,6 +1373,15 @@ export default function MarketingPage() {
             .social-footer-icon { color: var(--footer-color); opacity: 0.6; transition: color 0.3s ease, opacity 0.3s ease; font-size: 20px; display: flex; align-items: center; justify-content: center; }
             .social-footer-icon:hover { opacity: 1; color: var(--footer-color) !important; }
           `}</style>
+
+        <div
+          style={{
+            maxWidth: "1266px",
+            margin: "0 auto",
+            borderTop: `1px solid ${tokens.colors.outlineVariant}`,
+            paddingBottom: tokens.spacing.lg,
+          }}
+        />
 
         <div
           style={{
