@@ -1032,7 +1032,7 @@ export default function MarketingPage() {
                border: 2px solid var(--sys-on-secondary);
                border-radius: var(--sys-radius-pill);
                padding: 12px 24px;
-               width: fit-content;
+               align-self: flex-start;
              }
             .hiw-cta-link:hover {
               transform: translateX(4px);
