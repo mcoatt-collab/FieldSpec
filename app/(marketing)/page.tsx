@@ -61,6 +61,55 @@ const steps = [
   },
 ];
 
+const pricingPlans = [
+  {
+    title: "Starter",
+    price: "Free",
+    description: "For individuals testing FieldSpec.",
+    features: [
+      "Limited projects",
+      "Upload and organize images",
+      "Basic AI-generated report",
+      "PDF export",
+    ],
+    cta: "Get Started",
+    link: "/signup",
+    primary: false,
+  },
+  {
+    title: "Professional",
+    price: "$20/month",
+    badge: "Recommended",
+    description: "For active drone operators and inspection workflows.",
+    features: [
+      "More projects",
+      "AI captions, findings, recommendations",
+      "Editable report builder",
+      "Map with marker review",
+      "Client management",
+      "PDF export",
+    ],
+    cta: "Start Building Reports",
+    link: "/signup",
+    primary: true,
+  },
+  {
+    title: "Business",
+    price: "$299/month",
+    description: "For teams and agencies managing multiple inspections.",
+    features: [
+      "High project limits",
+      "Team collaboration",
+      "Shared clients",
+      "Priority processing",
+      "Custom branding",
+    ],
+    cta: "Get Started",
+    link: "/signup",
+    primary: false,
+  },
+];
+
 export default function MarketingPage() {
   return (
     <main className="flex flex-col min-h-screen">
@@ -101,7 +150,8 @@ export default function MarketingPage() {
               color: tokens.colors.onSurfaceVariant,
             }}
           >
-            Upload your inspection images. FieldSpec analyzes them, maps findings, and generates clear, ready-to-share reports.
+            Upload your inspection images.<br />
+            FieldSpec analyzes them, maps findings, and generates clear, ready-to-share reports.
           </p>
         </div>
 
@@ -1281,6 +1331,223 @@ export default function MarketingPage() {
         </div>
       </section>
 
+      {/* Pricing */}
+      <section
+        id="pricing"
+        style={{
+          padding: `${tokens.spacing.xxl} ${tokens.spacing.md}`,
+          backgroundColor: "var(--color-section-bg)",
+        }}
+      >
+        <div style={{ maxWidth: "1266px", margin: "0 auto" }}>
+          <div
+            style={{
+              display: "inline-flex",
+              padding: "4px 12px",
+              borderRadius: tokens.radius.pill,
+              backgroundColor: tokens.colors.surfaceContainerHigh,
+              color: tokens.colors.onSurfaceVariant,
+              ...tokens.typography.labelMedium,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: tokens.spacing.xl,
+            }}
+          >
+            Pricing
+          </div>
+
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+                .pricing-cards {
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  gap: 24px;
+                  width: 100%;
+                }
+                .pricing-card {
+                  transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .pricing-card:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                }
+                .pricing-primary-btn:hover {
+                  background-color: color-mix(in srgb, ${tokens.colors.primary} 85%, white) !important;
+                  color: ${tokens.colors.onPrimary} !important;
+                }
+                .pricing-outline-btn:hover {
+                  background-color: color-mix(in srgb, ${tokens.colors.primary} 10%, transparent) !important;
+                }
+                @media (max-width: 768px) {
+                  .pricing-cards {
+                    grid-template-columns: 1fr;
+                  }
+                }
+              `,
+            }}
+          />
+
+          <div className="pricing-cards">
+            {pricingPlans.map((plan, i) => (
+              <div
+                key={i}
+                className="pricing-card"
+                style={{
+                  borderRadius: "16px",
+                  border: `1px solid ${tokens.colors.outlineVariant}`,
+                  backgroundColor: plan.primary
+                    ? tokens.colors.primaryContainer
+                    : tokens.colors.surfaceContainer,
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                }}
+              >
+                {plan.badge && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "12px",
+                      right: "12px",
+                      backgroundColor: tokens.colors.primary,
+                      color: tokens.colors.onPrimary,
+                      padding: "4px 8px",
+                      borderRadius: tokens.radius.pill,
+                      ...tokens.typography.labelSmall,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {plan.badge}
+                  </div>
+                )}
+                <h3
+                  style={{
+                    ...tokens.typography.titleLarge,
+                    color: tokens.colors.onSurface,
+                    marginBottom: "8px",
+                  }}
+                >
+                  {plan.title}
+                </h3>
+                <div
+                  style={{
+                    ...tokens.typography.headlineSmall,
+                    fontSize: "32px",
+                    fontWeight: 700,
+                    color: tokens.colors.onSurface,
+                    marginBottom: "12px",
+                  }}
+                >
+                  {plan.price}
+                </div>
+                <p
+                  style={{
+                    ...tokens.typography.bodyMedium,
+                    color: tokens.colors.onSurfaceVariant,
+                    lineHeight: 1.5,
+                    marginBottom: "24px",
+                  }}
+                >
+                  {plan.description}
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                    marginBottom: "24px",
+                    flex: 1,
+                  }}
+                >
+                  {plan.features.map((feature, j) => (
+                    <div
+                      key={j}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        ...tokens.typography.bodyMedium,
+                        color: tokens.colors.onSurface,
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: tokens.colors.primary,
+                          fontSize: "18px",
+                        }}
+                      >
+                        ✓
+                      </span>
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href={plan.link}
+                  className={plan.primary ? "pricing-primary-btn" : "pricing-outline-btn"}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "12px 24px",
+                    borderRadius: tokens.radius.lg,
+                    backgroundColor: plan.primary
+                      ? tokens.colors.primary
+                      : "transparent",
+                    color: plan.primary
+                      ? tokens.colors.onPrimary
+                      : tokens.colors.primary,
+                    border: plan.primary
+                      ? "none"
+                      : `1.5px solid ${tokens.colors.primary}`,
+                    textDecoration: "none",
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    transition: "all 0.2s ease",
+                    width: "100%",
+                    textAlign: "center",
+                    ...tokens.typography.labelLarge,
+                  }}
+                >
+                  {plan.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: tokens.spacing.xl,
+            }}
+          >
+            <p
+              style={{
+                ...tokens.typography.bodyLarge,
+                color: tokens.colors.onSurfaceVariant,
+                marginBottom: tokens.spacing.md,
+              }}
+            >
+              Need enterprise-level features?
+            </p>
+            <Link
+              href="/contact"
+              style={{
+                ...tokens.typography.labelLarge,
+                color: tokens.colors.primary,
+                textDecoration: "none",
+                fontWeight: 600,
+                transition: "opacity 0.2s ease",
+              }}
+            >
+              Contact Sales
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section
         style={{
@@ -1312,8 +1579,8 @@ export default function MarketingPage() {
               display: inline-block;
             }
             .cta-primary-btn:hover {
-              opacity: 0.9;
-              transform: translateY(-2px);
+              background-color: color-mix(in srgb, var(--sys-primary) 85%, white) !important;
+              color: var(--sys-on-primary) !important;
             }
             .cta-trust {
               font-family: var(--sys-typescale-body-medium-fontfamily);
