@@ -129,7 +129,7 @@ export default function MarketingPage() {
         }}
       >
         {/* Section Heading (Outside Box) */}
-        <div style={{ textAlign: "center", marginBottom: tokens.spacing.xl }}>
+        <div style={{ textAlign: "center", marginBottom: tokens.spacing.xl, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <h1
             style={{
               ...tokens.typography.displaySmall,
@@ -153,6 +153,55 @@ export default function MarketingPage() {
             Upload your inspection images.<br />
             FieldSpec analyzes them, maps findings, and generates clear, ready-to-share reports.
           </p>
+
+          {/* Buttons Moved Here */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: tokens.spacing.md,
+              justifyContent: "center",
+              marginTop: tokens.spacing.xl,
+            }}
+          >
+            <Link
+              href="/signup"
+              className="hero-primary-btn hero-btn-primary"
+              style={{
+                padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
+                backgroundColor: tokens.colors.primary,
+                color: tokens.colors.onPrimary,
+                borderRadius: tokens.radius.lg,
+                ...tokens.typography.labelLarge,
+                fontWeight: 500,
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.2s",
+              }}
+            >
+              Get Started
+            </Link>
+            <Link
+              href="/sample-report"
+              className="hero-btn-secondary"
+              style={{
+                padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
+                backgroundColor: "transparent",
+                color: tokens.colors.onSurface,
+                borderRadius: tokens.radius.lg,
+                border: `1.5px solid ${tokens.colors.onSurface}`,
+                ...tokens.typography.labelLarge,
+                fontWeight: 500,
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.2s",
+              }}
+            >
+              View Sample Report
+            </Link>
+          </div>
         </div>
 
         {/* The Main Box */}
@@ -160,144 +209,29 @@ export default function MarketingPage() {
           className="hero-grid"
           style={{
             width: "100%",
-            height: "600px",
+            minHeight: "600px",
             borderRadius: tokens.radius.xl,
-            backgroundColor: tokens.colors.surfaceContainer,
-            display: "grid",
-            gridTemplateColumns: "1.2fr 1fr",
+            background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.secondary} 100%)`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             overflow: "hidden",
+            padding: tokens.spacing.xl,
           }}
         >
-          {/* Left: Content */}
-          <div
-            className="hero-left-content"
+          <img
+            src="/images/Product.jpg"
+            alt="Product preview"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: tokens.spacing.xxl,
-              padding: `${tokens.spacing.xxl} ${tokens.spacing.md}`,
-              textAlign: "center",
-              height: "100%",
+              maxWidth: "800px",
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+              borderRadius: tokens.radius.lg,
+              border: `2px solid ${tokens.colors.primary}`,
+              boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
             }}
-          >
-            {/* Text group: heading + description */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: tokens.spacing.lg,
-              }}
-            >
-              <h2
-                style={{
-                  ...tokens.typography.headlineLarge,
-                  fontSize: "clamp(18px, 5vw, 32px)",
-                  color: tokens.colors.onSurface,
-                  fontWeight: 500,
-                  lineHeight: 1.1,
-                  letterSpacing: "-0.02em",
-                  maxWidth: "480px",
-                }}
-              >
-                Stop manually turning images into reports
-              </h2>
-              <p
-                style={{
-                  ...tokens.typography.bodyLarge,
-                  color: tokens.colors.onSurfaceVariant,
-                  maxWidth: "440px",
-                  lineHeight: 1.5,
-                  textAlign: "center",
-                }}
-              >
-                FieldSpec organizes your images, extracts insights, and builds a complete report automatically.
-              </p>
-            </div>
-
-            {/* Buttons */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: tokens.spacing.md,
-                justifyContent: "center",
-              }}
-            >
-              <Link
-                href="/signup"
-                className="hero-primary-btn hero-btn-primary"
-                style={{
-                  padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-                  backgroundColor: tokens.colors.primary,
-                  color: tokens.colors.onPrimary,
-                  borderRadius: tokens.radius.lg,
-                  ...tokens.typography.labelLarge,
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  transition: "all 0.2s",
-                }}
-              >
-                Get Started
-              </Link>
-              <Link
-                href="/sample-report"
-                className="hero-btn-secondary"
-                style={{
-                  padding: `${tokens.spacing.md} ${tokens.spacing.lg}`,
-                  backgroundColor: "transparent",
-                  color: tokens.colors.onSurface,
-                  borderRadius: tokens.radius.lg,
-                  border: `1.5px solid ${tokens.colors.onSurface}`,
-                  ...tokens.typography.labelLarge,
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  transition: "all 0.2s",
-                }}
-              >
-                View Sample Report
-              </Link>
-            </div>
-          </div>
-
-          {/* Right: Content */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: tokens.spacing.md,
-            }}
-          >
-            <div
-              style={{
-                width: "100%",
-                backgroundColor: tokens.colors.surfaceContainerLow,
-                borderRadius: tokens.radius.lg,
-                overflow: "hidden",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                src="/images/IMG_9160.PNG"
-                alt="Product preview"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  objectFit: "contain",
-                  borderRadius: tokens.radius.md,
-                }}
-              />
-            </div>
-          </div>
+          />
 
           <style>{`
             .hero-primary-btn:hover {
@@ -305,8 +239,7 @@ export default function MarketingPage() {
             }
             @media (max-width: 768px) {
               .hero-grid {
-                grid-template-columns: 1fr !important;
-                grid-template-rows: auto 1fr;
+                min-height: 400px !important;
               }
               .hero-btn-primary {
                 padding: ${tokens.spacing.sm} ${tokens.spacing.md} !important;
@@ -317,9 +250,6 @@ export default function MarketingPage() {
               .hero-section {
                 padding-left: ${tokens.spacing.md} !important;
                 padding-right: ${tokens.spacing.md} !important;
-              }
-              .hero-left-content {
-                padding-bottom: 24px !important;
               }
             }
           `}</style>
@@ -344,17 +274,16 @@ export default function MarketingPage() {
             align-items: center;
             gap: ${tokens.spacing.xxl};
             width: max-content;
-            margin: 0 auto;
+            animation: scrollTrust 30s linear infinite;
+          }
+          @keyframes scrollTrust {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
           }
           @media (max-width: 768px) {
             .trust-strip-track {
-              margin: 0;
               gap: ${tokens.spacing.xl};
-              animation: scrollTrust 20s linear infinite;
-            }
-            @keyframes scrollTrust {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
+              animation-duration: 20s;
             }
           }
         `}</style>
@@ -383,14 +312,14 @@ export default function MarketingPage() {
         </div>
       </div>
 
-      {/* Problem → Solution Section */}
+      {/* Problem → Solution & Transformation Section */}
       <section
         style={{
           maxWidth: "1266px",
           margin: "0 auto",
           width: "100%",
           paddingTop: tokens.spacing.section,
-          paddingBottom: tokens.spacing.lg,
+          paddingBottom: tokens.spacing.section,
           paddingInline: tokens.spacing.md,
           borderRadius: tokens.radius.lg,
           overflow: "hidden",
@@ -399,54 +328,37 @@ export default function MarketingPage() {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-.problem-solution-grid {
+            .problem-solution-grid {
               overflow: hidden;
             }
             .problem-solution-card {
               cursor: default;
-              transition: none !important;
+              transition: border-color 0.2s ease !important;
+              border: 1px solid transparent !important;
             }
-.problem-solution-card:hover {
+            .problem-solution-card:hover {
               transform: none !important;
               box-shadow: none !important;
-              border: none !important;
+              border-color: ${tokens.colors.outlineVariant} !important;
             }
             .problem-solution-card:active {
               transform: none !important;
               box-shadow: none !important;
             }
-            :root.light .problem-solution-card:hover {
-              box-shadow: none !important;
-              border: none !important;
-            }
             @media (max-width: 900px) {
               .problem-solution-grid {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
                 gap: ${tokens.spacing.lg} !important;
-                min-height: auto !important;
               }
             }
-@media (max-width: 640px) {
+            @media (max-width: 640px) {
               .problem-solution-grid {
                 grid-template-columns: 1fr !important;
-                min-height: auto !important;
               }
               .problem-solution-card {
                 padding: ${tokens.spacing.xl} ${tokens.spacing.lg} !important;
-                min-height: 400px;
-              }
-              .problem-solution-title {
-                font-size: 24px !important;
               }
             }
-           @media (max-width: 480px) {
-             .problem-solution-card {
-               padding: ${tokens.spacing.lg} 20px !important;
-             }
-             .problem-solution-title {
-               font-size: 22px !important;
-             }
-           }
          `,
           }}
         />
@@ -454,16 +366,18 @@ export default function MarketingPage() {
           style={{
             width: "100%",
             overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            gap: tokens.spacing.xxl,
           }}
         >
           <div
             className="problem-solution-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-              gap: 0,
+              gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+              gap: tokens.spacing.xl,
               alignItems: "stretch",
-              minHeight: "600px",
               borderRadius: tokens.radius.lg,
             }}
           >
@@ -472,29 +386,22 @@ export default function MarketingPage() {
               className="problem-solution-card"
               style={{
                 padding: tokens.spacing.lg,
-                border: "none",
-                height: "100%",
+                borderRadius: tokens.radius.lg,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "flex-end",
+                justifyContent: "flex-start",
                 position: "relative",
                 overflow: "hidden",
-                backgroundImage:
-                  "url('/images/agriculture-healthy-food 1.avif')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
                 gap: tokens.spacing.md,
+                backgroundColor: tokens.colors.onPrimary,
               }}
             >
-              <div />
               <h3
                 style={{
                   ...tokens.typography.headlineSmall,
-                  color: tokens.colors.onSecondary,
+                  color: tokens.colors.onSurface,
                   marginBottom: tokens.spacing.md,
                   fontWeight: 500,
-                  position: "relative",
-                  zIndex: 2,
                 }}
               >
                 Your workflow is being slowed down
@@ -502,10 +409,8 @@ export default function MarketingPage() {
               <p
                 style={{
                   ...tokens.typography.bodyLarge,
-                  color: tokens.colors.onSecondary,
+                  color: tokens.colors.onSurfaceVariant,
                   lineHeight: 1.6,
-                  position: "relative",
-                  zIndex: 2,
                 }}
               >
                 Reporting is slow, manual, and inconsistent. Images are
@@ -519,21 +424,21 @@ export default function MarketingPage() {
             <div
               className="problem-solution-card"
               style={{
-                padding: `${tokens.spacing.lg} ${tokens.spacing.lg} 0 ${tokens.spacing.lg}`,
-                border: "none",
-                height: "100%",
+                padding: tokens.spacing.lg,
+                borderRadius: tokens.radius.lg,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "flex-start",
                 position: "relative",
                 overflow: "hidden",
                 gap: tokens.spacing.md,
+                backgroundColor: tokens.colors.primaryContainer,
               }}
             >
               <h3
                 style={{
                   ...tokens.typography.headlineSmall,
-                  color: tokens.colors.secondary,
+                  color: tokens.colors.onPrimaryContainer,
                   marginBottom: tokens.spacing.md,
                   fontWeight: 500,
                 }}
@@ -543,7 +448,7 @@ export default function MarketingPage() {
               <div
                 style={{
                   ...tokens.typography.bodyLarge,
-                  color: tokens.colors.onSurface,
+                  color: tokens.colors.onPrimaryContainer,
                   display: "flex",
                   flexDirection: "column",
                   gap: tokens.spacing.md,
@@ -554,487 +459,457 @@ export default function MarketingPage() {
                 generates consistent, accurate, client-ready reports in
                 automatically.
               </div>
-              <div
-                style={{
-                  marginTop: "auto",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                }}
-              >
-                <img
-                  src="/images/iPad.webp"
-                  alt="FieldSpec on iPad"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    maxHeight: "350px",
-                    objectFit: "contain",
-                  }}
-                />
-              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Transformation Engine Visual */}
-      <section
-        style={{
-          maxWidth: "1266px",
-          margin: "0 auto",
-          width: "100%",
-          paddingBottom: tokens.spacing.section,
-          paddingInline: tokens.spacing.md,
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            backgroundColor: tokens.colors.surfaceContainerLow,
-            border: `1px solid ${tokens.colors.outlineVariant}`,
-            borderRadius: "24px",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            position: "relative",
-          }}
-        >
-          {/* Mock App Header */}
+          {/* Transformation Engine Visual */}
           <div
             style={{
-              height: "56px",
-              borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+              width: "100%",
+              backgroundColor: tokens.colors.surfaceContainerLow,
+              border: `1px solid ${tokens.colors.outlineVariant}`,
+              borderRadius: "24px",
+              overflow: "hidden",
               display: "flex",
-              alignItems: "center",
-              padding: "0 20px",
-              backgroundColor: tokens.colors.surfaceContainer,
-              zIndex: 2,
-            }}
-          >
-            <div style={{ display: "flex", gap: tokens.spacing.xxxs }}>
-              <div
-                style={{
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: tokens.colors.error,
-                }}
-              />
-              <div
-                style={{
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: "#facc15",
-                }}
-              />
-              <div
-                style={{
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: tokens.colors.primary,
-                }}
-              />
-            </div>
-            <div
-              style={{
-                marginLeft: tokens.spacing.lg,
-                ...tokens.typography.labelMedium,
-                color: tokens.colors.onSurfaceVariant,
-                fontWeight: 600,
-                letterSpacing: "0.5px",
-              }}
-            >
-              FieldSpec Transformation Engine
-            </div>
-          </div>
-
-          {/* Split Interface Container */}
-          <div
-            className="transformation-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto 1fr",
-              minHeight: "400px",
-              backgroundColor: tokens.colors.surface,
+              flexDirection: "column",
               position: "relative",
             }}
           >
-            {/* Image Input side */}
+            {/* Mock App Header */}
             <div
               style={{
-                padding: tokens.spacing.lg,
-                display: "flex",
-                flexDirection: "column",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              <div
-                style={{
-                  ...tokens.typography.labelMedium,
-                  color: tokens.colors.onSurfaceVariant,
-                  marginBottom: tokens.spacing.md,
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  fontWeight: 700,
-                }}
-              >
-                Raw Drone Data
-              </div>
-              <div
-                style={{
-                  flex: 1,
-                  borderRadius: "12px",
-                  border: `1px solid ${tokens.colors.outlineVariant}`,
-                  position: "relative",
-                  overflow: "hidden",
-                  backgroundImage: 'url("/images/map-visualisation.jpg")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  minHeight: "250px",
-                }}
-              >
-                {/* Scanning animation overlay */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "3px",
-                    backgroundColor: tokens.colors.primary,
-                    boxShadow: `0 4px 16px ${tokens.colors.primary}`,
-                    animation: "scanLine 3s infinite linear",
-                    zIndex: 10,
-                  }}
-                />
-
-                {/* AI Bounding Boxes */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "30%",
-                    left: "40%",
-                    width: "60px",
-                    height: "60px",
-                    border: `2px solid ${tokens.colors.primary}`,
-                    borderRadius: "4px",
-                    backgroundColor: `color-mix(in srgb, ${tokens.colors.primary} 20%, transparent)`,
-                    animation: "pulseBox 2s infinite ease-in-out",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-20px",
-                      left: "-2px",
-                      backgroundColor: tokens.colors.primary,
-                      color: tokens.colors.onPrimary,
-                      fontSize: "10px",
-                      padding: "2px 6px",
-                      borderRadius: "2px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Defect 98%
-                  </div>
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "60%",
-                    left: "20%",
-                    width: "80px",
-                    height: "50px",
-                    border: `2px solid ${tokens.colors.error}`,
-                    borderRadius: "4px",
-                    backgroundColor: `color-mix(in srgb, ${tokens.colors.error} 20%, transparent)`,
-                    animation: "pulseBox 2s infinite ease-in-out 1s",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-20px",
-                      left: "-2px",
-                      backgroundColor: tokens.colors.error,
-                      color: tokens.colors.onError,
-                      fontSize: "10px",
-                      padding: "2px 6px",
-                      borderRadius: "2px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Rust 94%
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Center Arrow Connector */}
-            <div
-              className="transformation-connector"
-              style={{
+                height: "56px",
+                borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
+                padding: "0 20px",
+                backgroundColor: tokens.colors.surfaceContainer,
                 zIndex: 2,
               }}
             >
-              <div
-                className="transformation-arrow"
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  backgroundColor: tokens.colors.primaryContainer,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: `4px solid ${tokens.colors.surface}`,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  zIndex: 2,
-                }}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={tokens.colors.primary}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
+              <div style={{ display: "flex", gap: tokens.spacing.xxxs }}>
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    backgroundColor: tokens.colors.error,
+                  }}
+                />
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    backgroundColor: "#facc15",
+                  }}
+                />
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    backgroundColor: tokens.colors.primary,
+                  }}
+                />
               </div>
               <div
-                className="transformation-dashed-line"
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  bottom: 0,
-                  left: "50%",
-                  width: "1px",
-                  borderLeft: `1px dashed ${tokens.colors.outlineVariant}`,
-                  zIndex: 1,
-                  transform: "translateX(-50%)",
+                  marginLeft: tokens.spacing.lg,
+                  ...tokens.typography.labelMedium,
+                  color: tokens.colors.onSurfaceVariant,
+                  fontWeight: 600,
+                  letterSpacing: "0.5px",
                 }}
-              />
+              >
+                FieldSpec Transformation Engine
+              </div>
             </div>
 
-            {/* Report Output side */}
+            {/* Split Interface Container */}
             <div
+              className="transformation-grid"
               style={{
-                padding: tokens.spacing.lg,
-                display: "flex",
-                flexDirection: "column",
+                display: "grid",
+                gridTemplateColumns: "1fr auto 1fr",
+                minHeight: "400px",
+                backgroundColor: tokens.colors.surface,
                 position: "relative",
-                zIndex: 1,
               }}
             >
+              {/* Image Input side */}
               <div
                 style={{
-                  ...tokens.typography.labelMedium,
-                  color: tokens.colors.primary,
-                  marginBottom: tokens.spacing.md,
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  fontWeight: 700,
-                }}
-              >
-                Structured Report
-              </div>
-              <div
-                style={{
-                  flex: 1,
-                  backgroundColor: tokens.colors.surfaceContainerLow,
-                  borderRadius: "12px",
-                  border: `1px solid ${tokens.colors.outlineVariant}`,
                   padding: tokens.spacing.lg,
                   display: "flex",
                   flexDirection: "column",
-                  gap: tokens.spacing.md,
-                  boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
-                  overflow: "hidden",
                   position: "relative",
-                  minHeight: "250px",
+                  zIndex: 1,
                 }}
               >
-                {/* Report Header Actual Data */}
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
-                    paddingBottom: tokens.spacing.md,
+                    ...tokens.typography.labelMedium,
+                    color: tokens.colors.onSurfaceVariant,
+                    marginBottom: tokens.spacing.md,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.5px",
+                    fontWeight: 700,
                   }}
                 >
-                  <div>
-                    <div
-                      style={{
-                        ...tokens.typography.titleMedium,
-                        color: tokens.colors.onSurface,
-                        fontWeight: 700,
-                      }}
-                    >
-                      Inspection Report #492
-                    </div>
-                    <div
-                      style={{
-                        ...tokens.typography.labelSmall,
-                        color: tokens.colors.onSurfaceVariant,
-                        marginTop: "4px",
-                      }}
-                    >
-                      Site: North Ridge Solar Array
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "40px",
-                      height: "40px",
-                      backgroundColor: tokens.colors.primaryContainer,
-                      borderRadius: "8px",
-                      color: tokens.colors.onPrimaryContainer,
-                    }}
-                  >
-                    <span
-                      className="material-icons"
-                      style={{ fontSize: "20px" }}
-                    >
-                      picture_as_pdf
-                    </span>
-                  </div>
+                  Raw Drone Data
                 </div>
-
-                {/* Report Map/Image */}
                 <div
                   style={{
-                    width: "100%",
-                    height: "100px",
-                    borderRadius: "8px",
-                    overflow: "hidden",
+                    flex: 1,
+                    borderRadius: "12px",
+                    border: `1px solid ${tokens.colors.outlineVariant}`,
                     position: "relative",
+                    overflow: "hidden",
+                    backgroundImage: 'url("/images/map-visualisation.jpg")',
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    minHeight: "250px",
                   }}
                 >
+                  {/* Scanning animation overlay */}
                   <div
                     style={{
                       position: "absolute",
-                      inset: 0,
-                      backgroundImage: 'url("/images/map-visualisation.jpg")',
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "3px",
+                      backgroundColor: tokens.colors.primary,
+                      boxShadow: `0 4px 16px ${tokens.colors.primary}`,
+                      animation: "scanLine 3s infinite linear",
+                      zIndex: 10,
                     }}
                   />
-                </div>
 
-                {/* Report List Items */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: tokens.spacing.sm,
-                  }}
-                >
-                  {[
-                    {
-                      color: tokens.colors.error,
-                      title: "Critical: Severe Rust",
-                      desc: "Found on support structure B4",
-                      confidence: "98% Match",
-                    },
-                    {
-                      color: "#facc15",
-                      title: "Warning: Micro-cracking",
-                      desc: "Detected on panel array 12",
-                      confidence: "87% Match",
-                    },
-                    {
-                      color: tokens.colors.primary,
-                      title: "Routine: Maintenance",
-                      desc: "Scheduled cleaning needed",
-                      confidence: "Auto-tagged",
-                    },
-                  ].map((item, idx) => (
+                  {/* AI Bounding Boxes */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "30%",
+                      left: "40%",
+                      width: "60px",
+                      height: "60px",
+                      border: `2px solid ${tokens.colors.primary}`,
+                      borderRadius: "4px",
+                      backgroundColor: `color-mix(in srgb, ${tokens.colors.primary} 20%, transparent)`,
+                      animation: "pulseBox 2s infinite ease-in-out",
+                    }}
+                  >
                     <div
-                      key={idx}
                       style={{
-                        display: "flex",
-                        gap: "16px",
-                        alignItems: "flex-start",
-                        backgroundColor: tokens.colors.surface,
-                        padding: "12px",
-                        borderRadius: "8px",
-                        border: `1px solid ${tokens.colors.outlineVariant}`,
+                        position: "absolute",
+                        top: "-20px",
+                        left: "-2px",
+                        backgroundColor: tokens.colors.primary,
+                        color: tokens.colors.onPrimary,
+                        fontSize: "10px",
+                        padding: "2px 6px",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
                       }}
                     >
+                      Defect 98%
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "60%",
+                      left: "20%",
+                      width: "80px",
+                      height: "50px",
+                      border: `2px solid ${tokens.colors.error}`,
+                      borderRadius: "4px",
+                      backgroundColor: `color-mix(in srgb, ${tokens.colors.error} 20%, transparent)`,
+                      animation: "pulseBox 2s infinite ease-in-out 1s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "-20px",
+                        left: "-2px",
+                        backgroundColor: tokens.colors.error,
+                        color: tokens.colors.onError,
+                        fontSize: "10px",
+                        padding: "2px 6px",
+                        borderRadius: "2px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Rust 94%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Center Arrow Connector */}
+              <div
+                className="transformation-connector"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  zIndex: 2,
+                }}
+              >
+                <div
+                  className="transformation-arrow"
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    backgroundColor: tokens.colors.primaryContainer,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: `4px solid ${tokens.colors.surface}`,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    zIndex: 2,
+                  }}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={tokens.colors.primary}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </div>
+                <div
+                  className="transformation-dashed-line"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: "50%",
+                    width: "1px",
+                    borderLeft: `1px dashed ${tokens.colors.outlineVariant}`,
+                    zIndex: 1,
+                    transform: "translateX(-50%)",
+                  }}
+                />
+              </div>
+
+              {/* Report Output side */}
+              <div
+                style={{
+                  padding: tokens.spacing.lg,
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                <div
+                  style={{
+                    ...tokens.typography.labelMedium,
+                    color: tokens.colors.primary,
+                    marginBottom: tokens.spacing.md,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.5px",
+                    fontWeight: 700,
+                  }}
+                >
+                  Structured Report
+                </div>
+                <div
+                  style={{
+                    flex: 1,
+                    backgroundColor: tokens.colors.surfaceContainerLow,
+                    borderRadius: "12px",
+                    border: `1px solid ${tokens.colors.outlineVariant}`,
+                    padding: tokens.spacing.lg,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: tokens.spacing.md,
+                    boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
+                    overflow: "hidden",
+                    position: "relative",
+                    minHeight: "250px",
+                  }}
+                >
+                  {/* Report Header Actual Data */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      borderBottom: `1px solid ${tokens.colors.outlineVariant}`,
+                      paddingBottom: tokens.spacing.md,
+                    }}
+                  >
+                    <div>
                       <div
                         style={{
-                          marginTop: "4px",
-                          width: "12px",
-                          height: "12px",
-                          borderRadius: "50%",
-                          backgroundColor: item.color,
-                          flexShrink: 0,
+                          ...tokens.typography.titleMedium,
+                          color: tokens.colors.onSurface,
+                          fontWeight: 700,
                         }}
-                      />
+                      >
+                        Inspection Report #492
+                      </div>
                       <div
                         style={{
-                          flex: 1,
+                          ...tokens.typography.labelSmall,
+                          color: tokens.colors.onSurfaceVariant,
+                          marginTop: "4px",
+                        }}
+                      >
+                        Site: North Ridge Solar Array
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: tokens.colors.primaryContainer,
+                        borderRadius: "8px",
+                        color: tokens.colors.onPrimaryContainer,
+                      }}
+                    >
+                      <span
+                        className="material-icons"
+                        style={{ fontSize: "20px" }}
+                      >
+                        picture_as_pdf
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Report Map/Image */}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      position: "relative",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        backgroundImage: 'url("/images/map-visualisation.jpg")',
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  </div>
+
+                  {/* Report List Items */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: tokens.spacing.sm,
+                    }}
+                  >
+                    {[
+                      {
+                        color: tokens.colors.error,
+                        title: "Critical: Severe Rust",
+                        desc: "Found on support structure B4",
+                        confidence: "98% Match",
+                      },
+                      {
+                        color: "#facc15",
+                        title: "Warning: Micro-cracking",
+                        desc: "Detected on panel array 12",
+                        confidence: "87% Match",
+                      },
+                      {
+                        color: tokens.colors.primary,
+                        title: "Routine: Maintenance",
+                        desc: "Scheduled cleaning needed",
+                        confidence: "Auto-tagged",
+                      },
+                    ].map((item, idx) => (
+                      <div
+                        key={idx}
+                        style={{
                           display: "flex",
-                          flexDirection: "column",
+                          gap: "16px",
+                          alignItems: "flex-start",
+                          backgroundColor: tokens.colors.surface,
+                          padding: "12px",
+                          borderRadius: "8px",
+                          border: `1px solid ${tokens.colors.outlineVariant}`,
                         }}
                       >
                         <div
                           style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            marginBottom: "4px",
+                            marginTop: "4px",
+                            width: "12px",
+                            height: "12px",
+                            borderRadius: "50%",
+                            backgroundColor: item.color,
+                            flexShrink: 0,
                           }}
-                        >
-                          <div
-                            style={{
-                              ...tokens.typography.labelMedium,
-                              color: tokens.colors.onSurface,
-                              fontWeight: 600,
-                            }}
-                          >
-                            {item.title}
-                          </div>
-                          <div
-                            style={{
-                              ...tokens.typography.labelSmall,
-                              color: item.color,
-                              fontWeight: 600,
-                            }}
-                          >
-                            {item.confidence}
-                          </div>
-                        </div>
+                        />
                         <div
                           style={{
-                            ...tokens.typography.bodySmall,
-                            color: tokens.colors.onSurfaceVariant,
+                            flex: 1,
+                            display: "flex",
+                            flexDirection: "column",
                           }}
                         >
-                          {item.desc}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "flex-start",
+                              marginBottom: "4px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                ...tokens.typography.labelMedium,
+                                color: tokens.colors.onSurface,
+                                fontWeight: 600,
+                              }}
+                            >
+                              {item.title}
+                            </div>
+                            <div
+                              style={{
+                                ...tokens.typography.labelSmall,
+                                color: item.color,
+                                fontWeight: 600,
+                              }}
+                            >
+                              {item.confidence}
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              ...tokens.typography.bodySmall,
+                              color: tokens.colors.onSurfaceVariant,
+                            }}
+                          >
+                            {item.desc}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1054,7 +929,7 @@ export default function MarketingPage() {
             50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 12px var(--sys-primary); }
             100% { transform: scale(1); opacity: 0.8; }
           }
-          @media (max-width: 768px) {
+          @media (max-width: 640px) {
             .transformation-grid {
               display: flex !important;
               flex-direction: column !important;
@@ -1127,10 +1002,10 @@ export default function MarketingPage() {
               border-bottom: none;
             }
             .hiw-step-number {
-              color: var(--sys-primary);
-              font-weight: 700;
-              font-size: 18px;
-            }
+               color: var(--sys-on-secondary);
+               font-weight: 700;
+               font-size: 18px;
+             }
             .hiw-step-title {
               font-family: var(--sys-typescale-headline-small-fontfamily);
               font-size: 24px;
@@ -1146,15 +1021,19 @@ export default function MarketingPage() {
               max-width: 480px;
             }
             .hiw-cta-link {
-              display: inline-flex;
-              align-items: center;
-              gap: ${tokens.spacing.xs};
-              color: var(--sys-primary);
-              text-decoration: none;
-              font-weight: 600;
-              font-size: 18px;
-              transition: transform 0.2s ease;
-            }
+               display: inline-flex;
+               align-items: center;
+               gap: ${tokens.spacing.xs};
+               color: var(--sys-on-secondary);
+               text-decoration: none;
+               font-weight: 600;
+               font-size: 18px;
+               transition: transform 0.2s ease;
+               border: 2px solid var(--sys-on-secondary);
+               border-radius: var(--sys-radius-pill);
+               padding: 12px 24px;
+               align-self: flex-start;
+             }
             .hiw-cta-link:hover {
               transform: translateX(4px);
             }
@@ -1239,8 +1118,8 @@ export default function MarketingPage() {
               display: "inline-flex",
               padding: "4px 12px",
               borderRadius: tokens.radius.pill,
-              backgroundColor: tokens.colors.surfaceContainerHigh,
-              color: tokens.colors.onSurfaceVariant,
+              backgroundColor: tokens.colors.secondary,
+              color: tokens.colors.onSecondary,
               ...tokens.typography.labelMedium,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
@@ -1345,8 +1224,8 @@ export default function MarketingPage() {
               display: "inline-flex",
               padding: "4px 12px",
               borderRadius: tokens.radius.pill,
-              backgroundColor: tokens.colors.surfaceContainerHigh,
-              color: tokens.colors.onSurfaceVariant,
+              backgroundColor: tokens.colors.secondary,
+              color: tokens.colors.onSecondary,
               ...tokens.typography.labelMedium,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
