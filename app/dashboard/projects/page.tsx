@@ -25,6 +25,9 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [clientId, setClientId] = useState("");
@@ -97,6 +100,42 @@ export default function ProjectsPage() {
     }
   }
 
+  function handleDeleteClick(project: Project) {
+    setProjectToDelete(project);
+    setShowDeleteModal(true);
+  }
+
+  async function confirmDelete() {
+    if (!projectToDelete) return;
+
+    setDeletingProjectId(projectToDelete.id);
+    setError("");
+
+    try {
+      const res = await fetch(`/api/projects/${projectToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error?.message || "Failed to delete project");
+        setShowDeleteModal(false);
+        setProjectToDelete(null);
+        return;
+      }
+
+      setProjects((currentProjects) =>
+        currentProjects.filter((p) => p.id !== projectToDelete.id)
+      );
+      setShowDeleteModal(false);
+      setProjectToDelete(null);
+    } catch (err) {
+      setError("Failed to delete project. Please try again.");
+    } finally {
+      setDeletingProjectId(null);
+    }
+  }
+
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -145,6 +184,30 @@ export default function ProjectsPage() {
         .custom-select:focus {
           outline: none;
           border-color: ${tokens.colors.primary} !important;
+        }
+        .delete-icon-btn {
+          opacity: 0.5;
+          background-color: rgba(255, 255, 255, 0.9);
+          color: ${tokens.colors.onSurfaceVariant};
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          cursor: pointer;
+        }
+        .delete-icon-btn:hover {
+          opacity: 1;
+          background-color: ${tokens.colors.error} !important;
+          color: ${tokens.colors.onError} !important;
+          transform: scale(1.1);
+        }
+        .delete-icon-btn:active {
+          transform: scale(0.95);
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
         @media (max-width: 600px) {
           .custom-select {
@@ -468,6 +531,7 @@ export default function ProjectsPage() {
                 border: `1px solid ${tokens.colors.outlineVariant}`,
                 transition: "all 0.2s ease",
                 cursor: "pointer",
+                position: "relative",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = tokens.colors.primary;
@@ -478,26 +542,167 @@ export default function ProjectsPage() {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <h3
-                style={{
-                  ...tokens.typography.titleMedium,
-                  color: tokens.colors.onSurface,
-                  marginBottom: tokens.spacing.xs,
-                }}
-              >
-                {project.name}
-              </h3>
-              <p
-                style={{
-                  ...tokens.typography.bodySmall,
-                  color: tokens.colors.onSurfaceVariant,
-                }}
-              >
-                {project.photoCount} photos &middot; Created{" "}
-                {formatDate(project.createdAt)}
-              </p>
+              <div style={{ position: "relative" }}>
+                <button
+                  className="delete-icon-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClick(project);
+                  }}
+                  disabled={deletingProjectId === project.id}
+                  style={{
+                    position: "absolute",
+                    bottom: tokens.spacing.xs,
+                    right: tokens.spacing.xs,
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: tokens.radius.sm,
+                    zIndex: 10,
+                  }}
+                  title="Delete project"
+                >
+                  {deletingProjectId === project.id ? (
+                    <div
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        position: "relative",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          border: `2px solid transparent`,
+                          borderTop: `2px solid ${tokens.colors.primary}`,
+                          borderRadius: "50%",
+                          animation: "spin 0.8s linear infinite",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <span
+                      className="material-icons"
+                      style={{ fontSize: "18px" }}
+                    >
+                      delete
+                    </span>
+                  )}
+                </button>
+
+                <h3
+                  style={{
+                    ...tokens.typography.titleMedium,
+                    color: tokens.colors.onSurface,
+                    marginBottom: tokens.spacing.xs,
+                  }}
+                >
+                  {project.name}
+                </h3>
+                <p
+                  style={{
+                    ...tokens.typography.bodySmall,
+                    color: tokens.colors.onSurfaceVariant,
+                  }}
+                >
+                  {project.photoCount} photos &middot; Created{" "}
+                  {formatDate(project.createdAt)}
+                </p>
+              </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 200,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+            onClick={() => setShowDeleteModal(false)}
+          />
+
+          <div
+            className="relative rounded-lg overflow-hidden"
+            style={{
+              backgroundColor: tokens.colors.surface,
+              boxShadow: tokens.elevation.level3,
+              width: "100%",
+              maxWidth: "320px",
+              margin: tokens.spacing.lg,
+              position: "relative",
+            }}
+          >
+            <div className="p-lg">
+              <h2
+                style={{
+                  ...tokens.typography.headlineSmall,
+                  color: tokens.colors.onSurface,
+                  marginBottom: tokens.spacing.sm,
+                }}
+              >
+                Delete Project
+              </h2>
+              <p
+                style={{
+                  ...tokens.typography.bodyMedium,
+                  color: tokens.colors.onSurfaceVariant,
+                  marginBottom: tokens.spacing.lg,
+                }}
+              >
+                Are you sure you want to delete {projectToDelete?.name}? This action
+                cannot be undone.
+              </p>
+
+              <div className="flex justify-end gap-sm">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.surface,
+                    color: tokens.colors.primary,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={!!deletingProjectId}
+                  className="px-md py-sm rounded-pill text-label-large transition-colors"
+                  style={{
+                    backgroundColor: tokens.colors.error,
+                    color: tokens.colors.onError,
+                    border: "none",
+                    cursor: deletingProjectId ? "not-allowed" : "pointer",
+                    opacity: deletingProjectId ? 0.7 : 1,
+                  }}
+                >
+                  {deletingProjectId ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

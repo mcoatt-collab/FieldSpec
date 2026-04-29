@@ -114,3 +114,43 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const userId = await getValidatedUserId(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: { message: "Unauthorized", code: "UNAUTHORIZED" } },
+        { status: 401 }
+      );
+    }
+
+    const { id: projectId } = await params;
+
+    const existingProject = await prisma.project.findFirst({
+      where: { id: projectId, userId },
+    });
+
+    if (!existingProject) {
+      return NextResponse.json(
+        { error: { message: "Project not found", code: "NOT_FOUND" } },
+        { status: 404 }
+      );
+    }
+
+    await prisma.project.delete({
+      where: { id: projectId },
+    });
+
+    return NextResponse.json({ data: { success: true } }, { status: 200 });
+  } catch (error) {
+    console.error("DELETE /api/projects/[id] error:", error);
+    return NextResponse.json(
+      { error: { message: "Internal server error", code: "INTERNAL_ERROR" } },
+      { status: 500 }
+    );
+  }
+}

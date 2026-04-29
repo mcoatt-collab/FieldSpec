@@ -155,6 +155,10 @@ export default function ClientsPage() {
         .delete-icon-btn:active {
           transform: scale(0.95);
         }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
         .animate-content {
           animation: slideUpFade 0.4s ease-out forwards;
         }
@@ -447,14 +451,34 @@ export default function ClientsPage() {
                   }}
                   title="Delete client"
                 >
-                  <span
-                    className="material-icons"
-                    style={{ fontSize: "18px" }}
-                  >
-                    {deletingClientId === client.id
-                      ? "hourglass_empty"
-                      : "delete"}
-                  </span>
+                  {deletingClientId === client.id ? (
+                    <div
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        position: "relative",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          border: `2px solid transparent`,
+                          borderTop: `2px solid ${tokens.colors.primary}`,
+                          borderRadius: "50%",
+                          animation: "spin 0.8s linear infinite",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <span
+                      className="material-icons"
+                      style={{ fontSize: "18px" }}
+                    >
+                      delete
+                    </span>
+                  )}
                 </button>
 
                 <div

@@ -58,14 +58,6 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
     });
 
     if (existingAI) {
-      if (existingAI.relevance === "irrelevant_image") {
-        console.log(`[AI] Skipping cached irrelevant image: ${image.id}`);
-        processedCount++;
-        const progress = 10 + Math.floor((processedCount / totalImages) * 70);
-        onProgress(progress, `Skipped irrelevant image ${processedCount}/${totalImages}`);
-        continue;
-      }
-
       groupedByCategory.get(category)!.push({
         imageId: image.id,
         imageUrl: image.url,
@@ -90,21 +82,13 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
       context: `Project: ${project.name}`,
     });
 
-    // Skip irrelevant images in the report
-    if (aiResult.relevance === "irrelevant_image") {
-      console.log(`[AI] Skipping irrelevant image: ${image.id}`);
-      processedCount++;
-      const progress = 10 + Math.floor((processedCount / totalImages) * 70);
-      onProgress(progress, `Skipped irrelevant image ${processedCount}/${totalImages}`);
-      continue;
-    }
-
     const confidenceScore = calculateConfidenceScore(category, !!image.notes, !!project.name);
 
     await prisma.aIOutput.upsert({
       where: { imageId: image.id },
       create: {
         imageId: image.id,
+        relevance: aiResult.relevance,
         caption: aiResult.caption,
         finding: aiResult.finding,
         recommendation: aiResult.recommendation,
@@ -112,6 +96,7 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
         isEdited: false,
       },
       update: {
+        relevance: aiResult.relevance,
         caption: aiResult.caption,
         finding: aiResult.finding,
         recommendation: aiResult.recommendation,
