@@ -80,6 +80,7 @@ async function processProjectInline(projectId: string, onProgress: (progress: nu
       category,
       userNote: image.notes || null,
       context: `Project: ${project.name}`,
+      imageUrl: image.url,
     });
 
     const confidenceScore = calculateConfidenceScore(category, !!image.notes, !!project.name);
@@ -207,7 +208,7 @@ export async function POST(request: NextRequest) {
 
     const project = await prisma.project.findFirst({
       where: { id: projectId, userId },
-      include: { images: { select: { id: true, category: true, notes: true } } },
+      include: { images: { select: { id: true, url: true, category: true, notes: true } } },
     });
 
     if (!project) {

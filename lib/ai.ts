@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-const DEEPSEEK_MODEL = "deepseek-chat";
-const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_MODEL = "gpt-4o";
+const OPENAI_BASE_URL = "https://api.openai.com";
 
 export const ImageRelevanceSchema = z.enum(["relevant_inspection_image", "irrelevant_image", "unclear_image"]);
 export type ImageRelevance = z.infer<typeof ImageRelevanceSchema>;
@@ -20,6 +20,7 @@ interface GenerateCaptionInput {
   category: string | null;
   userNote: string | null;
   context?: string;
+  imageUrl: string;
 }
 
 const RELEVANCE_SYSTEM_PROMPT = `You are a field inspection image classifier. Your task is to analyze images and classify them as:
@@ -31,12 +32,12 @@ const RELEVANCE_SYSTEM_PROMPT = `You are a field inspection image classifier. Yo
 First classify the image, then provide analysis.`;
 
 export async function generateCaption(input: GenerateCaptionInput): Promise<AIResponse | null> {
-  if (!DEEPSEEK_API_KEY) {
-    console.error("[AI] DEEPSEEK_API_KEY not configured");
+  if (!OPENAI_API_KEY) {
+    console.error("[AI] OPENAI_API_KEY not configured");
     return null;
   }
 
-  const { category, userNote, context } = input;
+  const { category, userNote, context, imageUrl } = input;
 
   const prompt = `Analyze this inspection image.
 
@@ -60,31 +61,36 @@ Respond with ONLY a JSON object in this exact format:
 For irrelevant images, use these safe outputs:
 - caption: "This image does not appear to be relevant to a field or site inspection."
 - finding: "No inspection-related insights could be derived."
-- recommendation: "Exclude this image from the report."
-
-Do NOT include any text outside the JSON object. Do NOT use markdown formatting.`;
+- recommendation: "Exclude this image from the report."`;
 
   try {
-    const response = await fetch(`${DEEPSEEK_BASE_URL}/v1/chat/completions`, {
+    const response = await fetch(`${OPENAI_BASE_URL}/v1/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: DEEPSEEK_MODEL,
+        model: OPENAI_MODEL,
         messages: [
           { role: "system", content: RELEVANCE_SYSTEM_PROMPT },
-          { role: "user", content: prompt },
+          { 
+            role: "user", 
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: imageUrl } }
+            ] 
+          },
         ],
         temperature: 0.3,
         max_tokens: 500,
+        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("[AI] DeepSeek API error:", response.status, errorText);
+      console.error("[AI] OpenAI API error:", response.status, errorText);
       return null;
     }
 
@@ -92,7 +98,7 @@ Do NOT include any text outside the JSON object. Do NOT use markdown formatting.
     const content = data.choices?.[0]?.message?.content;
 
     if (!content) {
-      console.error("[AI] No content in DeepSeek response");
+      console.error("[AI] No content in OpenAI response");
       return null;
     }
 

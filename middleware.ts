@@ -39,6 +39,7 @@ export function middleware(request: NextRequest) {
     const refreshed = signJWT({
       userId: payload.userId,
       email: payload.email,
+      tokenVersion: payload.tokenVersion,
     });
 
     response.cookies.set("auth_token", refreshed.token, {

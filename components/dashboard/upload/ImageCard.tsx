@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { tokens } from "@/lib/design-tokens";
 
 import { StatusBadge, StatusType } from "./StatusBadge";
@@ -132,14 +133,14 @@ export function ImageCard({
           <StatusBadge status={status} />
         </div>
 
-        <img
+        <Image
           src={image.thumbnailUrl}
           alt=""
+          fill
           style={{
-            width: "100%",
-            height: "100%",
             objectFit: "cover",
           }}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 
         <div

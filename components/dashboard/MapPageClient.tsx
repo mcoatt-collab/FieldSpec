@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import useSWR from "swr";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { tokens } from "@/lib/design-tokens";
-import { useProjectsStore } from "@/store/useProjectsStore";
+
+const fetcher = (url: string) => fetch(url).then(res => res.json()).then(data => data.data);
 
 type MapboxModule = typeof import("mapbox-gl");
 type GeoJSONFeature = {
@@ -60,10 +62,18 @@ interface MapImage {
 }
 
 export default function MapPageClient() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { data: projectsData, isLoading: projectsLoading } = useSWR<Project[]>("/api/projects", fetcher);
+  const projects = projectsData || [];
+
   const [selectedProjectId, setSelectedProjectId] = useState("");
-  const [images, setImages] = useState<MapImage[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  const { data: imagesData, mutate: mutateImages } = useSWR<MapImage[]>(
+    selectedProjectId ? `/api/images?projectId=${selectedProjectId}&limit=1000` : null,
+    fetcher
+  );
+  const images = imagesData || [];
+  
+  const loading = projectsLoading;
   const [mapError, setMapError] = useState("");
   const [selectedImage, setSelectedImage] = useState<MapImage | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -117,17 +127,7 @@ export default function MapPageClient() {
     [filteredWithGps]
   );
 
-  const fetchImages = useCallback(async (projectId: string) => {
-    try {
-      const res = await fetch(`/api/images?projectId=${projectId}`);
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setImages(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch images:", err);
-    }
-  }, []);
+
 
   const syncMapData = useCallback(() => {
     const mapboxgl = mapModuleRef.current?.default;
@@ -227,12 +227,52 @@ export default function MapPageClient() {
             type: "FeatureCollection",
             features: [],
           },
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 50
+        });
+
+        map.addLayer({
+          id: "clusters",
+          type: "circle",
+          source: MAP_SOURCE_ID,
+          filter: ["has", "point_count"],
+          paint: {
+            "circle-color": [
+              "step",
+              ["get", "point_count"],
+              tokens.colors.primary,
+              100,
+              tokens.colors.secondary,
+              750,
+              tokens.colors.tertiary
+            ],
+            "circle-radius": ["step", ["get", "point_count"], 20, 100, 30, 750, 40],
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 2,
+          }
+        });
+
+        map.addLayer({
+          id: "cluster-count",
+          type: "symbol",
+          source: MAP_SOURCE_ID,
+          filter: ["has", "point_count"],
+          layout: {
+            "text-field": "{point_count_abbreviated}",
+            "text-font": ["Arial Unicode MS Bold"],
+            "text-size": 12
+          },
+          paint: {
+            "text-color": "#ffffff"
+          }
         });
 
         map.addLayer({
           id: MAP_LAYER_ID,
           type: "circle",
           source: MAP_SOURCE_ID,
+          filter: ["!", ["has", "point_count"]],
           paint: {
             "circle-radius": 9,
             "circle-color": [
@@ -253,12 +293,28 @@ export default function MapPageClient() {
           },
         });
 
-        map.on("mouseenter", MAP_LAYER_ID, () => {
+        map.on("mouseenter", "clusters", () => {
           map.getCanvas().style.cursor = "pointer";
         });
-        map.on("mouseleave", MAP_LAYER_ID, () => {
+        map.on("mouseleave", "clusters", () => {
           map.getCanvas().style.cursor = "";
         });
+
+        map.on("click", "clusters", (e) => {
+          const features = map.queryRenderedFeatures(e.point, {
+            layers: ["clusters"]
+          });
+          const clusterId = features[0].properties?.cluster_id;
+          const source = map.getSource(MAP_SOURCE_ID) as import("mapbox-gl").GeoJSONSource;
+          source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+            if (err) return;
+            map.easeTo({
+              center: (features[0].geometry as any).coordinates,
+              zoom: zoom
+            });
+          });
+        });
+
         map.on("click", MAP_LAYER_ID, (event) => {
           const feature = event.features?.[0];
           const imageId = feature?.properties?.id;
@@ -300,40 +356,10 @@ export default function MapPageClient() {
   }, [initMap]);
 
   useEffect(() => {
-    void (async () => {
-      try {
-        const res = await fetch("/api/projects");
-        const data = await res.json();
-        if (res.ok && data.data) {
-          setProjects(data.data);
-          if (data.data.length > 0 && !selectedProjectId) {
-            const firstProjectId = data.data[0].id;
-            initialProjectLoadedRef.current = true;
-            setSelectedProjectId(firstProjectId);
-            await fetchImages(firstProjectId);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch projects:", err);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [fetchImages, selectedProjectId]);
-
-  useEffect(() => {
-    if (!selectedProjectId) {
-      setImages([]);
-      return;
+    if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
     }
-
-    if (initialProjectLoadedRef.current) {
-      initialProjectLoadedRef.current = false;
-      return;
-    }
-
-    void fetchImages(selectedProjectId);
-  }, [fetchImages, selectedProjectId]);
+  }, [projects, selectedProjectId]);
 
   useEffect(() => {
     syncMapData();
@@ -361,10 +387,11 @@ export default function MapPageClient() {
       });
 
       if (res.ok) {
-        setImages((prev) =>
-          prev.map((img) =>
+        mutateImages((currentImages) => 
+          currentImages?.map((img) =>
             img.id === imageId ? { ...img, gpsLat: lat, gpsLng: lng } : img
-          )
+          ),
+          false
         );
         if (selectedImage?.id === imageId) {
           setSelectedImage((prev) =>

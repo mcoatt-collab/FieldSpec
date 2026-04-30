@@ -1,14 +1,12 @@
 {
   "name": "fieldspec",
   "version": "1.0.0",
-  "description": "FieldSpec - Market Intelligence Platform",
+  "description": "FieldSpec - Field Inspection & Analysis Platform",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -21,25 +19,20 @@
   },
   "keywords": [
     "fieldspec",
-    "market-intelligence",
+    "field-inspection",
     "ai",
-    "image-processing"
+    "image-analysis",
+    "agriculture"
   ],
-  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mcoatt-collab/FieldSpec/issues"
   },
   "homepage": "https://github.com/mcoatt-collab/FieldSpec#readme",
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.7.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
-    "@types/node": "^25.6.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^12.9.0",
     "bullmq": "^5.73.5",
     "cloudinary": "^2.7.0",
     "dotenv": "^17.4.2",
@@ -51,27 +44,31 @@
     "next": "^15.1.0",
     "nodemailer": "^8.0.5",
     "pg": "^8.20.0",
-    "prisma": "^7.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sharp": "^0.33.2",
-    "typescript": "^6.0.2",
+    "swr": "^2.4.1",
     "zod": "^4.3.6",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.7.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/mapbox-gl": "^3.4.2",
+    "@types/node": "^25.6.0",
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.20.0",
-    "@vitest/coverage-v8": "^4.1.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
+    "better-sqlite3": "^12.9.0",
     "postcss": "^8.5.9",
+    "prisma": "^7.7.0",
     "tailwindcss": "^4.2.2",
     "tsx": "^4.21.0",
-    "vitest": "^4.1.4"
+    "typescript": "^6.0.2"
   }
 }

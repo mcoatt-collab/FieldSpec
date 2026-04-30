@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     const hasAllowedMime = ALLOWED_MIME_TYPES.includes(file.type);
     const hasAllowedExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
     
-    if (!hasAllowedMime && !hasAllowedExtension) {
+    if (!hasAllowedMime || !hasAllowedExtension) {
       return NextResponse.json(
         { error: { message: "Only JPG, PNG, WEBP, HEIC, and HEIF images are supported", code: "VALIDATION_ERROR" } },
         { status: 400 },

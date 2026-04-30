@@ -23,11 +23,17 @@ export async function getValidatedUserId(request: NextRequest): Promise<string |
 
   const userExists = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true },
+    select: { id: true, tokenVersion: true },
   });
 
   if (!userExists) {
     console.log("[getValidatedUserId] Stale userId in token:", userId);
+    return null;
+  }
+
+  const payload = getUserFromRequest(request);
+  if (payload?.tokenVersion !== undefined && userExists.tokenVersion !== payload.tokenVersion) {
+    console.log("[getValidatedUserId] Token version mismatch for user:", userId);
     return null;
   }
 

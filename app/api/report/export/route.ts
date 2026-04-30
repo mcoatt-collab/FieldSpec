@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { tokens } from "@/lib/design-tokens";
+import { getValidatedUserId } from "@/lib/auth/get-user";
 
 const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN || process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -14,6 +15,16 @@ const ON_SURFACE_VARIANT = tokens.colors.onSurfaceVariant; // secondary text
 const PRIMARY = tokens.colors.primary;                // brand accent
 
 export const dynamic = "force-dynamic";
+
+function escapeHtml(unsafe: string | null | undefined): string {
+  if (!unsafe) return "";
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   if (!MAPBOX_TOKEN) return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
@@ -38,6 +49,11 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
+    const userId = await getValidatedUserId(request);
+    if (!userId) {
+      return NextResponse.json({ error: { message: "Unauthorized" } }, { status: 401 });
+    }
+
     const body = await request.json();
     const projectId = body.projectId;
 
@@ -50,7 +66,7 @@ export async function POST(request: NextRequest) {
       include: { project: true },
     });
 
-    if (!report) {
+    if (!report || report.project.userId !== userId) {
       return NextResponse.json({ error: { message: "Report not found" } }, { status: 404 });
     }
 
@@ -150,19 +166,19 @@ export async function POST(request: NextRequest) {
     <div style="flex:1;padding:12px 14px 12px 12px;border-left:1px solid ${SURFACE_VARIANT};">
       <div style="margin-bottom:6px;">
         <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:7.5pt;font-weight:600;color:${ON_SURFACE_VARIANT};background-color:${SURFACE_CONTAINER};text-transform:uppercase;letter-spacing:0.3pt;">Caption</span>
-        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${img.caption || "N/A"}</span>
+        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${escapeHtml(img.caption) || "N/A"}</span>
       </div>
       <div style="margin-bottom:6px;">
         <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:7.5pt;font-weight:600;color:${ON_SURFACE_VARIANT};background-color:${SURFACE_CONTAINER};text-transform:uppercase;letter-spacing:0.3pt;">Finding</span>
-        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${img.finding || "N/A"}</span>
+        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${escapeHtml(img.finding) || "N/A"}</span>
       </div>
       <div style="margin-bottom:6px;">
         <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:7.5pt;font-weight:600;color:${ON_SURFACE_VARIANT};background-color:${SURFACE_CONTAINER};text-transform:uppercase;letter-spacing:0.3pt;">Recommendation</span>
-        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${img.recommendation || "N/A"}</span>
+        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE};">${escapeHtml(img.recommendation) || "N/A"}</span>
       </div>
       <div style="margin-bottom:8px;">
         <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:7.5pt;font-weight:600;color:${ON_SURFACE_VARIANT};background-color:${SURFACE_CONTAINER};text-transform:uppercase;letter-spacing:0.3pt;">Location</span>
-        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE_VARIANT};">${gpsDisplay}</span>
+        <span style="margin-left:6px;font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE_VARIANT};">${escapeHtml(gpsDisplay)}</span>
       </div>
       <div>
         <span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:7.5pt;font-weight:600;color:${ON_SURFACE_VARIANT};background-color:${SURFACE_CONTAINER};text-transform:uppercase;letter-spacing:0.3pt;">Confidence</span>
@@ -185,18 +201,18 @@ export async function POST(request: NextRequest) {
 <div style="margin-bottom:24px;padding:20px 20px 20px 24px;background-color:${SURFACE};border:1px solid ${OUTLINE};border-radius:10px;border-left:5px solid ${accent};page-break-inside:avoid;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
     <div style="width:10px;height:10px;border-radius:50%;background-color:${accent};"></div>
-    <p style="margin:0;font-family:Arial,sans-serif;font-size:13pt;font-weight:600;color:${ON_SURFACE};letter-spacing:-0.2pt;">${label}</p>
+    <p style="margin:0;font-family:Arial,sans-serif;font-size:13pt;font-weight:600;color:${ON_SURFACE};letter-spacing:-0.2pt;">${escapeHtml(label)}</p>
     <span style="margin-left:auto;padding:4px 10px;border-radius:12px;font-size:8pt;font-weight:600;color:${accent};background-color:${accent}1a;">${s.images?.length || 0} images</span>
   </div>
 
   <div style="margin-bottom:12px;">
     <p style="margin:0 0 4px 0;font-family:Arial,sans-serif;font-size:8pt;font-weight:600;color:${ON_SURFACE_VARIANT};text-transform:uppercase;letter-spacing:0.5pt;">Summary</p>
-    <p style="margin:0;font-family:Arial,sans-serif;font-size:10pt;color:${ON_SURFACE};line-height:1.6;">${s.summary || "N/A"}</p>
+    <p style="margin:0;font-family:Arial,sans-serif;font-size:10pt;color:${ON_SURFACE};line-height:1.6;">${escapeHtml(s.summary) || "N/A"}</p>
   </div>
 
   <div style="margin-bottom:${imagesHtml ? "16px" : "0"};padding:12px 14px;background-color:${SURFACE_CONTAINER};border:1px solid ${SURFACE_VARIANT};border-radius:8px;">
     <p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:8pt;font-weight:600;color:${ON_SURFACE_VARIANT};text-transform:uppercase;letter-spacing:0.5pt;">Recommendations</p>
-    <div style="font-family:Arial,sans-serif;font-size:10pt;color:${ON_SURFACE};line-height:1.6;white-space:pre-wrap;">${s.recommendations || "N/A"}</div>
+    <div style="font-family:Arial,sans-serif;font-size:10pt;color:${ON_SURFACE};line-height:1.6;white-space:pre-wrap;">${escapeHtml(s.recommendations) || "N/A"}</div>
   </div>
 
   ${imagesBlock}
@@ -208,7 +224,7 @@ export async function POST(request: NextRequest) {
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>${content.title}</title>
+  <title>${escapeHtml(content.title)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -231,7 +247,7 @@ export async function POST(request: NextRequest) {
     <div style="display:flex;justify-content:space-between;align-items:flex-end;">
       <div>
         <p style="font-family:Arial,sans-serif;font-size:26pt;font-weight:700;color:${PRIMARY};letter-spacing:-0.8px;margin:0;line-height:1.2;">Analysis Report</p>
-        <p style="font-family:Arial,sans-serif;font-size:12pt;color:${ON_SURFACE_VARIANT};margin:8px 0 0 0;">${content.title}</p>
+        <p style="font-family:Arial,sans-serif;font-size:12pt;color:${ON_SURFACE_VARIANT};margin:8px 0 0 0;">${escapeHtml(content.title)}</p>
       </div>
       <div style="text-align:right;">
         <p style="font-family:Arial,sans-serif;font-size:9pt;color:${ON_SURFACE_VARIANT};margin:0;">Generated</p>
@@ -244,11 +260,11 @@ export async function POST(request: NextRequest) {
   <div style="display:flex;gap:16px;margin-bottom:32px;">
     <div style="flex:1;padding:16px;border:1px solid ${OUTLINE};border-radius:10px;background-color:${SURFACE_CONTAINER};">
       <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:600;color:${ON_SURFACE_VARIANT};text-transform:uppercase;letter-spacing:0.5pt;margin:0 0 6px 0;">Project</p>
-      <p style="font-family:Arial,sans-serif;font-size:11pt;font-weight:600;color:${ON_SURFACE};margin:0;">${content.projectName}</p>
+      <p style="font-family:Arial,sans-serif;font-size:11pt;font-weight:600;color:${ON_SURFACE};margin:0;">${escapeHtml(content.projectName)}</p>
     </div>
     <div style="flex:1;padding:16px;border:1px solid ${OUTLINE};border-radius:10px;background-color:${SURFACE_CONTAINER};">
       <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:600;color:${ON_SURFACE_VARIANT};text-transform:uppercase;letter-spacing:0.5pt;margin:0 0 6px 0;">Location</p>
-      <p style="font-family:Arial,sans-serif;font-size:11pt;font-weight:600;color:${ON_SURFACE};margin:0;">${locationDisplay}</p>
+      <p style="font-family:Arial,sans-serif;font-size:11pt;font-weight:600;color:${ON_SURFACE};margin:0;">${escapeHtml(locationDisplay)}</p>
     </div>
     <div style="flex:1;padding:16px;border:1px solid ${OUTLINE};border-radius:10px;background-color:${SURFACE_CONTAINER};">
       <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:600;color:${ON_SURFACE_VARIANT};text-transform:uppercase;letter-spacing:0.5pt;margin:0 0 6px 0;">Images</p>

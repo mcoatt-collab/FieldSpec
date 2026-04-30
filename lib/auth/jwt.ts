@@ -15,6 +15,7 @@ const JWT_REFRESH_THRESHOLD = process.env.JWT_REFRESH_THRESHOLD || "1d";
 export interface JWTPayload {
   userId: string;
   email: string;
+  tokenVersion?: number;
   exp?: number;
   iat?: number;
 }
@@ -31,12 +32,14 @@ export function signJWT(payload: JWTPayload): JWTResult {
 
   const options: SignOptions = {
     expiresIn: Math.floor(duration / 1000),
+    algorithm: "HS256",
   };
 
   const token = jwt.sign(
     {
       userId: payload.userId,
       email: payload.email,
+      tokenVersion: payload.tokenVersion,
     },
     JWT_SECRET,
     options
@@ -47,7 +50,7 @@ export function signJWT(payload: JWTPayload): JWTResult {
 
 export function verifyJWT(token: string): JWTPayload | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload & JWTPayload;
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] }) as JwtPayload & JWTPayload;
     return decoded;
   } catch {
     return null;

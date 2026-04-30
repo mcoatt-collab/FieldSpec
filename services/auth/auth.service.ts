@@ -171,7 +171,7 @@ export async function login(
       return { success: false, error: "Invalid credentials" };
     }
 
-    const jwtResult = signJWT({ userId: user.id, email: user.email });
+    const jwtResult = signJWT({ userId: user.id, email: user.email, tokenVersion: user.tokenVersion });
 
     return { success: true, token: jwtResult.token, userId: user.id };
   } catch (error) {
@@ -248,7 +248,7 @@ export async function resetPassword(
     await prisma.$transaction([
       prisma.user.update({
         where: { id: authToken.userId },
-        data: { passwordHash },
+        data: { passwordHash, tokenVersion: { increment: 1 } },
       }),
       prisma.authToken.update({
         where: { id: authToken.id },

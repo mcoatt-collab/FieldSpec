@@ -1382,12 +1382,12 @@ export default function MarketingPage() {
                       ? "none"
                       : `1.5px solid ${tokens.colors.primary}`,
                     textDecoration: "none",
-                    fontWeight: 600,
-                    fontSize: "16px",
                     transition: "all 0.2s ease",
                     width: "100%",
                     textAlign: "center",
                     ...tokens.typography.labelLarge,
+                    fontWeight: 600,
+                    fontSize: "16px",
                   }}
                 >
                   {plan.cta}

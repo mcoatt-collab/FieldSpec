@@ -13,7 +13,9 @@ const signupSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || (request as any).ip || "unknown";
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const realIp = request.headers.get("x-real-ip");
+    const ip = realIp || (forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown");
     const limit = await signupLimiter(ip);
     if (!limit.allowed) {
       return NextResponse.json(

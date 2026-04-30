@@ -1,13 +1,37 @@
-node_modules
-/lib/generated/prisma
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Generated files
+lib/generated/prisma/
+*.tsbuildinfo
+
+# Environment variables
 .env
 .env.local
-.next/
+.env.*.local
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
 .DS_Store
-.vercel
-dist
-build
-rough.md
+Thumbs.db
+
+# IDE
 .vscode/settings.json
-*.tsbuildinfo
+.idea/
+
+# Vercel
+.vercel
+
+# Debug
+rough.md

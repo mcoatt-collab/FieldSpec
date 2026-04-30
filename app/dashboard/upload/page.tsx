@@ -4,7 +4,10 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { tokens } from "@/lib/design-tokens";
 
+import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 import { useProjectsStore } from "@/store/useProjectsStore";
+import { useUploadStore } from "@/store/useUploadStore";
 import { UploadZone } from "@/components/dashboard/upload/UploadZone";
 import {
   UploadQueue,
@@ -16,6 +19,11 @@ import { ImageCard } from "@/components/dashboard/upload/ImageCard";
 import { StatusType } from "@/components/dashboard/upload/StatusBadge";
 import { LoadingScreen } from "@/lib/components/loading";
 
+interface Project {
+  id: string;
+  name: string;
+}
+
 interface ImageType {
   id: string;
   url: string;
@@ -26,26 +34,23 @@ interface ImageType {
   status?: StatusType;
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json()).then(data => data.data);
+
 export default function UploadPage() {
   const router = useRouter();
-  const {
-    projects,
-    loading: projectsLoading,
-    fetchProjects,
-  } = useProjectsStore();
+  const { data: projectsData, isLoading: projectsLoading } = useSWR<Project[]>("/api/projects", fetcher);
+  const projects = projectsData || [];
+  
   const [selectedProjectId, setSelectedProjectId] = useState("");
-  const [images, setImages] = useState<ImageType[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(
-    new Set(),
-  );
-  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(new Set());
+  
+  const { uploadQueue, isUploading, addItems, updateItemProgress, removeItem, clearCompleted, setIsUploading } = useUploadStore();
+  
   const [editingImage, setEditingImage] = useState<ImageType | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -53,28 +58,31 @@ export default function UploadPage() {
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchImages = useCallback(async (projectId: string) => {
-    try {
-      const res = await fetch(`/api/images?projectId=${projectId}`);
-      const data = await res.json();
+  const getKey = (pageIndex: number, previousPageData: ImageType[] | null) => {
+    if (!selectedProjectId) return null;
+    if (previousPageData && !previousPageData.length) return null;
+    return `/api/images?projectId=${selectedProjectId}&limit=50&offset=${pageIndex * 50}`;
+  };
 
-      if (res.ok && data.data) {
-        setImages(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch images:", err);
-      setError("Failed to load images");
-    }
-  }, []);
+  const { data: imagesData, error: imagesError, size, setSize, mutate: mutateImages, isLoading: imagesLoading } = useSWRInfinite<ImageType[]>(getKey, fetcher);
 
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchProjects();
-      setLoading(false);
-    };
+  const images = useMemo(() => imagesData ? imagesData.flat() : [], [imagesData]);
+  const isReachingEnd = imagesData && imagesData[imagesData.length - 1]?.length < 50;
+  const isLoadingMore = imagesLoading || (size > 0 && imagesData && typeof imagesData[size - 1] === "undefined");
 
-    loadData();
-  }, [fetchProjects]);
+  const updateLocalImage = (imageId: string, updatedFields: Partial<ImageType>) => {
+    mutateImages((data) => {
+      if (!data) return data;
+      return data.map(page => page.map(img => img.id === imageId ? { ...img, ...updatedFields } as ImageType : img));
+    }, false);
+  };
+
+  const removeLocalImage = (imageId: string) => {
+    mutateImages((data) => {
+      if (!data) return data;
+      return data.map(page => page.filter(img => img.id !== imageId));
+    }, false);
+  };
 
   useEffect(() => {
     if (projects.length > 0 && !selectedProjectId) {
@@ -84,10 +92,9 @@ export default function UploadPage() {
 
   useEffect(() => {
     if (selectedProjectId) {
-      fetchImages(selectedProjectId);
       setSelectedImageIds(new Set());
     }
-  }, [selectedProjectId, fetchImages]);
+  }, [selectedProjectId]);
 
   const handleUpload = async (files: FileList) => {
     if (!selectedProjectId) {
@@ -105,16 +112,10 @@ export default function UploadPage() {
       status: "pending",
     }));
 
-    setUploadQueue((prev) => [...newItems, ...prev]);
+    addItems(newItems);
 
     for (const item of newItems) {
-      setUploadQueue((prev) =>
-        prev.map((queueItem) =>
-          queueItem.id === item.id
-            ? { ...queueItem, status: "uploading" }
-            : queueItem,
-        ),
-      );
+      updateItemProgress(item.id, 0, "uploading");
     }
 
     for (let index = 0; index < files.length; index += 1) {
@@ -127,13 +128,7 @@ export default function UploadPage() {
         formData.append("projectId", selectedProjectId);
 
         const progressInterval = setInterval(() => {
-          setUploadQueue((prev) =>
-            prev.map((item) =>
-              item.id === itemId && item.progress < 90
-                ? { ...item, progress: item.progress + 10, status: "uploading" }
-                : item,
-            ),
-          );
+          updateItemProgress(itemId, 50, "uploading");
         }, 200);
 
         const res = await fetch("/api/upload/image", {
@@ -145,27 +140,20 @@ export default function UploadPage() {
         const data = await res.json();
 
         if (res.ok && data.data) {
-          setUploadQueue((prev) =>
-            prev.map((item) =>
-              item.id === itemId
-                ? { ...item, progress: 100, status: "completed" }
-                : item,
-            ),
-          );
-          setImages((prev) => [data.data, ...prev]);
+          updateItemProgress(itemId, 100, "completed");
+          mutateImages((currentData) => {
+            if (!currentData) return currentData;
+            const newData = [...currentData];
+            if (newData[0]) {
+              newData[0] = [data.data, ...newData[0]];
+            }
+            return newData;
+          }, false);
         } else {
-          setUploadQueue((prev) =>
-            prev.map((item) =>
-              item.id === itemId ? { ...item, status: "failed" } : item,
-            ),
-          );
+          updateItemProgress(itemId, 0, "failed");
         }
       } catch (err) {
-        setUploadQueue((prev) =>
-          prev.map((item) =>
-            item.id === itemId ? { ...item, status: "failed" } : item,
-          ),
-        );
+        updateItemProgress(itemId, 0, "failed");
       }
     }
 
@@ -173,11 +161,11 @@ export default function UploadPage() {
   };
 
   const handleRemoveUploadItem = (id: string) => {
-    setUploadQueue((prev) => prev.filter((item) => item.id !== id));
+    removeItem(id);
   };
 
   const handleClearCompletedUploads = () => {
-    setUploadQueue((prev) => prev.filter((item) => item.status !== "completed"));
+    clearCompleted();
   };
 
   const handleSelectImage = (id: string, selected: boolean) => {
@@ -209,9 +197,7 @@ export default function UploadPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setImages((prev) =>
-          prev.map((image) => (image.id === imageId ? data.data : image)),
-        );
+        updateLocalImage(imageId, data.data);
       }
     } catch (err) {
       setError("Failed to update category");
@@ -232,11 +218,7 @@ export default function UploadPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setImages((prev) =>
-          prev.map((image) =>
-            image.id === editingImage.id ? data.data : image,
-          ),
-        );
+        updateLocalImage(editingImage.id, data.data);
         setSaveSuccess(true);
 
         setTimeout(() => {
@@ -263,7 +245,7 @@ export default function UploadPage() {
       const res = await fetch(`/api/images/${deleteImageId}`, { method: "DELETE" });
 
       if (res.ok) {
-        setImages((prev) => prev.filter((image) => image.id !== deleteImageId));
+        removeLocalImage(deleteImageId);
         setSelectedImageIds((prev) => {
           const next = new Set(prev);
           next.delete(deleteImageId);
@@ -289,7 +271,7 @@ export default function UploadPage() {
       try {
         const res = await fetch(`/api/images/${id}`, { method: "DELETE" });
         if (res.ok) {
-          setImages((prev) => prev.filter((image) => image.id !== id));
+          removeLocalImage(id);
         }
       } catch (err) {
         setError("Failed to delete some images");
@@ -310,22 +292,10 @@ export default function UploadPage() {
   };
 
   const handleReprocess = (id: string) => {
-    setImages((prev) =>
-      prev.map((image) =>
-        image.id === id
-          ? { ...image, status: "processing" as StatusType }
-          : image,
-      ),
-    );
+    updateLocalImage(id, { status: "processing" as StatusType });
 
     setTimeout(() => {
-      setImages((prev) =>
-        prev.map((image) =>
-          image.id === id
-            ? { ...image, status: "completed" as StatusType }
-            : image,
-        ),
-      );
+      updateLocalImage(id, { status: "completed" as StatusType });
     }, 3000);
   };
 
@@ -369,7 +339,7 @@ export default function UploadPage() {
       });
   }, [images, categoryFilter, statusFilter, sortOrder, searchQuery]);
 
-  if (loading || projectsLoading) {
+  if (projectsLoading) {
     return <LoadingScreen message="Loading images..." />;
   }
 
@@ -577,6 +547,27 @@ export default function UploadPage() {
                   ))}
                 </div>
               ) : null}
+
+              {!isReachingEnd && (
+                <div style={{ display: 'flex', justifyContent: 'center', margin: `${tokens.spacing.xl} 0` }}>
+                  <button
+                    onClick={() => setSize(size + 1)}
+                    disabled={isLoadingMore}
+                    style={{
+                      padding: `${tokens.spacing.sm} ${tokens.spacing.xl}`,
+                      backgroundColor: tokens.colors.secondaryContainer,
+                      color: tokens.colors.onSecondaryContainer,
+                      border: 'none',
+                      borderRadius: tokens.radius.full,
+                      cursor: isLoadingMore ? "not-allowed" : "pointer",
+                      ...tokens.typography.labelLarge,
+                      opacity: isLoadingMore ? 0.7 : 1,
+                    }}
+                  >
+                    {isLoadingMore ? "Loading..." : "Load More"}
+                  </button>
+                </div>
+              )}
 
                {(images.length === 0 || filteredAndSortedImages.length === 0) && (
                 <p

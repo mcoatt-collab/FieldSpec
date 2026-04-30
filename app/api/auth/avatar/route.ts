@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const hasAllowedExtension = ALLOWED_EXTENSIONS.some(ext => fileName.endsWith(ext));
     const hasValidMimeType = file.type && file.type.startsWith("image/");
     
-    if (!hasValidMimeType && !hasAllowedExtension) {
+    if (!hasValidMimeType || !hasAllowedExtension) {
       return NextResponse.json(
         { error: { message: "Only image uploads are supported", code: "VALIDATION_ERROR" } },
         { status: 400 }

@@ -11,15 +11,6 @@ const loginSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || (request as any).ip || "unknown";
-    const limit = await authLimiter(ip);
-    if (!limit.allowed) {
-      return NextResponse.json(
-        { error: { message: "Too many login attempts. Please try again later.", code: "RATE_LIMITED" } },
-        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)) } }
-      );
-    }
-
     const body = await request.json();
     const result = loginSchema.safeParse(body);
 
@@ -31,6 +22,15 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password } = result.data;
+
+    // Rate limit based on email to prevent brute-forcing specific accounts
+    const limit = await authLimiter(email.toLowerCase());
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: { message: "Too many login attempts. Please try again later.", code: "RATE_LIMITED" } },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)) } }
+      );
+    }
     const loginResult = await login(email, password);
 
     if (!loginResult.success || !loginResult.token) {

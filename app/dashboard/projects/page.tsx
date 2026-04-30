@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
 import { tokens } from "@/lib/design-tokens";
 import { LoadingScreen } from "@/lib/components/loading";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json()).then(data => data.data);
 
 interface Project {
   id: string;
@@ -20,9 +23,6 @@ interface Client {
 }
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
@@ -33,41 +33,8 @@ export default function ProjectsPage() {
   const [clientId, setClientId] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  useEffect(() => {
-    if (showForm) {
-      fetchClients();
-    }
-  }, [showForm]);
-
-  async function fetchProjects() {
-    try {
-      const res = await fetch("/api/projects");
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setProjects(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch projects:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function fetchClients() {
-    try {
-      const res = await fetch("/api/clients");
-      const data = await res.json();
-      if (res.ok && data.data) {
-        setClients(data.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch clients:", err);
-    }
-  }
+  const { data: projects = [], error: projectsError, isLoading: projectsLoading, mutate: mutateProjects } = useSWR<Project[]>("/api/projects", fetcher);
+  const { data: clients = [], error: clientsError } = useSWR<Client[]>(showForm ? "/api/clients" : null, fetcher);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,7 +56,7 @@ export default function ProjectsPage() {
         return;
       }
 
-      setProjects([data.data, ...projects]);
+      await mutateProjects([data.data, ...projects], false);
       setName("");
       setClientId("");
       setShowForm(false);
@@ -124,9 +91,7 @@ export default function ProjectsPage() {
         return;
       }
 
-      setProjects((currentProjects) =>
-        currentProjects.filter((p) => p.id !== projectToDelete.id)
-      );
+      await mutateProjects(projects.filter((p) => p.id !== projectToDelete.id), false);
       setShowDeleteModal(false);
       setProjectToDelete(null);
     } catch (err) {
@@ -466,8 +431,12 @@ export default function ProjectsPage() {
         </div>
       )}
 
-{loading ? (
+{projectsLoading ? (
         <LoadingScreen message="Loading projects..." />
+      ) : projectsError ? (
+        <div style={{ padding: tokens.spacing.xl, textAlign: "center", color: tokens.colors.error }}>
+          Failed to load projects.
+        </div>
       ) : projects.length === 0 ? (
         <div
           style={{
