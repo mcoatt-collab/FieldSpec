@@ -558,7 +558,7 @@ export default function UploadPage() {
                       backgroundColor: tokens.colors.secondaryContainer,
                       color: tokens.colors.onSecondaryContainer,
                       border: 'none',
-                      borderRadius: tokens.radius.full,
+                      borderRadius: tokens.radius.pill,
                       cursor: isLoadingMore ? "not-allowed" : "pointer",
                       ...tokens.typography.labelLarge,
                       opacity: isLoadingMore ? 0.7 : 1,

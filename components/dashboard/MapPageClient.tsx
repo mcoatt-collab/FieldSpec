@@ -306,11 +306,11 @@ export default function MapPageClient() {
           });
           const clusterId = features[0].properties?.cluster_id;
           const source = map.getSource(MAP_SOURCE_ID) as import("mapbox-gl").GeoJSONSource;
-          source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+            source.getClusterExpansionZoom(clusterId, (err, zoom) => {
             if (err) return;
             map.easeTo({
               center: (features[0].geometry as any).coordinates,
-              zoom: zoom
+              zoom: zoom ?? undefined
             });
           });
         });

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
+import type { Prisma } from "@prisma/client";
+
+type ActiveJobWithProject = Prisma.AIJobGetPayload<{
+  include: { project: { select: { name: true } } };
+}>;
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,7 +34,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    const formattedJobs = activeJobs.map((job) => ({
+    const formattedJobs = activeJobs.map((job: ActiveJobWithProject) => ({
       id: job.id,
       projectName: job.project.name,
       type: "full_report", // AIJob in schema doesn't seem to have a type, defaulting to full_report
