@@ -10,7 +10,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-md" style={{ backgroundColor: "var(--color-section-bg)" }}>
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 w-full overflow-x-hidden"
+      style={{ backgroundColor: "var(--color-section-bg)" }}
+    >
       <div className="mb-md">
         <Link href="/" className="no-underline text-primary">
           <Brand size="lg" />
@@ -19,7 +22,9 @@ export default function AuthLayout({
       <div style={{ position: "absolute", top: "16px", right: "16px" }}>
         <ThemeToggle />
       </div>
-      {children}
+      <main className="w-full flex flex-col items-center justify-center">
+        {children}
+      </main>
     </div>
   );
 }

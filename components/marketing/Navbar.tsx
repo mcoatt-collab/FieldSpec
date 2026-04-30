@@ -139,7 +139,6 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
           <span></span>
         </label>
       </div>
-      </div>
 
       <div className="dropdown-menu">
         <Link href="#features" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
@@ -154,7 +153,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
         <Link href="#pricing" className="dropdown-link" style={{ ...tokens.typography.labelLarge }}>
           Pricing
         </Link>
-<div className="dropdown-actions">
+        <div className="dropdown-actions">
           <Link 
             href="/login" 
             className="btn-text" 
@@ -197,6 +196,7 @@ export default function Navbar({ onPrefetch }: NavbarProps) {
             Get Started
           </Link>
         </div>
+      </div>
       </div>
     </nav>
   );
