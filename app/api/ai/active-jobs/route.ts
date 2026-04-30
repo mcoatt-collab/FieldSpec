@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getValidatedUserId } from "@/lib/auth/get-user";
-import type { Prisma } from "@prisma/client";
-
-type ActiveJobWithProject = Prisma.AIJobGetPayload<{
-  include: { project: { select: { name: true } } };
-}>;
+type ActiveJobWithProject = {
+  id: string;
+  projectId: string;
+  status: string;
+  progress: number;
+  type: string;
+  createdAt: Date;
+  updatedAt: Date;
+  project: {
+    name: string;
+  };
+};
 
 export async function GET(request: NextRequest) {
   try {
